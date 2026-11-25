@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>なぜUIデザインに時間がかかるのか — #137</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main>
+    <header class="intro">
+      <a href="../">プレビュー一覧</a>
+      <p class="eyebrow">UIレビューの振り返り · #137 キャラクター位置調整</p>
+      <h1>なぜUIデザインに<br>時間がかかるのか？</h1>
+      <p><strong>今回確認したいこと：</strong>最初に見られる画面を出すまでと、画面が出てから修正を往復する間。今回はどちらに時間がかかったと感じたか。</p>
+    </header>
+
+    <section aria-labelledby="flow">
+      <h2 id="flow">今回のレビューで起きたこと</h2>
+      <ol class="flow">
+        <li><strong>画面で確認</strong><br>2人だと、一覧と座標欄の間が空いて見えた。</li>
+        <li><strong>位置を変更</strong><br>少人数のときは、一覧を座標欄に寄せた。</li>
+        <li><strong>上揃えに戻す</strong><br>一覧は上から、X・Yは下端。位置の一貫性を優先した。</li>
+      </ol>
+      <p class="note">根拠：#137 の表示レビュー記録「違和感」「テーマ比較と再レビュー」「上揃えと座標欄の再確認」。各段階の所要時間は記録されていない。</p>
+    </section>
+
+    <section aria-labelledby="compare">
+      <h2 id="compare">余白の調整に見えた、優先順位の違い</h2>
+      <p>操作パネルだけを抜き出した模式図。すべての案で、X・Y欄は下端に固定している。</p>
+      <div class="comparison">
+        <figure>
+          <figcaption><strong>2人 · 座標欄に寄せる</strong><span>選んでから編集する流れを近くに</span></figcaption>
+          <div class="mock bottom" aria-hidden="true">
+            <div class="rows"><span>1　キャラクター</span><span>2　キャラクター</span></div>
+            <div class="coords"><span>X (px)</span><span>Y (px)</span></div>
+          </div>
+        </figure>
+        <figure>
+          <figcaption><strong>2人 · 一覧を上揃え</strong><span>入力欄との間に余白が残る</span></figcaption>
+          <div class="mock" aria-hidden="true">
+            <div class="rows"><span>1　キャラクター</span><span>2　キャラクター</span></div>
+            <div class="coords"><span>X (px)</span><span>Y (px)</span></div>
+          </div>
+        </figure>
+        <figure>
+          <figcaption><strong>6人 · 一覧を上揃え</strong><span>人数が変わっても同じ場所から読める</span></figcaption>
+          <div class="mock" aria-hidden="true">
+            <div class="rows"><span>1　キャラクター</span><span>2　キャラクター</span><span>3　キャラクター</span><span>4　キャラクター</span><span>5　キャラクター</span><span>6　キャラクター</span></div>
+            <div class="coords"><span>X (px)</span><span>Y (px)</span></div>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section aria-labelledby="hypothesis">
+      <h2 id="hypothesis">仮説：判断する順番で、往復を減らせる</h2>
+      <p>一覧を寄せるかどうかは、余白の量より「選択と編集の近さ」と「人数が変わっても一覧の読み始めが同じこと」のどちらを優先するかで決まる。この判断が実画面のレビューまで持ち越されると、修正の往復が増えやすい。</p>
+      <p><strong>次回試すなら：</strong>初回は2人と6人の模式図で、一覧と座標欄の位置関係だけを決める。マーカーが重なったときの見え方など、実画面で判断しやすい問題は、動くプレビューで確認する。</p>
+    </section>
+
+    <section class="question" aria-labelledby="question">
+      <h2 id="question">今回、どこが一番長かった？</h2>
+      <p><strong>A.</strong> 最初にレビューできる画面が出るまで<br><strong>B.</strong> 画面が出てから、判断と修正を往復する間</p>
+      <p>その区間で何を待っていたか、ひとつ挙げるなら？</p>
+    </section>
+  </main>
+</body>
+</html>
