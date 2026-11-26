@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>制作スタジオ：画像生成の処理フロー</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<main>
+  <header><a href="../">プレビュー一覧</a><h1>画像生成の処理フロー</h1></header>
+  <nav class="steps" aria-label="生成のステップ">
+    <button type="button" data-select="0" aria-pressed="true" aria-controls="flow"><span>1</span>入力確認・送信</button>
+    <button type="button" data-select="1" aria-pressed="false" aria-controls="flow"><span>2</span>素材取得・合成</button>
+    <button type="button" data-select="2" aria-pressed="false" aria-controls="flow"><span>3</span>NovelAIへ送信</button>
+    <button type="button" data-select="3" aria-pressed="false" aria-controls="flow"><span>4</span>生成結果の受信</button>
+    <button type="button" data-select="4" aria-pressed="false" aria-controls="flow"><span>5</span>一覧に追加</button>
+  </nav>
+  <div class="controls">
+    <div class="paging"><button type="button" id="previous" disabled>← 前へ</button><output id="position" aria-live="polite">1 / 5 · 入力確認・送信</output><button type="button" id="next">次へ →</button></div>
+    <button type="button" id="overview" aria-pressed="false" aria-controls="flow">全体表示</button>
+  </div>
+  <div id="flow">
+    <section class="stage" data-stage="0" aria-labelledby="title-1">
+      <h2 id="title-1"><span>01</span>入力確認・送信</h2>
+      <div class="route">
+        <div class="node browser"><h3>ブラウザ</h3><ol><li>「生成」を押す</li><li>入力・連携・参照準備を確認</li><li>多重送信をロック</li></ol></div>
+        <div class="connection"><div class="payload">入力文・素材ID<br>キャラクター・位置<br>参照画像・モデル</div><div class="arrow" aria-label="ブラウザからアプリサーバーへ">→</div><code>POST · generateImage</code></div>
+        <div class="node server"><h3>アプリサーバー</h3><ol><li>入力形式を検証</li><li>ログインを確認</li><li>参照PNGを検証</li></ol></div>
+      </div>
+      <div class="branch"><span>ブラウザの入力エラー</span><b aria-hidden="true">↳</b><span class="stop">送信を停止・入力エラーを表示</span></div>
+    </section>
+    <section class="stage" data-stage="1" aria-labelledby="title-2" hidden>
+      <h2 id="title-2"><span>02</span>素材取得・プロンプト合成</h2>
+      <div class="route">
+        <div class="node database"><h3>DB</h3><div class="items"><span>アクター素材</span><span>キャラクター素材</span></div></div>
+        <div class="connection"><div class="payload">利用可能な素材の本文</div><div class="arrow" aria-label="DBからアプリサーバーへ">→</div><span>選択IDで取得</span></div>
+        <div class="node server"><h3>アプリサーバー</h3><ol><li>Positive・Negativeを合成</li><li>合成後の長さを検証</li><li>Positiveの必須を確認</li></ol></div>
+      </div>
+      <div class="compositions">
+        <div class="composition"><h3>ベース</h3><div class="formula"><span>入力文</span><b>＋</b><span>素材の本文</span><b>＋</b><span>未保存の素材案（指定時）</span></div><div class="merged">↓ 空白を整え「, 」で連結</div></div>
+        <div class="composition"><h3>キャラクターごと</h3><div class="formula"><span>入力文</span><b>＋</b><span>素材の本文</span></div><div class="merged">↓ 連結したプロンプト ＋ 位置</div></div>
+      </div>
+      <div class="branch"><span>不正な素材・プロンプト</span><b aria-hidden="true">↳</b><span class="stop">エラー理由を返す → 画面に表示</span></div>
+    </section>
+    <section class="stage" data-stage="2" aria-labelledby="title-3" hidden>
+      <h2 id="title-3"><span>03</span>APIキー復号・NovelAIへ送信</h2>
+      <div class="route">
+        <div class="node server"><h3>アプリサーバー</h3><ol><li>DBから連携キーを取得・復号</li><li>NovelAI形式へ変換</li><li>既定値・品質タグ・seedを設定</li></ol></div>
+        <div class="connection"><div class="payload">生成リクエスト<br>＋ APIキー</div><div class="arrow" aria-label="アプリサーバーからNovelAIへ">→</div><span>認証付きPOST</span></div>
+        <div class="node provider"><h3>NovelAI</h3><div class="generation">画像を生成</div></div>
+      </div>
+      <div class="branch"><span>連携エラー・残高不足・レート制限</span><b aria-hidden="true">↳</b><span class="stop">エラー理由を返す → 画面に表示</span></div>
+    </section>
+    <section class="stage" data-stage="3" aria-labelledby="title-4" hidden>
+      <h2 id="title-4"><span>04</span>生成結果の受信・画像取り出し</h2>
+      <div class="route">
+        <div class="node provider"><h3>NovelAI</h3><div class="generation">生成結果</div></div>
+        <div class="connection"><div class="payload">ZIP または画像データ</div><div class="arrow" aria-label="NovelAIからアプリサーバーへ">→</div><span>生成レスポンス</span></div>
+        <div class="node server"><h3>アプリサーバー</h3><ol><li>ZIPなら展開</li><li>画像形式・サイズを確認</li><li>先頭の1枚を選択</li></ol></div>
+      </div>
+      <div class="branch"><span>通信・応答エラー</span><b aria-hidden="true">↳</b><span class="stop">一時利用不可として返す → 画面に表示</span></div>
+    </section>
+    <section class="stage" data-stage="4" aria-labelledby="title-5" hidden>
+      <h2 id="title-5"><span>05</span>ブラウザで一覧に追加</h2>
+      <div class="route">
+        <div class="node server"><h3>アプリサーバー</h3><div class="generation">画像レスポンスを返す</div></div>
+        <div class="connection"><div class="payload">画像データ</div><div class="arrow" aria-label="アプリサーバーからブラウザへ">→</div><code>image/*</code></div>
+        <div class="node browser"><h3>ブラウザ</h3><ol><li>Blobとして受信</li><li>一時キャッシュの先頭へ追加</li><li>生成画像一覧を更新</li></ol></div>
+      </div>
+      <div class="image-list" aria-label="生成画像の一時キャッシュ、最新20枚"><span class="new-image">新しい画像</span><b aria-hidden="true">→</b><span>前の画像</span><span>… 最新20枚</span></div>
+    </section>
+  </div>
+  <details class="failures"><summary>想定外の例外・リトライ</summary><div class="branch"><span>想定外の例外</span><b aria-hidden="true">→</b><span class="stop">エラー通知</span></div><div class="retry">自動リトライ：無効</div></details>
+</main>
+<script>
+  const stages = [...document.querySelectorAll('[data-stage]')];
+  const selectors = [...document.querySelectorAll('[data-select]')];
+  const previous = document.getElementById('previous');
+  const next = document.getElementById('next');
+  const overview = document.getElementById('overview');
+  const position = document.getElementById('position');
+  const names = ['入力確認・送信', '素材取得・合成', 'NovelAIへ送信', '生成結果の受信', '一覧に追加'];
+  let current = 0;
+  let all = false;
+  function render() {
+    stages.forEach((stage, index) => { stage.hidden = !all && index !== current; });
+    selectors.forEach((button, index) => { button.setAttribute('aria-pressed', String(!all && index === current)); });
+    overview.setAttribute('aria-pressed', String(all));
+    overview.textContent = all ? 'ステップ表示に戻る' : '全体表示';
+    previous.disabled = all || current === 0;
+    next.disabled = all || current === stages.length - 1;
+    position.textContent = all ? '全5ステップ' : `${current + 1} / 5 · ${names[current]}`;
+    document.getElementById('flow').classList.toggle('all', all);
+  }
+  selectors.forEach((button, index) => button.addEventListener('click', () => { current = index; all = false; render(); }));
+  previous.addEventListener('click', () => { if (current > 0) current--; render(); });
+  next.addEventListener('click', () => { if (current < stages.length - 1) current++; render(); });
+  overview.addEventListener('click', () => { all = !all; render(); });
+</script>
+</body>
+</html>
