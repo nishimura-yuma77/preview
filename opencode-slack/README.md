@@ -134,11 +134,17 @@ flowchart TD
 
 ## 設定反映と検証
 
-### OpenCode HTTPクライアント
+### HTTPクライアント（OpenCode・Slack SDK）
 
 OpenCode API・イベント（SSE）接続は `opencode-http.mjs` を通して、直接依存に固定した
 Undici `8.13.1` の `fetch` を使用する。Node.js内蔵の `fetch` は使用せず、グローバルの置換もしない。
 実行環境は Node.js `22.19.0` 以上を必要とする。
+
+Slack側も `slack-app.mjs` のBolt生成時に `clientOptions.fetch` へ同じ固定版を明示する。
+通常のWeb APIだけでなく、Socket Mode接続用の `apps.connections.open` と `response_url`
+への返信にも伝わる。初回対策ではこの指定が漏れており、Slack SDKが内蔵fetchを使う状態で
+同じクラッシュが再発した。`slack-app.test.mjs` で実SDKの3経路をローカルHTTPへ送り、
+内蔵fetchが使われないことを検証する。
 
 Node.js `24.22.2` の内蔵Undici `7.30.1` では、応答の読み取りが一時停止中に相手が接続を閉じると、
 `Parser.finish` の `assert(!this.paused)` がソケットイベント内で失敗し、通常のPromiseのcatchを
