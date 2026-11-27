@@ -1,4 +1,3 @@
-// Keep OpenCode's HTTP and SSE traffic off Node's bundled Undici: versions
-// containing undici#5360 can crash outside the fetch promise on socket FIN.
-// The pinned package includes the complete paused-parser fix from undici#5474.
-export { fetch as fetchOpenCode } from 'undici'
+// Use Node's bundled HTTP client; the deployed Node.js 26.13.1 includes
+// the paused-parser fix needed when the peer closes an unconsumed response.
+export const fetchOpenCode = (...args) => globalThis.fetch(...args)

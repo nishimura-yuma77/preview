@@ -136,15 +136,14 @@ flowchart TD
 
 ### HTTPクライアント（OpenCode・Slack SDK）
 
-OpenCode API・イベント（SSE）接続は `opencode-http.mjs` を通して、直接依存に固定した
-Undici `8.13.1` の `fetch` を使用する。Node.js内蔵の `fetch` は使用せず、グローバルの置換もしない。
-実行環境は Node.js `22.19.0` 以上を必要とする。
+OpenCode API・イベント（SSE）接続は `opencode-http.mjs` を通して、Node.js内蔵の
+`fetch` を使用する。実行環境は Node.js `26.13.1` 以上を必要とする。
+本番は Node.js `26.13.1`／内蔵Undici `8.12.4`。外部Undiciへの直接依存・固定版fetchの注入は行わない。
 
-Slack側も `slack-app.mjs` のBolt生成時に `clientOptions.fetch` へ同じ固定版を明示する。
-通常のWeb APIだけでなく、Socket Mode接続用の `apps.connections.open` と `response_url`
-への返信にも伝わる。初回対策ではこの指定が漏れており、Slack SDKが内蔵fetchを使う状態で
-同じクラッシュが再発した。`slack-app.test.mjs` で実SDKの3経路をローカルHTTPへ送り、
-内蔵fetchが使われないことを検証する。
+Slack側は `slack-app.mjs` でBolt標準の内蔵fetchを使用する。
+`slack-app.test.mjs` で通常のWeb API・Socket Mode接続用 `apps.connections.open`・
+`response_url` 返信の3経路が内蔵fetchを参照し、ローカルHTTPで動作することを検証する。
+SDKの推移依存としてUndiciが残る場合もあるが、アプリ側からはimportしない。
 
 Node.js `24.22.2` の内蔵Undici `7.30.1` では、応答の読み取りが一時停止中に相手が接続を閉じると、
 `Parser.finish` の `assert(!this.paused)` がソケットイベント内で失敗し、通常のPromiseのcatchを
@@ -156,12 +155,11 @@ Node.js `24.22.2` の内蔵Undici `7.30.1` では、応答の読み取りが一�
 Content-Length・EOF終端の正常完了、途中切断のエラー、タイムアウトを確認する。
 接続拒否、SSEの切断・再接続・停止も確認する。本番OpenCode・Slackへの送信や再起動は伴わない。
 
-比較用に内蔵fetchを独立プロセスで使うこともできる。ローカルの64KiB〜約936KiBの
-比較ではクラッシュを再現していないため、この試験だけで実障害の再現・解消を断定しない。
-本番の失敗箇所と上流修正は一致しているが、反映後の稼働・エラーログ確認が必要となる。
+当時は外部Undiciを固定して回避したが、Node.js更新後に固定処理を解除した。
+この試験だけで実障害の解消を断定せず、反映後の稼働・エラーログも確認する。
 
 ```sh
-node fixtures/http-client-probe.mjs length --builtin
+node fixtures/http-client-probe.mjs length
 ```
 
 | 変更 | 反映時点 |
