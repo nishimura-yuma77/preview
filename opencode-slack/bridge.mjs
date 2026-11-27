@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { readFile, stat } from 'node:fs/promises'
 import { setTimeout as sleep } from 'node:timers/promises'
-import bolt from '@slack/bolt'
+import { createSlackApp } from './slack-app.mjs'
 import { attachMermaid, renderMermaid } from './mermaid-attachments.mjs'
 import { createStateSaver } from './request-queue.mjs'
 import { createSessionRequests, RequestInterruptedError } from './session-requests.mjs'
@@ -258,10 +258,7 @@ export async function main() {
     error(...args) { sdkFailures.fail('slack.sdk.error', args.find(arg => arg instanceof Error)) },
     setLevel() {}, getLevel() { return 'warn' }, setName() {},
   }
-  const app = new bolt.App({ token, appToken, socketMode: true, logger: sdkLogger, clientOptions: {
-    timeout: 15000, retryConfig: { retries: 3, minTimeout: 1000, maxTimeout: 5000, randomize: true },
-    rejectRateLimitedCalls: true,
-  } })
+  const app = createSlackApp({ token, appToken, logger: sdkLogger })
   const { user_id: botId } = await app.client.auth.test()
   if (!botId) throw Error('Could not identify Slack bot.')
   const configured = loadProjects().filter(project => project.channelId)
