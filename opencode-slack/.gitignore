@@ -1,0 +1,6 @@
+/node_modules/
+/logs/
+/secrets.env
+/sessions*.json
+/restart-control.sock
+/restart.lock
