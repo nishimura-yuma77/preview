@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ja" data-theme="academia">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seijinbu：3テーマ比較</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body class="viewer">
+  <main class="comparison">
+    <header class="comparison-heading">
+      <h1>Seijinbu：3テーマ比較</h1>
+      <a id="reference" href="https://www.architecturaldigest.com/story/dark-academia-design-trend" target="_blank" rel="noopener noreferrer">テーマ紹介サイト ↗</a>
+    </header>
+    <fieldset class="themes">
+      <legend>テーマ</legend>
+      <label><input type="radio" name="theme" value="academia" checked><span>Dark Academia</span></label>
+      <label><input type="radio" name="theme" value="deco"><span>Art Deco</span></label>
+      <label><input type="radio" name="theme" value="coquette"><span>Dark Coquette</span></label>
+    </fieldset>
+    <dl class="palette">
+      <div><dt>背景</dt><dd><i data-color="base" aria-hidden="true"></i><code id="base-code">#171B2A</code></dd></div>
+      <div><dt>パネル</dt><dd><i data-color="surface" aria-hidden="true"></i><code id="surface-code">#22283B</code></dd></div>
+      <div><dt>文字</dt><dd><i data-color="ink" aria-hidden="true"></i><code id="ink-code">#F2EBDD</code></dd></div>
+      <div><dt>アクセント</dt><dd><i data-color="accent" aria-hidden="true"></i><code id="accent-code">#C5A46D</code></dd></div>
+    </dl>
+    <div class="view-controls">
+      <fieldset class="states">
+        <legend>画面</legend>
+        <label><input type="radio" name="state" value="lp"><span>LP</span></label>
+        <label><input type="radio" name="state" value="menu"><span>メニュー</span></label>
+        <label><input type="radio" name="state" value="register" checked><span>登録</span></label>
+        <label><input type="radio" name="state" value="login"><span>ログイン</span></label>
+        <label><input type="radio" name="state" value="pending"><span>本人確認待ち</span></label>
+        <label><input type="radio" name="state" value="reset"><span>再設定</span></label>
+      </fieldset>
+      <div class="sizes">
+        <label for="width">表示幅</label>
+        <select id="width"><option value="390">スマホ 390px</option><option value="768">タブレット 768px</option><option value="1440">PC 1440px</option></select>
+        <label class="fit-control"><input id="actual-size" type="checkbox">等倍</label>
+      </div>
+    </div>
+    <div id="viewport" class="viewport">
+      <div id="footprint"><iframe id="screen" title="Seijinbu テーマプレビュー" src="./screen.html?theme=academia&amp;state=register"></iframe></div>
+    </div>
+  </main>
+  <script>
+    const palettes = {
+      academia: { colors: ['#171B2A', '#22283B', '#F2EBDD', '#C5A46D'], reference: 'https://www.architecturaldigest.com/story/dark-academia-design-trend' },
+      deco: { colors: ['#101B19', '#1E302A', '#F5EEDF', '#D0B77B'], reference: 'https://www.vam.ac.uk/articles/an-introduction-to-art-deco' },
+      coquette: { colors: ['#F2EAE5', '#FCF8F3', '#2D2028', '#7A2945'], reference: 'https://www.brewtifulliving.com/style/coquette-aesthetic-explained' },
+    }
+    const modes = ['lp', 'menu', 'register', 'login', 'pending', 'reset']
+    const params = new URLSearchParams(location.search)
+    let theme = Object.hasOwn(palettes, params.get('theme')) ? params.get('theme') : 'academia'
+    let state = modes.includes(params.get('state')) ? params.get('state') : 'register'
+    const defaultWidth = innerWidth < 820 ? 390 : 1440
+    let width = [390, 768, 1440].includes(Number(params.get('width'))) ? Number(params.get('width')) : defaultWidth
+    const frame = document.getElementById('screen')
+    const viewport = document.getElementById('viewport')
+    const footprint = document.getElementById('footprint')
+    const widthSelect = document.getElementById('width')
+    let pendingFocus = null
+    widthSelect.value = String(width)
+
+    function saveLocation() {
+      history.replaceState(null, '', `?theme=${theme}&state=${state}&width=${width}`)
+    }
+    function markSelection(name, value) {
+      document.querySelectorAll(`input[name="${name}"]`).forEach(input => { input.checked = input.value === value })
+    }
+    function setTheme(value, send = true) {
+      theme = value
+      document.documentElement.dataset.theme = theme
+      markSelection('theme', theme)
+      ;['base', 'surface', 'ink', 'accent'].forEach((role, index) => { document.getElementById(`${role}-code`).textContent = palettes[theme].colors[index] })
+      document.getElementById('reference').href = palettes[theme].reference
+      if (send) frame.contentWindow.postMessage({ type: 'theme', value: theme }, location.origin)
+      saveLocation()
+    }
+    function setState(value, send = true) {
+      state = value
+      markSelection('state', state)
+      if (send) frame.contentWindow.postMessage({ type: 'state', value: state }, location.origin)
+      saveLocation()
+    }
+    function resize() {
+      width = Number(widthSelect.value)
+      const scale = document.getElementById('actual-size').checked ? 1 : Math.min(1, viewport.clientWidth / width)
+      frame.style.width = `${width}px`
+      frame.style.height = '800px'
+      frame.style.transform = `scale(${scale})`
+      footprint.style.width = `${width * scale}px`
+      footprint.style.height = `${800 * scale}px`
+      saveLocation()
+    }
+    document.querySelectorAll('input[name="theme"]').forEach(input => input.addEventListener('change', () => setTheme(input.value)))
+    document.querySelectorAll('input[name="state"]').forEach(input => input.addEventListener('change', () => { pendingFocus = input; setState(input.value) }))
+    widthSelect.addEventListener('change', resize)
+    document.getElementById('actual-size').addEventListener('change', resize)
+    new ResizeObserver(resize).observe(viewport)
+    frame.addEventListener('load', () => { setTheme(theme); setState(state); resize() })
+    window.addEventListener('message', event => {
+      if (event.origin !== location.origin || event.source !== frame.contentWindow) return
+      if (event.data?.type === 'state' && modes.includes(event.data.value)) setState(event.data.value, false)
+      if (event.data?.type === 'state-ready' && event.data.value === state && pendingFocus) { pendingFocus.focus({ preventScroll: true }); pendingFocus = null }
+    })
+    setTheme(theme, false)
+    setState(state, false)
+    resize()
+  </script>
+</body>
+</html>

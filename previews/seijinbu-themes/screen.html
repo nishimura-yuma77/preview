@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ja" data-theme="academia">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seijinbu</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body class="preview">
+  <header class="site-header">
+    <span class="wordmark">Seijinbu<span class="wordmark-dot" aria-hidden="true">.</span></span>
+    <button id="menu-toggle" class="menu-toggle" aria-controls="menu" aria-expanded="false"><span aria-hidden="true">☰</span> メニュー</button>
+  </header>
+  <main class="hero">
+    <div class="hero-copy">
+      <h1><span>キャラクターの<wbr>世界を、</span><span>もっと近くに。</span></h1>
+      <p>キャラクターが紡ぐ物語を、画像で楽しむ。<br>無料会員登録で、作品の続きを。</p>
+    </div>
+    <div class="crest" aria-hidden="true"><span class="crest-art"></span><span class="ribbon"></span></div>
+  </main>
+  <dialog id="menu" class="drawer" aria-labelledby="menu-title" aria-hidden="true" inert>
+    <header class="panel-heading"><h2 id="menu-title">メニュー</h2><button class="close" aria-label="メニューを閉じる" data-close>×</button></header>
+    <div id="guest-actions" class="stack">
+      <button class="primary" data-open="register">新規登録</button>
+      <button class="secondary" data-open="login">ログイン</button>
+    </div>
+    <div id="member-actions" class="stack" hidden>
+      <p class="account-label">ログイン中</p><p class="account-email">reader@example.com</p>
+      <button id="logout" class="secondary">ログアウト</button>
+    </div>
+  </dialog>
+  <dialog id="auth" class="auth" aria-labelledby="auth-title" aria-hidden="true" inert>
+    <div class="auth-panel">
+      <header class="panel-heading"><h2 id="auth-title">無料会員登録</h2><button class="close" aria-label="閉じる" data-close>×</button></header>
+      <form id="auth-form" noValidate>
+        <div id="email-field" class="field"><label for="email">メールアドレス</label><input id="email" type="email" value="reader@example.com" autocomplete="email"></div>
+        <div id="password-field" class="field"><label id="password-label" for="password">パスワード</label><input id="password" type="password" autocomplete="new-password" aria-describedby="password-hint"><p id="password-hint" class="hint">8〜128文字。文字種の指定はありません。</p></div>
+        <button id="submit" class="primary" type="submit">登録する</button>
+        <p id="form-result" class="form-result" role="status" hidden></p>
+      </form>
+      <div id="pending-content" class="stack" hidden>
+        <p>メール内のリンクを開いて、登録を完了してください。確認リンクは24時間有効です。</p>
+        <button id="resend" class="secondary">確認メールを再送</button>
+        <p id="resend-result" role="status" hidden>確認メールを再送しました。</p>
+      </div>
+      <footer id="auth-links" class="auth-links"></footer>
+    </div>
+  </dialog>
+  <script>
+    const modes = ['lp', 'menu', 'register', 'login', 'pending', 'reset']
+    const themes = ['academia', 'deco', 'coquette']
+    const params = new URLSearchParams(location.search)
+    let state = 'lp'
+    let loggedIn = false
+    let transitionTimer
+    const menu = document.getElementById('menu')
+    const auth = document.getElementById('auth')
+    const menuToggle = document.getElementById('menu-toggle')
+    const form = document.getElementById('auth-form')
+    const links = document.getElementById('auth-links')
+
+    function report() { parent.postMessage({ type: 'state', value: state }, location.origin) }
+    function closeDialogs() {
+      clearTimeout(transitionTimer)
+      for (const dialog of [menu, auth]) { dialog.inert = true; dialog.setAttribute('aria-hidden', 'true') }
+      if (menu.open) menu.close()
+      if (auth.open) auth.close()
+      document.body.style.overflow = ''
+      menuToggle.setAttribute('aria-expanded', 'false')
+    }
+    function closeState() { closeDialogs(); state = 'lp'; report(); menuToggle.focus() }
+    function switchAction(next) {
+      if (menu.open) {
+        menu.inert = true
+        menu.setAttribute('aria-hidden', 'true')
+        menu.close()
+        menuToggle.setAttribute('aria-expanded', 'false')
+        const wait = Math.max(...getComputedStyle(menu).transitionDuration.split(',').map(value => parseFloat(value) * 1000))
+        transitionTimer = setTimeout(() => showState(next), wait)
+      } else showState(next)
+    }
+    function addAction(label, next) {
+      const button = document.createElement('button')
+      button.type = 'button'
+      button.className = 'text-button'
+      button.textContent = label
+      button.addEventListener('click', () => showState(next))
+      links.appendChild(button)
+    }
+    function showState(next, announce = true) {
+      if (!modes.includes(next)) return
+      closeDialogs()
+      state = next
+      document.getElementById('form-result').hidden = true
+      document.getElementById('resend-result').hidden = true
+      if (state === 'menu') {
+        document.getElementById('guest-actions').hidden = loggedIn
+        document.getElementById('member-actions').hidden = !loggedIn
+        menu.inert = false
+        menu.setAttribute('aria-hidden', 'false')
+        menu.showModal()
+        menuToggle.setAttribute('aria-expanded', 'true')
+        document.body.style.overflow = 'hidden'
+      } else if (state !== 'lp') {
+        const pending = state === 'pending'
+        const reset = state === 'reset'
+        document.getElementById('auth-title').textContent = {register:'無料会員登録',login:'ログイン',pending:'メールで本人確認',reset:'パスワードを再設定'}[state]
+        form.hidden = pending
+        document.getElementById('pending-content').hidden = !pending
+        document.getElementById('password-field').hidden = reset
+        document.getElementById('password-hint').hidden = state === 'login'
+        document.getElementById('password').autocomplete = state === 'login' ? 'current-password' : 'new-password'
+        document.getElementById('password').value = ''
+        document.getElementById('submit').textContent = {register:'登録する',login:'ログイン',reset:'再設定メールを送信'}[state] || ''
+        links.replaceChildren()
+        if (state === 'register') { addAction('ログインへ','login'); addAction('パスワード再設定','reset') }
+        if (state === 'login') { addAction('パスワードを忘れた方','reset'); addAction('無料会員登録','register') }
+        if (state === 'pending') { addAction('登録情報を入力し直す','register'); addAction('ログインへ','login') }
+        if (state === 'reset') addAction('ログインへ','login')
+        auth.inert = false
+        auth.setAttribute('aria-hidden', 'false')
+        auth.showModal()
+        document.body.style.overflow = 'hidden'
+      }
+      if (announce) report()
+    }
+    menuToggle.addEventListener('click', () => showState('menu'))
+    document.querySelectorAll('[data-open]').forEach(button => button.addEventListener('click', () => switchAction(button.dataset.open)))
+    document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', closeState))
+    document.getElementById('logout').addEventListener('click', () => { loggedIn = false; closeState() })
+    document.getElementById('resend').addEventListener('click', () => { document.getElementById('resend-result').hidden = false })
+    form.addEventListener('submit', event => {
+      event.preventDefault()
+      if (state === 'register') showState('pending')
+      else if (state === 'login') { loggedIn = true; closeState() }
+      else if (state === 'reset') { const result = document.getElementById('form-result'); result.textContent = '対象のアカウントがある場合、再設定メールをお送りしました。'; result.hidden = false }
+    })
+    for (const dialog of [menu, auth]) {
+      dialog.addEventListener('cancel', event => { event.preventDefault(); closeState() })
+      dialog.addEventListener('click', event => {
+        const box = dialog.getBoundingClientRect()
+        if (event.target === dialog && (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom)) closeState()
+      })
+      dialog.addEventListener('keydown', event => {
+        if (event.key !== 'Tab') return
+        const buttons = [...dialog.querySelectorAll('button:not(:disabled), input:not(:disabled), a[href]')].filter(element => element.getClientRects().length && !element.closest('[hidden]'))
+        const first = buttons[0], last = buttons.at(-1)
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+      })
+    }
+    window.addEventListener('message', event => {
+      if (event.origin !== location.origin || event.source !== parent) return
+      if (event.data?.type === 'theme' && themes.includes(event.data.value)) document.documentElement.dataset.theme = event.data.value
+      if (event.data?.type === 'state' && modes.includes(event.data.value)) {
+        showState(event.data.value, false)
+        parent.postMessage({ type: 'state-ready', value: state }, location.origin)
+      }
+    })
+    document.documentElement.dataset.theme = themes.includes(params.get('theme')) ? params.get('theme') : 'academia'
+    showState(modes.includes(params.get('state')) ? params.get('state') : 'lp', false)
+  </script>
+</body>
+</html>
