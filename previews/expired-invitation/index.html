@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>期限切れの招待リンクから、どう復帰する？</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <span class="tag">議論用サンプル · 架空の仕様</span>
+      <h1>期限切れの招待リンクから、どう復帰する？</h1>
+      <p>今回決めたいのは、新しい招待リンクを<strong>本人が要求できるようにするか</strong>、<strong>管理者が再発行するか</strong>。</p>
+    </header>
+
+    <section aria-labelledby="flow">
+      <h2 id="flow">リンクを開いた後の分岐</h2>
+      <figure>
+        <div class="node">招待メールからリンクを開く</div>
+        <span class="arrow" aria-hidden="true">↓</span>
+        <div class="node">有効期限を確認する</div>
+        <div class="branches">
+          <div><span class="arrow" aria-hidden="true">↙</span><div class="branch"><strong>期限内</strong><br>登録へ進む</div></div>
+          <div><span class="arrow" aria-hidden="true">↘</span><div class="branch"><strong>期限切れ</strong><br>新しいリンクの入手方法を案内</div></div>
+        </div>
+        <figcaption>比較するのは、期限切れを案内した後の流れ。</figcaption>
+      </figure>
+    </section>
+
+    <section aria-labelledby="options">
+      <h2 id="options">二つの復帰方法</h2>
+      <table aria-labelledby="options">
+        <thead><tr><th scope="col">比較軸</th><th scope="col">A：本人が要求</th><th scope="col">B：管理者に依頼</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">本人の操作</th><td>再送を要求してメールを確認</td><td>案内された窓口に連絡して待つ</td></tr>
+          <tr><th scope="row">発行の判断</th><td>招待が継続中なら、元の宛先に再送</td><td>管理者が招待を継続するか確認して再発行</td></tr>
+          <tr><th scope="row">運用負荷</th><td>個別対応は減る。再送の頻度制限が必要</td><td>管理者が依頼を受けるたびに対応する</td></tr>
+        </tbody>
+      </table>
+      <p><strong>提案：</strong>期限切れ後も招待が継続し、元の宛先に再送できるなら A。再招待に管理者の判断が必要なら B。</p>
+    </section>
+
+    <section class="decision" aria-labelledby="question">
+      <h2 id="question">確認したいこと</h2>
+      <p>期限切れは「リンクだけ失効」ですか？ それとも「招待自体を更新するので、管理者の再承認が必要」ですか？</p>
+    </section>
+  </main>
+</body>
+</html>
