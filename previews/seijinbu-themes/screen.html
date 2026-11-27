@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="ja" data-theme="academia">
+<html lang="ja" data-theme="neo">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Seijinbu</title>
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style.css?v=deco-2">
 </head>
 <body class="preview">
   <header class="site-header">
@@ -16,7 +16,7 @@
       <h1><span>キャラクターの<wbr>世界を、</span><span>もっと近くに。</span></h1>
       <p>キャラクターが紡ぐ物語を、画像で楽しむ。<br>無料会員登録で、作品の続きを。</p>
     </div>
-    <div class="crest" aria-hidden="true"><span class="crest-art"></span><span class="ribbon"></span></div>
+    <div class="crest" aria-hidden="true"><span class="crest-art"></span></div>
   </main>
   <dialog id="menu" class="drawer" aria-labelledby="menu-title" aria-hidden="true" inert>
     <header class="panel-heading"><h2 id="menu-title">メニュー</h2><button class="close" aria-label="メニューを閉じる" data-close>×</button></header>
@@ -48,7 +48,7 @@
   </dialog>
   <script>
     const modes = ['lp', 'menu', 'register', 'login', 'pending', 'reset']
-    const themes = ['academia', 'deco', 'coquette']
+    const themes = ['neo', 'streamline', 'secession']
     const params = new URLSearchParams(location.search)
     let state = 'lp'
     let loggedIn = false
@@ -157,7 +157,7 @@
         parent.postMessage({ type: 'state-ready', value: state }, location.origin)
       }
     })
-    document.documentElement.dataset.theme = themes.includes(params.get('theme')) ? params.get('theme') : 'academia'
+    document.documentElement.dataset.theme = themes.includes(params.get('theme')) ? params.get('theme') : 'neo'
     showState(modes.includes(params.get('state')) ? params.get('state') : 'lp', false)
   </script>
 </body>

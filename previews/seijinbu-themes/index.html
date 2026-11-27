@@ -1,28 +1,29 @@
 <!doctype html>
-<html lang="ja" data-theme="academia">
+<html lang="ja" data-theme="neo">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Seijinbu：3テーマ比較</title>
-  <link rel="stylesheet" href="./style.css">
+  <title>Seijinbu：Art Deco寄りの3テーマ</title>
+  <link rel="stylesheet" href="./style.css?v=deco-2">
 </head>
 <body class="viewer">
   <main class="comparison">
     <header class="comparison-heading">
-      <h1>Seijinbu：3テーマ比較</h1>
-      <a id="reference" href="https://www.architecturaldigest.com/story/dark-academia-design-trend" target="_blank" rel="noopener noreferrer">テーマ紹介サイト ↗</a>
+      <h1>Seijinbu：Art Deco比較</h1>
+      <a id="reference" href="https://www.architecturaldigest.com/story/neo-deco-decor" target="_blank" rel="noopener noreferrer">テーマ紹介サイト ↗</a>
     </header>
     <fieldset class="themes">
-      <legend>テーマ</legend>
-      <label><input type="radio" name="theme" value="academia" checked><span>Dark Academia</span></label>
-      <label><input type="radio" name="theme" value="deco"><span>Art Deco</span></label>
-      <label><input type="radio" name="theme" value="coquette"><span>Dark Coquette</span></label>
+      <legend id="theme-name">テーマ：Neo Deco</legend>
+      <label title="Neo Deco"><input type="radio" name="theme" value="neo" aria-label="Neo Deco（ネオ・デコ）" checked><span>ネオ・デコ</span></label>
+      <label title="Streamline Moderne"><input type="radio" name="theme" value="streamline" aria-label="Streamline Moderne（流線形デコ）"><span>流線形デコ</span></label>
+      <label title="Vienna Secession"><input type="radio" name="theme" value="secession" aria-label="Vienna Secession（ウィーン分離派）"><span>ウィーン<br>分離派</span></label>
     </fieldset>
     <dl class="palette">
-      <div><dt>背景</dt><dd><i data-color="base" aria-hidden="true"></i><code id="base-code">#171B2A</code></dd></div>
-      <div><dt>パネル</dt><dd><i data-color="surface" aria-hidden="true"></i><code id="surface-code">#22283B</code></dd></div>
-      <div><dt>文字</dt><dd><i data-color="ink" aria-hidden="true"></i><code id="ink-code">#F2EBDD</code></dd></div>
-      <div><dt>アクセント</dt><dd><i data-color="accent" aria-hidden="true"></i><code id="accent-code">#C5A46D</code></dd></div>
+      <div><dt>背景</dt><dd><i data-color="base" aria-hidden="true"></i><code id="base-code">#071B17</code></dd></div>
+      <div><dt>モーダル</dt><dd><i data-color="surface" aria-hidden="true"></i><code id="surface-code">#00523E</code></dd></div>
+      <div><dt>モーダル文字</dt><dd><i data-color="ink" aria-hidden="true"></i><code id="ink-code">#FFFDF5</code></dd></div>
+      <div><dt>主操作</dt><dd><i data-color="action" aria-hidden="true"></i><code id="action-code">#E8C977</code></dd></div>
+      <div><dt>装飾</dt><dd><i data-color="accent" aria-hidden="true"></i><code id="accent-code">#E8C977</code></dd></div>
     </dl>
     <div class="view-controls">
       <fieldset class="states">
@@ -41,18 +42,18 @@
       </div>
     </div>
     <div id="viewport" class="viewport">
-      <div id="footprint"><iframe id="screen" title="Seijinbu テーマプレビュー" src="./screen.html?theme=academia&amp;state=register"></iframe></div>
+      <div id="footprint"><iframe id="screen" title="Seijinbu テーマプレビュー" src="./screen.html?v=deco-2&amp;theme=neo&amp;state=register"></iframe></div>
     </div>
   </main>
   <script>
     const palettes = {
-      academia: { colors: ['#171B2A', '#22283B', '#F2EBDD', '#C5A46D'], reference: 'https://www.architecturaldigest.com/story/dark-academia-design-trend' },
-      deco: { colors: ['#101B19', '#1E302A', '#F5EEDF', '#D0B77B'], reference: 'https://www.vam.ac.uk/articles/an-introduction-to-art-deco' },
-      coquette: { colors: ['#F2EAE5', '#FCF8F3', '#2D2028', '#7A2945'], reference: 'https://www.brewtifulliving.com/style/coquette-aesthetic-explained' },
+      neo: { name: 'Neo Deco', colors: ['#071B17', '#00523E', '#FFFDF5', '#E8C977', '#E8C977'], reference: 'https://www.architecturaldigest.com/story/neo-deco-decor' },
+      streamline: { name: 'Streamline Moderne', colors: ['#09262B', '#FFFFFF', '#102C32', '#005C6B', '#B8CDD4'], reference: 'https://www.sfomuseum.org/exhibitions/streamlines-air-age-aesthetics-industrial-design' },
+      secession: { name: 'Vienna Secession', colors: ['#0B1D15', '#FFFDF5', '#17281F', '#07543D', '#D8B45B'], reference: 'https://www.theartstory.org/movement/vienna-secession/' },
     }
     const modes = ['lp', 'menu', 'register', 'login', 'pending', 'reset']
     const params = new URLSearchParams(location.search)
-    let theme = Object.hasOwn(palettes, params.get('theme')) ? params.get('theme') : 'academia'
+    let theme = Object.hasOwn(palettes, params.get('theme')) ? params.get('theme') : 'neo'
     let state = modes.includes(params.get('state')) ? params.get('state') : 'register'
     const defaultWidth = innerWidth < 820 ? 390 : 1440
     let width = [390, 768, 1440].includes(Number(params.get('width'))) ? Number(params.get('width')) : defaultWidth
@@ -73,7 +74,8 @@
       theme = value
       document.documentElement.dataset.theme = theme
       markSelection('theme', theme)
-      ;['base', 'surface', 'ink', 'accent'].forEach((role, index) => { document.getElementById(`${role}-code`).textContent = palettes[theme].colors[index] })
+      document.getElementById('theme-name').textContent = `テーマ：${palettes[theme].name}`
+      ;['base', 'surface', 'ink', 'action', 'accent'].forEach((role, index) => { document.getElementById(`${role}-code`).textContent = palettes[theme].colors[index] })
       document.getElementById('reference').href = palettes[theme].reference
       if (send) frame.contentWindow.postMessage({ type: 'theme', value: theme }, location.origin)
       saveLocation()
