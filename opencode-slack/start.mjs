@@ -1,7 +1,8 @@
-import { main } from './bridge.mjs'
+import { installUndiciTracing } from './undici-trace.mjs'
 import { diagnostic, closeDiagnostics } from './diagnostics.mjs'
 
-main().catch(async (error) => {
+installUndiciTracing()
+import('./bridge.mjs').then(({ main }) => main()).catch(async (error) => {
   diagnostic('ERROR', 'bridge.startup.failed', { error })
   const slackError = error?.data?.error
   const detail = typeof slackError === 'string' && /^[a-z_]+$/.test(slackError) ? ` (${slackError})` : ''
