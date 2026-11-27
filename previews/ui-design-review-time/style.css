@@ -1,0 +1,46 @@
+:root {
+  color-scheme: light;
+  font-family: system-ui, sans-serif;
+  background: #f6f3ec;
+  color: #252b2a;
+  line-height: 1.7;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { width: min(68rem, 100%); margin: auto; padding: clamp(1rem, 5vw, 4rem); }
+a { color: #1d6256; text-underline-offset: .2em; }
+.eyebrow { margin-top: 2rem; color: #1d6256; font-weight: 700; }
+h1 { font-size: clamp(1.85rem, 6vw, 4rem); line-height: 1.15; margin: .3em 0; }
+h2 { font-size: clamp(1.25rem, 3vw, 1.75rem); line-height: 1.4; margin: 0 0 .7rem; }
+p { margin: .5rem 0; }
+section { margin-top: 2.5rem; border-top: 1px solid #c8ccc2; padding-top: 1.5rem; }
+.flow, .comparison { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
+.flow { counter-reset: phase; list-style: none; padding: 0; margin: 1rem 0; }
+.flow li { counter-increment: phase; padding: 1rem; background: #fff; border-radius: .6rem; }
+.flow li::before { content: "0" counter(phase); display: block; color: #1d6256; font-weight: 700; }
+.note, figcaption span { color: #46544f; font-size: .9rem; }
+.comparison { margin-top: 1rem; }
+figure { display: grid; grid-template-rows: 1fr auto; gap: .55rem; margin: 0; }
+figcaption span { display: block; }
+.mock {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: .5rem;
+  min-height: 14rem;
+  padding: .65rem;
+  border-radius: .65rem;
+  background: #242e2b;
+  color: #f8faf7;
+  font-size: .82rem;
+}
+.rows { display: grid; align-content: start; gap: .2rem; }
+.bottom .rows { align-content: end; }
+.rows span { padding: .05rem .5rem; background: #3c4943; border-radius: .25rem; }
+.rows span:first-child { outline: 1px solid #e6d18c; outline-offset: -1px; }
+.coords { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; border-top: 1px solid #74837b; padding-top: .5rem; }
+.coords span { border: 1px solid #8a9b92; border-radius: .25rem; text-align: center; padding: .14rem; }
+.question { padding: 1.25rem; border: 0; border-radius: .7rem; background: #deeee5; }
+@media (max-width: 45rem) {
+  .flow, .comparison { grid-template-columns: 1fr; }
+  .comparison { gap: 1.2rem; }
+}
