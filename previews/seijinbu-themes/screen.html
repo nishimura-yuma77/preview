@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="ja" data-theme="neo">
+<html lang="ja" data-theme="noir">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Seijinbu</title>
-  <link rel="stylesheet" href="./style.css?v=deco-2">
+  <link rel="stylesheet" href="./style.css?v=dark-3">
 </head>
 <body class="preview">
   <header class="site-header">
@@ -48,7 +48,7 @@
   </dialog>
   <script>
     const modes = ['lp', 'menu', 'register', 'login', 'pending', 'reset']
-    const themes = ['neo', 'streamline', 'secession']
+    const themes = ['noir', 'night', 'velvet']
     const params = new URLSearchParams(location.search)
     let state = 'lp'
     let loggedIn = false
@@ -157,7 +157,7 @@
         parent.postMessage({ type: 'state-ready', value: state }, location.origin)
       }
     })
-    document.documentElement.dataset.theme = themes.includes(params.get('theme')) ? params.get('theme') : 'neo'
+    document.documentElement.dataset.theme = themes.includes(params.get('theme')) ? params.get('theme') : 'noir'
     showState(modes.includes(params.get('state')) ? params.get('state') : 'lp', false)
   </script>
 </body>
