@@ -1,0 +1,55 @@
+:root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif; color: #243331; background: #f5f5f0; font-synthesis: none; }
+* { box-sizing: border-box; }
+body { margin: 0; line-height: 1.65; }
+main { max-width: 1200px; margin: auto; padding: 32px 32px 56px; }
+a { color: #22665c; text-underline-offset: 4px; }
+button, summary { cursor: pointer; }
+button { font: inherit; color: inherit; border: 1px solid #b8c6bd; border-radius: 5px; background: #fff; padding: 9px 16px; }
+button:hover:not(:disabled) { background: #e8efe9; }
+button:disabled { opacity: .45; cursor: default; }
+:focus-visible { outline: 3px solid #22665c; outline-offset: 4px; }
+h1 { font-size: clamp(27px, 4vw, 40px); letter-spacing: -.04em; margin: 18px 0 28px; line-height: 1.3; }
+.steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.steps button { text-align: left; font-size: 14px; padding: 12px; display: flex; align-items: center; gap: 10px; border-bottom-width: 3px; }
+.steps button span { display: grid; place-items: center; flex: none; width: 25px; height: 25px; border: 1px solid currentColor; border-radius: 50%; }
+button[aria-pressed="true"] { color: #fff; background: #245f51; border-color: #245f51; }
+button[aria-pressed="true"]:hover { background: #1b5145; }
+.controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin: 20px 0 28px; }
+.paging { display: flex; align-items: center; gap: 16px; }
+output { font-size: 14px; min-width: 220px; text-align: center; }
+.stage { border-top: 1px solid #bcc9bf; padding-top: 24px; }
+[hidden] { display: none !important; }
+h2 { font-size: 22px; margin: 0 0 26px; line-height: 1.5; display: flex; align-items: baseline; gap: 16px; }
+h2 > span { font-size: 15px; font-weight: 500; color: #526c60; }
+h3 { margin: 0 0 20px; font-size: 16px; }
+.route { display: grid; grid-template-columns: minmax(0, 1fr) minmax(170px, .7fr) minmax(0, 1fr); align-items: stretch; }
+.node { border-left: 4px solid #377c70; background: #fff; padding: 22px; min-width: 0; }
+.browser h3 { color: #2c6b60; }
+.server { border-color: #657d9a; }
+.server h3 { color: #475e7a; }
+.provider { border: 2px solid #918157; border-radius: 12px; }
+.provider h3 { color: #79662e; }
+.database { border: 1px solid #9aacc1; border-radius: 18px / 10px; }
+ol { margin: 0; padding-left: 23px; display: grid; gap: 12px; font-size: 15px; }
+.connection { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 16px 8px; gap: 4px; font-size: 13px; color: #4d6259; }
+.payload { font-size: 14px; color: #284d40; }
+.arrow { font-size: 44px; line-height: 1; width: 100%; }
+.generation { min-height: 100px; display: grid; place-items: center; font-size: 19px; font-weight: 600; }
+.items { display: grid; gap: 12px; }
+.compositions { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 28px; }
+.composition h3 { font-size: 14px; margin-bottom: 10px; }
+.formula { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; }
+.formula span { background: #fff; padding: 6px 10px; border: 1px solid #d4dbd3; }
+.formula b { color: #60776d; font-weight: 400; }
+.merged { margin-top: 10px; color: #345c48; font-size: 14px; }
+.branch { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; margin-top: 26px; font-size: 14px; }
+.branch > b { font-size: 23px; font-weight: 400; }
+.stop { border-left: 3px solid #aa6955; padding: 8px 12px; background: #f4e9e2; color: #784736; }
+.image-list { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.image-list span { padding: 15px; border: 1px solid #c9d2c9; background: #fff; font-size: 14px; }
+.image-list .new-image { border: 2px solid #377c70; background: #e3efe5; }
+.failures { margin-top: 30px; border-top: 1px dashed #c6cfc7; padding-top: 18px; font-size: 14px; }
+.retry { margin-top: 14px; }
+.all .stage + .stage { margin-top: 42px; }
+@media (max-width: 900px) { .steps button { flex-direction: column; text-align: center; padding: 10px 5px; font-size: 12px; gap: 6px; } .node { padding: 18px; } .route { grid-template-columns: minmax(0, 1fr) minmax(130px, .65fr) minmax(0, 1fr); } }
+@media (max-width: 620px) { main { padding: 22px 16px 40px; } .steps { gap: 4px; } .steps button { font-size: 11px; padding: 8px 3px; } .steps button span { width: 23px; height: 23px; } .controls { gap: 16px; } .paging { width: 100%; justify-content: space-between; gap: 6px; } .paging button { padding: 8px 10px; white-space: nowrap; font-size: 13px; } output { min-width: 0; font-size: 12px; } h2 { font-size: 19px; gap: 12px; } .route { grid-template-columns: minmax(0, 1fr); } .connection { padding: 12px; gap: 6px; } .arrow { font-size: 0; } .arrow::after { content: '↓'; font-size: 32px; } .compositions { grid-template-columns: 1fr; gap: 22px; } .generation { min-height: 64px; } }
