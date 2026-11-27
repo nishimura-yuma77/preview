@@ -16,6 +16,7 @@ import { superviseProject } from './project-supervisor.mjs'
 import { clearThreadPending, finishPending, submitPromptOnce } from './request-recovery.mjs'
 import { initializeDiagnostics, diagnostic, closeDiagnostics, withLogContext, updateLogContext, createFailureTracker, captureChildDiagnostics } from './diagnostics.mjs'
 import { observeOpenCodeEvents } from './opencode-events.mjs'
+import { fetchOpenCode } from './opencode-http.mjs'
 
 const secretsFile = new URL('./secrets.env', import.meta.url)
 const channelId = 'C0AK19DK9RR'
@@ -321,7 +322,7 @@ async function registerProject(app, botId, project, password, drain, supervisors
 
   const authorization = `Basic ${Buffer.from(`opencode:${password}`).toString('base64')}`
   async function rawApi(path, body, signal) {
-    const response = await fetch(`${endpoint}${path}`, {
+    const response = await fetchOpenCode(`${endpoint}${path}`, {
       method: body === undefined ? 'GET' : 'POST',
       headers: body === undefined
         ? { Authorization: authorization, Connection: 'close' }
@@ -371,7 +372,7 @@ async function registerProject(app, botId, project, password, drain, supervisors
     signal: eventController.signal,
     connect: async signal => {
       await supervisor.waitReady(signal)
-      return fetch(`${endpoint}/event`, { headers: { Authorization: authorization }, signal })
+      return fetchOpenCode(`${endpoint}/event`, { headers: { Authorization: authorization }, signal })
     },
     emit: (level, event, fields) => {
       const thread = Object.keys(state.sessions).find(thread => state.sessions[thread] === fields.sessionID)

@@ -134,6 +134,30 @@ flowchart TD
 
 ## 設定反映と検証
 
+### OpenCode HTTPクライアント
+
+OpenCode API・イベント（SSE）接続は `opencode-http.mjs` を通して、直接依存に固定した
+Undici `8.13.1` の `fetch` を使用する。Node.js内蔵の `fetch` は使用せず、グローバルの置換もしない。
+実行環境は Node.js `22.19.0` 以上を必要とする。
+
+Node.js `24.22.2` の内蔵Undici `7.30.1` では、応答の読み取りが一時停止中に相手が接続を閉じると、
+`Parser.finish` の `assert(!this.paused)` がソケットイベント内で失敗し、通常のPromiseのcatchを
+通らずブリッジが終了する。大きい履歴取得＋`Connection: close` でも起こり得る。
+[上流Issue #5360](https://github.com/nodejs/undici/issues/5360) と
+[修正 #5474](https://github.com/nodejs/undici/pull/5474) を参照。
+
+`opencode-http.test.mjs` は独立した子プロセス内で応答を未消費にしてFINを受け、
+Content-Length・EOF終端の正常完了、途中切断のエラー、タイムアウトを確認する。
+接続拒否、SSEの切断・再接続・停止も確認する。本番OpenCode・Slackへの送信や再起動は伴わない。
+
+比較用に内蔵fetchを独立プロセスで使うこともできる。ローカルの64KiB〜約936KiBの
+比較ではクラッシュを再現していないため、この試験だけで実障害の再現・解消を断定しない。
+本番の失敗箇所と上流修正は一致しているが、反映後の稼働・エラーログ確認が必要となる。
+
+```sh
+node fixtures/http-client-probe.mjs length --builtin
+```
+
 | 変更 | 反映時点 |
 | --- | --- |
 | 連携コード・接続先・環境設定 | ブリッジ再起動 |
