@@ -1,4 +1,4 @@
-// Run only as a child process: the affected built-in fetch can terminate Node
+// Keep this regression probe in a child process: affected older Node versions can terminate
 // from its socket event handler before a promise catch can run.
 import assert from 'node:assert/strict'
 import { createServer } from 'node:net'
@@ -6,7 +6,7 @@ import { setTimeout as sleep } from 'node:timers/promises'
 import { fetchOpenCode } from '../opencode-http.mjs'
 
 const scenario = process.argv[2]
-const fetch = process.argv.includes('--builtin') ? globalThis.fetch : fetchOpenCode
+const fetch = fetchOpenCode
 const bodyBytes = Number(process.argv.find(arg => arg.startsWith('--body-bytes='))?.split('=')[1] ?? 64 * 1024)
 const body = Buffer.alloc(bodyBytes, 0x61)
 const sockets = new Set()

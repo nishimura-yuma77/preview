@@ -10,13 +10,13 @@ const run = promisify(execFile)
 const probe = new URL('./fixtures/http-client-probe.mjs', import.meta.url)
 
 for (const scenario of ['length', 'eof', 'short-length', 'short-chunked', 'timeout']) {
-  test(`isolated HTTP client handles delayed body consumption and ${scenario}`, async () => {
+  test(`built-in HTTP client handles delayed body consumption and ${scenario}`, async () => {
     const { stdout } = await run(process.execPath, [probe.pathname, scenario], { timeout: 8000 })
     assert.equal(stdout.trim(), `PASS ${scenario}`)
   })
 }
 
-test('isolated client receives a history-sized response completely after peer FIN', async () => {
+test('built-in client receives a history-sized response completely after peer FIN', async () => {
   const { stdout } = await run(process.execPath, [probe.pathname, 'length', '--body-bytes=935771'], { timeout: 8000 })
   assert.equal(stdout.trim(), 'PASS length')
 })
@@ -30,7 +30,7 @@ test('connection refusal is a catchable request failure', async () => {
     error => error.cause?.code === 'ECONNREFUSED')
 })
 
-test('SSE uses the fixed client across peer close, reconnect and stop', async () => {
+test('SSE uses the built-in client across peer close, reconnect and stop', async () => {
   const controller = new AbortController()
   const events = [], delays = [], sockets = new Set()
   let connections = 0
