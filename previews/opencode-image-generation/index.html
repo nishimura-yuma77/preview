@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenCodeで画像生成を使うには？</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <a href="../">プレビュー一覧</a>
+      <p class="label">導入ガイド · 画像生成</p>
+      <h1>OpenCodeで画像生成を使うには？</h1>
+      <p class="lead"><strong>今回確認したいこと：</strong>チャットから画像を作って保存するなら、どの接続方法が扱いやすいか。</p>
+      <p>既製のMCPサーバーをつなぐ方法と、画像APIを呼ぶ専用ツールを追加する方法がある。最初の一枚を試すなら、APIキーを用意できるサービスから始めるのが早い。</p>
+    </header>
+    <section aria-labelledby="flow-heading">
+      <h2 id="flow-heading">チャットから画像ができるまで</h2>
+      <ol class="flow" role="list">
+        <li><strong>1. OpenCodeで依頼</strong><span>「背景画像を1枚作って」</span></li>
+        <li><strong>2. 生成ツールが実行</strong><span>MCPまたは専用ツールが画像APIを呼ぶ</span></li>
+        <li><strong>3. ファイルを確認</strong><span>PNGなどを保存し、保存先を返す</span></li>
+      </ol>
+      <p class="note">チャット内への画像表示・添付は、ファイルを生成できることとは別。利用中のクライアントで確認する。</p>
+    </section>
+    <section aria-labelledby="options">
+      <h2 id="options">使える候補</h2>
+      <div class="options">
+        <article>
+          <h3>Gemini · Nano Banana</h3>
+          <dl><dt>つなぎ方</dt><dd>コミュニティ製 <a href="https://github.com/zhongweili/nanobanana-mcp-server">Nano Banana MCP</a>。READMEにOpenCode設定例と保存先指定の説明がある。</dd><dt>必要なもの</dt><dd>Gemini APIキー、利用枠、MCPの実行環境（READMEの例は <code>uvx</code>）。</dd><dt>向く用途</dt><dd>既製のツールで生成・参照画像を使った編集を試す。</dd></dl>
+        </article>
+        <article>
+          <h3>OpenAI · GPT Image</h3>
+          <dl><dt>つなぎ方</dt><dd>専用ツールから <a href="https://platform.openai.com/docs/guides/image-generation">公式Image API</a> を呼ぶ。<a href="https://github.com/jerryzhao173985/openai-image-gen-mcp">コミュニティ製MCP</a> も候補。</dd><dt>必要なもの</dt><dd>画像APIを使えるOpenAI APIキーと課金設定。アカウントによっては組織認証も必要。</dd><dt>向く用途</dt><dd>既存のOpenAI API契約を使う。専用ツールなら、保存先や1回の生成枚数を固定しやすい。</dd></dl>
+        </article>
+        <article>
+          <h3>ComfyUI · 自前運用</h3>
+          <dl><dt>つなぎ方</dt><dd>専用ツールから <a href="https://docs.comfy.org/development/comfyui-server/comms_routes">ComfyUIのHTTP API</a> へワークフローを送る。</dd><dt>必要なもの</dt><dd>ComfyUIの稼働環境とモデル。ローカル推論ではモデルに応じたGPUなどの計算資源が必要。</dd><dt>向く用途</dt><dd>設定済みの生成ワークフローを使い回す。ローカルモデルを使えば素材を手元で処理できる。</dd></dl>
+        </article>
+      </div>
+    </section>
+    <section aria-labelledby="check">
+      <h2 id="check">この環境で確認したこと</h2>
+      <p><code>opencode --version</code> は <strong>1.19.6</strong>。<code>opencode mcp list</code> には設定済みサーバーがなかった。上の候補は公開資料で確認した段階で、接続や画像生成は未試行。</p>
+      <p><a href="https://opencode.ai/docs/mcp-servers/">OpenCodeの公式MCP資料</a>で接続機能を確認できる。現行サイトの設定例にはV2向けもあるので、実際の追加時はインストール済みの1.19.6に合わせる。</p>
+    </section>
+    <section class="question" aria-labelledby="next">
+      <h2 id="next">最初の一枚をどこで試す？</h2>
+      <p>使えるAPIキーがあるなら、そのサービスで画像1枚をローカルに保存するところから。生成後にチャットへ添付する必要があるかは、次に検証できる。</p>
+      <p><strong>OpenAIとGemini、画像生成に使えるAPIキーはどっちが用意できそう？</strong></p>
+    </section>
+  </main>
+</body>
+</html>
