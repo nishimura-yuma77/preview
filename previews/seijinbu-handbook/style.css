@@ -15,6 +15,9 @@
   --paper-accent: #7c3652;
   --paper-line: #826a4d;
   --paper-rule: #c4af86;
+  --desk-rim: #4b3328;
+  --desk-well: #2f211b;
+  --desk-rim-width: 10px;
   --serif: "Yu Mincho", "Hiragino Mincho ProN", "Noto Serif CJK JP", serif;
   --sans:
     "Yu Gothic", "Hiragino Kaku Gothic ProN", "Noto Sans CJK JP", sans-serif;
@@ -256,10 +259,60 @@ body:has(dialog[open]) {
   border: 0;
   overflow: hidden;
   transform: translateX(calc((1 - var(--slide, 0)) * 100%));
-  background: var(--page);
+  background: var(--desk-rim) url("./wood-grain.svg");
+  box-shadow: -12px 0 40px #0005;
+}
+.handbook::before {
+  content: "";
+  position: absolute;
+  inset: var(--desk-rim-width);
+  z-index: 0;
+  border: 1px solid #201611;
+  background: var(--desk-well);
   box-shadow:
-    inset 1px 0 var(--quiet),
-    -12px 0 40px #0005;
+    inset 0 12px 16px -10px #080604b0,
+    inset 8px 0 12px -10px #0e0806aa,
+    inset -6px 0 10px -9px #0e080699,
+    inset 0 -1px #684a3933;
+  pointer-events: none;
+}
+.deskRim {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.deskRim span {
+  position: absolute;
+  background: var(--desk-rim) url("./wood-grain.svg");
+}
+.rimTop {
+  inset: 0 0 auto;
+  height: var(--desk-rim-width);
+  box-shadow:
+    inset 0 1px #7b5d4b70,
+    inset 0 -1px #201510;
+}
+.rimBottom {
+  inset: auto 0 0;
+  height: var(--desk-rim-width);
+  box-shadow:
+    inset 0 1px #674a3b90,
+    inset 0 -2px #21140f;
+}
+.rimLeft {
+  inset: var(--desk-rim-width) auto var(--desk-rim-width) 0;
+  width: var(--desk-rim-width);
+  box-shadow:
+    inset 1px 0 #7b5d4b70,
+    inset -1px 0 #241710;
+}
+.rimRight {
+  inset: var(--desk-rim-width) 0 var(--desk-rim-width) auto;
+  width: var(--desk-rim-width);
+  box-shadow:
+    inset 1px 0 #6d4e3e77,
+    inset -2px 0 #201510;
 }
 .bookSpine {
   position: absolute;
@@ -283,6 +336,7 @@ body:has(dialog[open]) {
   perspective: 1100px;
   perspective-origin: 50% 25%;
   isolation: isolate;
+  z-index: 1;
 }
 .bookBase {
   position: absolute;
