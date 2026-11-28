@@ -3,33 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>成人学園 — メニューデザイン3案</title>
+    <title>成人学園 — 表紙とメニュー</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body class="comparison">
     <main class="comparisonShell">
       <header class="comparisonHeader">
         <a href="../">← 一覧</a>
-        <h1>成人学園 <span>メニューデザイン3案</span></h1>
+        <h1>成人学園 <span>校章主役・表紙の開閉</span></h1>
       </header>
-      <fieldset class="conceptPicker">
-        <legend>デザイン</legend>
-        <label
-          ><input type="radio" name="concept" value="emblem" /><span
-            ><b>01</b> 校章主役</span
-          ></label
-        >
-        <label
-          ><input type="radio" name="concept" value="vertical" checked /><span
-            ><b>02</b> 静かな縦組み</span
-          ></label
-        >
-        <label
-          ><input type="radio" name="concept" value="space" /><span
-            ><b>03</b> 余白の手帳</span
-          ></label
-        >
-      </fieldset>
       <fieldset class="accentPicker">
         <legend>エンブレム</legend>
         <label
@@ -58,20 +40,17 @@
           </select></label
         >
         <label><input type="checkbox" id="fit" checked /> 縮小表示</label>
-        <label
-          >状態
-          <select id="account">
-            <option value="guest">未ログイン</option>
-            <option value="member">ログイン済み</option>
-          </select></label
-        >
+        <div class="motionControls">
+          <button type="button" data-book="open">開く</button
+          ><button type="button" data-book="closed">閉じる</button>
+        </div>
       </div>
       <div class="previewArea" id="area">
         <div class="previewSizer" id="sizer">
           <iframe
             id="screen"
             title="成人学園のメニュープレビュー"
-            src="./screen.html?concept=vertical&accent=champagne"
+            src="./screen.html?accent=champagne"
           ></iframe>
         </div>
       </div>
@@ -97,18 +76,7 @@
     </main>
     <script>
       const params = new URLSearchParams(location.search);
-      const concepts = ["emblem", "vertical", "space"];
       const accents = ["champagne", "mint", "lilac"];
-      const legacyConcepts = {
-        crest: "emblem",
-        collage: "space",
-        dossier: "vertical",
-      };
-      const requestedConcept =
-        legacyConcepts[params.get("concept")] || params.get("concept");
-      let concept = concepts.includes(requestedConcept)
-        ? requestedConcept
-        : "vertical";
       let accent = accents.includes(params.get("accent"))
         ? params.get("accent")
         : "champagne";
@@ -118,7 +86,7 @@
       const area = document.getElementById("area");
       function updateUrl() {
         const url = new URL(location.href);
-        url.searchParams.set("concept", concept);
+        url.searchParams.delete("concept");
         url.searchParams.set("accent", accent);
         history.replaceState(null, "", url);
       }
@@ -131,21 +99,9 @@
         document.getElementById("sizer").style.width = `${w * scale}px`;
         document.getElementById("sizer").style.height = `${760 * scale}px`;
       }
-      document.querySelector(`input[name=concept][value=${concept}]`).checked =
-        true;
       document.querySelector(`input[name=accent][value=${accent}]`).checked =
         true;
-      frame.src = `./screen.html?concept=${concept}&accent=${accent}`;
-      document.querySelectorAll("input[name=concept]").forEach((input) =>
-        input.addEventListener("change", () => {
-          concept = input.value;
-          updateUrl();
-          frame.contentWindow.postMessage(
-            { type: "concept", value: concept },
-            location.origin,
-          );
-        }),
-      );
+      frame.src = `./screen.html?accent=${accent}`;
       document.querySelectorAll("input[name=accent]").forEach((input) =>
         input.addEventListener("change", () => {
           accent = input.value;
@@ -157,21 +113,21 @@
         }),
       );
       document
-        .getElementById("account")
-        .addEventListener("change", (event) =>
-          frame.contentWindow.postMessage(
-            { type: "account", value: event.target.value },
-            location.origin,
+        .querySelectorAll("[data-book]")
+        .forEach((button) =>
+          button.addEventListener("click", () =>
+            frame.contentWindow.postMessage(
+              { type: "book", value: button.dataset.book },
+              location.origin,
+            ),
           ),
         );
-      window.addEventListener("message", (event) => {
-        if (
-          event.origin === location.origin &&
-          event.source === frame.contentWindow &&
-          event.data.type === "account"
-        )
-          document.getElementById("account").value = event.data.value;
-      });
+      frame.addEventListener("load", () =>
+        frame.contentWindow.postMessage(
+          { type: "accent", value: accent },
+          location.origin,
+        ),
+      );
       width.addEventListener("change", resize);
       fit.addEventListener("change", resize);
       new ResizeObserver(resize).observe(area);

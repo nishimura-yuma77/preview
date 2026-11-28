@@ -94,50 +94,14 @@ summary:focus-visible {
   margin-left: 18px;
   color: var(--muted);
 }
-.conceptPicker {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  border: 0;
-  margin: 0;
-  padding: 0;
-}
-.conceptPicker legend {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-}
-.conceptPicker label,
 .accentPicker label {
   position: relative;
   cursor: pointer;
 }
-.conceptPicker input,
 .accentPicker input {
   position: absolute;
   opacity: 0;
 }
-.conceptPicker label span {
-  display: block;
-  padding: 15px 18px;
-  border: 1px solid #66515f;
-  color: var(--muted);
-  font-size: 15px;
-}
-.conceptPicker b {
-  font: 12px var(--mono);
-  margin-right: 12px;
-}
-.conceptPicker input:checked + span {
-  background: #30212b;
-  border-color: var(--rose);
-  color: var(--ink);
-  font-weight: 700;
-  box-shadow: inset 0 -2px var(--rose);
-}
-.conceptPicker input:focus-visible + span,
 .accentPicker input:focus-visible + span {
   outline: 2px solid var(--rose);
   outline-offset: 3px;
@@ -213,6 +177,18 @@ summary:focus-visible {
 }
 .previewTools input {
   accent-color: var(--rose);
+}
+.motionControls {
+  display: flex;
+  gap: 8px;
+}
+.motionControls button {
+  min-height: 36px;
+  padding: 6px 14px;
+  border: 1px solid #66515f;
+  border-radius: 3px;
+  background: #211a20;
+  color: var(--ink);
 }
 .previewArea {
   width: 100%;
@@ -324,6 +300,9 @@ dialog {
 dialog::backdrop {
   background: #080509ad;
 }
+.handbook::backdrop {
+  background: rgb(8 5 9 / calc(0.68 * var(--slide, 0)));
+}
 body:has(dialog[open]) {
   overflow: hidden;
 }
@@ -336,12 +315,8 @@ body:has(dialog[open]) {
   height: 100dvh;
   max-height: none;
   border: 0;
-  overflow: auto;
-  transform: translateX(100%);
-  transition:
-    transform 400ms cubic-bezier(0.22, 0.75, 0.3, 1),
-    display 400ms allow-discrete,
-    overlay 400ms allow-discrete;
+  overflow: hidden;
+  transform: translateX(calc((1 - var(--slide, 0)) * 100%));
   padding-left: 10px;
 }
 .bookSpine {
@@ -349,13 +324,18 @@ body:has(dialog[open]) {
   inset: 0 auto 0 0;
   width: 10px;
   background: var(--spine);
+  z-index: 3;
 }
 .bookContent {
+  position: relative;
   min-height: 100%;
-  display: flex;
-  flex-direction: column;
+  perspective: 1100px;
+  isolation: isolate;
 }
 .bookHeader {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 4;
   display: flex;
   justify-content: flex-end;
   padding: 20px 22px 0;
@@ -378,50 +358,69 @@ body:has(dialog[open]) {
   background: #42283d;
 }
 .cover {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
   display: flex;
-  flex: none;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 25px;
-  min-height: 312px;
-  margin: 8px 30px 28px;
+  gap: 24px;
+  padding: 88px 30px 40px;
+  background: var(--surface);
+  transform-origin: left center;
+  transform: rotateY(calc(-110deg * var(--leaf, 0)));
+  backface-visibility: hidden;
+  box-shadow: 14px 0 25px rgb(0 0 0 / calc(0.24 * var(--leaf, 0)));
+  pointer-events: none;
 }
 .crest {
-  width: 190px;
-  height: 190px;
+  width: 202px;
+  height: 202px;
 }
 .cover h2 {
   margin: 0;
   color: var(--title);
   font-family: var(--serif);
-  font-size: 23px;
+  font-size: 17px;
   line-height: 1.7;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
   font-weight: 500;
 }
 .paper {
-  padding: 0 30px 40px;
+  height: 100dvh;
+  padding: 128px 30px 40px;
+  overflow: auto;
 }
 .identity {
-  margin: 0 0 28px;
-  min-height: 42px;
+  margin: 0 0 48px;
   display: flex;
   align-items: center;
+  gap: 24px;
 }
-.identityValue {
+.portrait {
+  display: grid;
+  place-items: center;
+  flex: 0 0 76px;
+  width: 76px;
+  height: 96px;
+  border: 1px solid var(--quiet);
+  background: #211020;
+}
+.portrait svg {
+  width: 52px;
+  height: 65px;
+  fill: none;
+  stroke: #80677b;
+  stroke-width: 1.2;
+}
+.namePlaceholder {
   display: block;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
-}
-.accountStatus {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-}
-.identityValue:not([hidden]) + .accountStatus {
-  margin-top: 3px;
+  width: 150px;
+  max-width: 100%;
+  height: 26px;
+  border-bottom: 1px solid var(--line);
+  flex: 1 1 0;
 }
 .action {
   display: flex;
@@ -448,51 +447,6 @@ body:has(dialog[open]) {
 .action span:last-child {
   font-size: 19px;
   font-weight: 400;
-}
-
-/* 01: the existing emblem carries the cover; the title is a quiet signature. */
-[data-concept="emblem"] .cover {
-  flex-direction: column;
-  gap: 24px;
-  padding-bottom: 10px;
-}
-[data-concept="emblem"] .crest {
-  width: 202px;
-  height: 202px;
-}
-[data-concept="emblem"] .cover h2 {
-  font-size: 17px;
-  letter-spacing: 0.3em;
-  text-indent: 0.3em;
-}
-/* 02: keep the dossier's vertical balance without its labels, stamps, or bright spine. */
-[data-concept="vertical"] .cover {
-  flex-direction: row-reverse;
-  gap: 22px;
-}
-[data-concept="vertical"] .cover h2 {
-  writing-mode: vertical-rl;
-  font-size: 25px;
-  letter-spacing: 0.2em;
-}
-/* 03: a compact heading leaves a quiet interval before the account actions. */
-[data-concept="space"] .cover {
-  min-height: 136px;
-  justify-content: flex-start;
-  gap: 18px;
-  margin-top: 18px;
-}
-[data-concept="space"] .crest {
-  width: 95px;
-  height: 95px;
-}
-[data-concept="space"] .cover h2 {
-  font-size: 19px;
-  letter-spacing: 0.16em;
-}
-[data-concept="space"] .paper {
-  margin-top: auto;
-  padding-bottom: 58px;
 }
 
 .auth {
@@ -576,16 +530,10 @@ body:has(dialog[open]) {
   overflow-wrap: anywhere;
   margin: 18px 0 30px;
 }
-.handbook[open] {
-  transform: translateX(0);
-}
 .auth[open] {
   opacity: 1;
 }
 @starting-style {
-  .handbook[open] {
-    transform: translateX(100%);
-  }
   .auth[open] {
     opacity: 0;
   }
@@ -605,18 +553,6 @@ body:has(dialog[open]) {
     display: block;
     margin: 2px 0 0;
     font-size: 12px;
-  }
-  .conceptPicker {
-    gap: 6px;
-  }
-  .conceptPicker label span {
-    padding: 10px 7px;
-    font-size: 11px;
-    min-height: 60px;
-  }
-  .conceptPicker b {
-    display: block;
-    margin: 0 0 4px;
   }
   .accentPicker {
     gap: 4px;
@@ -673,34 +609,14 @@ body:has(dialog[open]) {
 }
 @media (max-width: 360px) {
   .cover {
-    margin-inline: 24px;
+    padding-inline: 24px;
   }
   .paper {
     padding-inline: 24px;
   }
   .crest {
-    width: 166px;
-    height: 166px;
-  }
-  [data-concept="emblem"] .crest {
     width: 184px;
     height: 184px;
-  }
-  [data-concept="vertical"] .cover {
-    gap: 15px;
-  }
-  [data-concept="vertical"] .cover h2 {
-    font-size: 23px;
-  }
-  [data-concept="space"] .crest {
-    width: 82px;
-    height: 82px;
-  }
-  [data-concept="space"] .cover {
-    gap: 14px;
-  }
-  [data-concept="space"] .cover h2 {
-    font-size: 17px;
   }
   .auth {
     padding: 22px;
@@ -714,11 +630,10 @@ body:has(dialog[open]) {
     padding-top: 12px;
   }
   .cover {
-    min-height: 250px;
-    margin-bottom: 24px;
+    padding-top: 65px;
   }
-  .paper,
-  [data-concept="space"] .paper {
+  .paper {
+    padding-top: 88px;
     padding-bottom: 28px;
   }
 }

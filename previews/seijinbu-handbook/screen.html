@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja" data-concept="vertical" data-accent="champagne">
+<html lang="ja" data-accent="champagne">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -28,7 +28,12 @@
       </div>
       <span class="heroEmblem emblem" aria-hidden="true"></span>
     </main>
-    <dialog id="handbook" class="handbook" aria-labelledby="bookTitle">
+    <dialog
+      id="handbook"
+      class="handbook"
+      aria-label="成人学園のメニュー"
+      data-phase="closed"
+    >
       <div class="bookSpine" aria-hidden="true"></div>
       <div class="bookContent">
         <header class="bookHeader">
@@ -41,16 +46,22 @@
             ×
           </button>
         </header>
-        <section class="cover" aria-labelledby="bookTitle">
+        <section class="cover" aria-hidden="true">
           <span class="crest emblem" aria-hidden="true"></span>
           <h2 id="bookTitle">成人学園</h2>
         </section>
-        <div class="paper">
+        <div class="paper" inert aria-hidden="true">
           <div class="identity">
-            <div>
-              <span class="identityValue" id="owner" hidden></span
-              ><span class="accountStatus" id="accountStatus">未ログイン</span>
-            </div>
+            <span class="portrait" role="img" aria-label="顔写真未登録"
+              ><svg viewBox="0 0 64 80" aria-hidden="true">
+                <circle cx="32" cy="27" r="12" />
+                <path d="M10 72v-8c0-13 10-21 22-21s22 8 22 21v8" /></svg
+            ></span>
+            <span
+              class="namePlaceholder"
+              role="img"
+              aria-label="名前未登録"
+            ></span>
           </div>
           <section class="accountActions" aria-label="アカウント操作">
             <div id="guestActions">
@@ -58,11 +69,6 @@
                 <span>新規登録</span><span aria-hidden="true">↗</span></button
               ><button class="action secondary" data-view="login">
                 <span>ログイン</span><span aria-hidden="true">→</span>
-              </button>
-            </div>
-            <div id="memberActions" hidden>
-              <button class="action secondary" id="logout">
-                <span>ログアウト</span><span aria-hidden="true">→</span>
               </button>
             </div>
           </section>
@@ -117,18 +123,7 @@
     <script>
       const root = document.documentElement;
       const params = new URLSearchParams(location.search);
-      const concepts = ["emblem", "vertical", "space"];
       const accents = ["champagne", "mint", "lilac"];
-      const legacyConcepts = {
-        crest: "emblem",
-        collage: "space",
-        dossier: "vertical",
-      };
-      const requestedConcept =
-        legacyConcepts[params.get("concept")] || params.get("concept");
-      root.dataset.concept = concepts.includes(requestedConcept)
-        ? requestedConcept
-        : "vertical";
       root.dataset.accent = accents.includes(params.get("accent"))
         ? params.get("accent")
         : "champagne";
@@ -139,92 +134,119 @@
       const email = document.getElementById("email");
       const password = document.getElementById("password");
       let view = "register";
-      let member = false;
       let emailValue = "";
       let transitionRequest = 0;
-      function setConcept(value) {
-        const elements = [
-          handbook.querySelector(".crest"),
-          document.getElementById("bookTitle"),
-          handbook.querySelector(".paper"),
-        ];
-        const previous = elements.map((element) =>
-          element.getBoundingClientRect(),
+      const paper = handbook.querySelector(".paper");
+      const closeButton = handbook.querySelector("[data-close]");
+      const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+      const slideDuration = 300;
+      const coverDuration = 400;
+      const fullDuration = slideDuration + coverDuration;
+      let position = 0;
+      let target = 0;
+      let frame;
+      let lastTime;
+      let resolveMotion;
+      const ease = (value) => (1 - Math.cos(Math.PI * value)) / 2;
+      function renderBook() {
+        const slide = ease(Math.min(1, position / slideDuration));
+        const leaf = ease(
+          Math.max(0, (position - slideDuration) / coverDuration),
         );
-        elements.forEach((element) =>
-          element.getAnimations().forEach((animation) => animation.cancel()),
-        );
-        if (
-          !handbook.open ||
-          matchMedia("(prefers-reduced-motion: reduce)").matches
-        ) {
-          root.dataset.concept = value;
-          return;
+        handbook.style.setProperty("--slide", slide);
+        handbook.style.setProperty("--leaf", leaf);
+        const interactive =
+          position === fullDuration && target === fullDuration;
+        if (!interactive && paper.contains(document.activeElement))
+          closeButton.focus({ preventScroll: true });
+        paper.inert = !interactive;
+        paper.setAttribute("aria-hidden", String(!interactive));
+        handbook.dataset.phase =
+          position === 0
+            ? "closed"
+            : interactive
+              ? "open"
+              : target === fullDuration
+                ? position < slideDuration
+                  ? "entering"
+                  : "opening-cover"
+                : position > slideDuration
+                  ? "closing-cover"
+                  : "leaving";
+      }
+      function finishMotion() {
+        frame = undefined;
+        lastTime = undefined;
+        if (position === 0) {
+          handbook.close();
+          menu.setAttribute("aria-expanded", "false");
+          menu.focus({ preventScroll: true });
         }
-        root.dataset.concept = value;
-        elements.forEach((element, index) => {
-          const next = element.getBoundingClientRect();
-          const before = previous[index];
-          const scale = element.classList.contains("crest")
-            ? before.width / next.width
-            : 1;
-          element.animate(
-            [
-              {
-                transform: `translate(${before.x - next.x}px, ${before.y - next.y}px) scale(${scale})`,
-                transformOrigin: "top left",
-              },
-              { transform: "none", transformOrigin: "top left" },
-            ],
-            { duration: 300, easing: "cubic-bezier(.22,.75,.3,1)" },
-          );
+        const resolve = resolveMotion;
+        resolveMotion = undefined;
+        resolve?.(true);
+      }
+      function tick(time) {
+        const delta =
+          lastTime === undefined ? 0 : Math.min(time - lastTime, 50);
+        lastTime = time;
+        position =
+          target > position
+            ? Math.min(target, position + delta)
+            : Math.max(target, position - delta);
+        renderBook();
+        if (position === target) finishMotion();
+        else frame = requestAnimationFrame(tick);
+      }
+      function moveBook(open) {
+        resolveMotion?.(false);
+        resolveMotion = undefined;
+        target = open ? fullDuration : 0;
+        if (open && !handbook.open) {
+          handbook.showModal();
+          menu.setAttribute("aria-expanded", "true");
+        }
+        renderBook();
+        return new Promise((resolve) => {
+          resolveMotion = resolve;
+          if (reducedMotion.matches || position === target) {
+            if (frame !== undefined) cancelAnimationFrame(frame);
+            position = target;
+            renderBook();
+            finishMotion();
+          } else if (frame === undefined) frame = requestAnimationFrame(tick);
         });
       }
+      reducedMotion.addEventListener("change", () => {
+        if (reducedMotion.matches && frame !== undefined) {
+          cancelAnimationFrame(frame);
+          position = target;
+          renderBook();
+          finishMotion();
+        }
+      });
       const titles = {
         register: "無料会員登録",
         login: "ログイン",
         reset: "パスワード再設定",
         pending: "メールで本人確認",
-        sent: "再設定メールを送信しました",
+        sent: "メールをご確認ください",
       };
-      function updateAccount(value) {
-        member = value === "member";
-        document.getElementById("owner").textContent = member
-          ? emailValue || "reader@example.com"
-          : "";
-        document.getElementById("owner").hidden = !member;
-        document.getElementById("accountStatus").textContent = member
-          ? "ログイン中"
-          : "未ログイン";
-        document.getElementById("guestActions").hidden = member;
-        document.getElementById("memberActions").hidden = !member;
-        if (parent !== window)
-          parent.postMessage(
-            { type: "account", value: member ? "member" : "guest" },
-            location.origin,
-          );
-      }
       function closeAll() {
         transitionRequest += 1;
-        handbook.close();
         auth.close();
-        menu.setAttribute("aria-expanded", "false");
+        return moveBook(false);
       }
       function openBook() {
-        closeAll();
-        handbook.showModal();
-        menu.setAttribute("aria-expanded", "true");
+        transitionRequest += 1;
+        auth.close();
+        return moveBook(true);
       }
       async function openAuth(next) {
         const request = ++transitionRequest;
         if (handbook.open) {
-          handbook.close();
-          menu.setAttribute("aria-expanded", "false");
-          await Promise.all(
-            handbook
-              .getAnimations()
-              .map((animation) => animation.finished.catch(() => {})),
-          );
+          const completed = await moveBook(false);
+          if (!completed) return;
         }
         if (request !== transitionRequest) return;
         view = next;
@@ -262,7 +284,6 @@
       document.querySelectorAll("[data-close]").forEach((button) =>
         button.addEventListener("click", () => {
           closeAll();
-          menu.focus();
         }),
       );
       document
@@ -270,16 +291,14 @@
         .forEach((button) =>
           button.addEventListener("click", () => openAuth(button.dataset.view)),
         );
-      document.getElementById("logout").addEventListener("click", () => {
-        updateAccount("guest");
-        closeAll();
-        menu.focus();
-      });
       for (const dialog of [handbook, auth]) {
         dialog.addEventListener("keydown", (event) => {
           if (event.key !== "Tab") return;
           const items = [...dialog.querySelectorAll("button, input")].filter(
-            (item) => !item.disabled && item.getClientRects().length > 0,
+            (item) =>
+              !item.disabled &&
+              !item.closest("[inert]") &&
+              item.getClientRects().length > 0,
           );
           const first = items[0];
           const last = items.at(-1);
@@ -294,7 +313,6 @@
         dialog.addEventListener("cancel", (event) => {
           event.preventDefault();
           closeAll();
-          menu.focus();
         });
         dialog.addEventListener("click", (event) => {
           const rect = dialog.getBoundingClientRect();
@@ -306,7 +324,6 @@
               event.clientY > rect.bottom)
           ) {
             closeAll();
-            menu.focus();
           }
         });
       }
@@ -337,24 +354,17 @@
           return;
         }
         if (view === "login") {
-          updateAccount("member");
           closeAll();
-          menu.focus();
         } else openAuth(view === "reset" ? "sent" : "pending");
       });
       window.addEventListener("message", (event) => {
         if (event.origin !== location.origin || event.source !== parent) return;
-        if (
-          event.data.type === "concept" &&
-          concepts.includes(event.data.value)
-        )
-          setConcept(event.data.value);
         if (event.data.type === "accent" && accents.includes(event.data.value))
           root.dataset.accent = event.data.value;
-        if (event.data.type === "account") {
-          updateAccount(event.data.value);
+        if (event.data.type === "book" && event.data.value === "open")
           openBook();
-        }
+        if (event.data.type === "book" && event.data.value === "closed")
+          closeAll();
       });
       openBook();
     </script>
