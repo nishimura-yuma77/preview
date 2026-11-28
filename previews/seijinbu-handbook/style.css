@@ -263,12 +263,15 @@ body:has(dialog[open]) {
 }
 .bookSpine {
   position: absolute;
-  inset: 0 -3px 0 auto;
-  width: 5px;
-  background: var(--spine);
-  border-radius: 0 2px 2px 0;
+  inset: -2px -8px -9px auto;
+  width: 12px;
+  background: var(--surface) url("./leather-grain.svg");
+  border: 1px solid #4a2d3f;
+  border-radius: 3px 4px 4px 3px;
   z-index: 4;
-  box-shadow: -2px 0 4px #29121c42;
+  box-shadow:
+    inset -2px 0 3px #160c1360,
+    -3px 0 5px #29121c42;
 }
 .bookContent {
   position: absolute;
@@ -278,6 +281,7 @@ body:has(dialog[open]) {
   max-height: calc(100dvh - 92px);
   container-type: size;
   perspective: 1100px;
+  perspective-origin: 50% 25%;
   isolation: isolate;
 }
 .bookBase {
@@ -294,18 +298,25 @@ body:has(dialog[open]) {
   position: absolute;
   z-index: 1;
 }
-.pageEdgeRight {
-  inset: 0 -6px -7px auto;
-  width: 6px;
+.pageUnderlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #dac59c;
+  border-radius: 2px;
+}
+.pageEdgeLeft {
+  inset: 0 auto -7px -5px;
+  width: 5px;
   background: repeating-linear-gradient(
     to right,
     #aa916b 0 1px,
     #dac59c 1px 2px
   );
-  border-radius: 0 2px 2px 0;
+  border-radius: 2px 0 0 2px;
 }
 .pageEdgeBottom {
-  inset: auto -5px -7px 0;
+  inset: auto 0 -7px -5px;
   height: 7px;
   background: repeating-linear-gradient(
     to bottom,
@@ -436,7 +447,7 @@ body:has(dialog[open]) {
 .coverSegment[data-index="0"] .coverFace {
   border-radius: 5px 0 0 5px;
 }
-.coverSegment[data-index="15"] .coverFace {
+.coverSegment:last-child .coverFace {
   border-radius: 0 5px 5px 0;
 }
 .coverEdge {
@@ -489,6 +500,55 @@ body:has(dialog[open]) {
     inset -12px 0 12px -14px #49371f,
     inset 0 1px #f7e7c3;
   scrollbar-color: #a48a65 var(--paper);
+  clip-path: polygon(26px 0, 100% 0, 100% 100%, 0 100%, 0 26px);
+}
+.paperCorner {
+  position: absolute;
+  inset: 0 auto auto 0;
+  z-index: 2;
+  width: 26px;
+  height: 26px;
+  filter: drop-shadow(1px 2px 1.5px #68472644);
+  pointer-events: none;
+}
+.paperCorner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #f1dfb6;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+.stickyNote {
+  position: absolute;
+  z-index: 2;
+  top: -7px;
+  left: 53%;
+  width: 44px;
+  height: 52px;
+  border-radius: 1px 2px 5px 1px;
+  background: #d8adb5;
+  box-shadow:
+    0 1px 1px #50322412,
+    1px 4px 5px #50322436;
+  transform: rotate(-3deg);
+  transform-origin: top center;
+  pointer-events: none;
+}
+.stickyNote::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 14px;
+  background: #bd919c33;
+}
+.stickyNote::after {
+  content: "";
+  position: absolute;
+  inset: auto 3px -1px 7px;
+  height: 4px;
+  border-radius: 50%;
+  box-shadow: 1px 2px 3px #54332935;
+  transform: rotate(-3deg);
 }
 .identity {
   margin: 0 0 48px;
