@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 256" width="192" height="256">
+  <defs>
+    <filter id="dye" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".016 .021" numOctaves="2" seed="7" stitchTiles="stitch"/>
+      <feColorMatrix values="0 0 0 0 .45  0 0 0 0 .24  0 0 0 0 .31  .14 0 0 0 -.04"/>
+    </filter>
+    <filter id="pores" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".22 .29" numOctaves="2" seed="23" stitchTiles="stitch" result="height"/>
+      <feDiffuseLighting in="height" surfaceScale="2.2" diffuseConstant=".9" lighting-color="#c0a0ad"><feDistantLight azimuth="225" elevation="45"/></feDiffuseLighting>
+      <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0 .09"/>
+    </filter>
+  </defs>
+  <rect width="192" height="256" filter="url(#dye)"/>
+  <rect width="192" height="256" filter="url(#pores)"/>
+</svg>

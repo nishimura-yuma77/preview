@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>成人学園 — メニュー</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body class="app">
+    <header class="siteHeader">
+      <span class="wordmark">Seijinbu<span>.</span></span
+      ><button
+        id="menu"
+        class="menuTrigger"
+        aria-haspopup="dialog"
+        aria-controls="handbook"
+        aria-expanded="false"
+      >
+        <span aria-hidden="true">☰</span> メニュー
+      </button>
+    </header>
+    <main class="hero">
+      <div>
+        <h1>まだ知らない、<br />物語の奥へ。</h1>
+        <p>
+          ここだけの作品と、出会う場所。<br />無料会員登録で、作品の続きを。
+        </p>
+      </div>
+      <span class="heroEmblem emblem" aria-hidden="true"></span>
+    </main>
+    <dialog
+      id="handbook"
+      class="handbook"
+      aria-label="成人学園のメニュー"
+      data-phase="closed"
+    >
+      <div class="deskRim" aria-hidden="true">
+        <span class="rimTop"></span><span class="rimRight"></span
+        ><span class="rimBottom"></span><span class="rimLeft"></span>
+      </div>
+      <header class="bookHeader">
+        <button
+          class="close"
+          data-close
+          aria-label="メニューを閉じる"
+          autofocus
+        >
+          ×
+        </button>
+      </header>
+      <div class="bookContent">
+        <div class="bookBase" aria-hidden="true"></div>
+        <div class="pageUnderlay" aria-hidden="true"></div>
+        <div class="pageEdge pageEdgeLeft" aria-hidden="true"></div>
+        <div class="pageEdge pageEdgeBottom" aria-hidden="true"></div>
+        <div class="bookSpine" aria-hidden="true"></div>
+        <section class="cover" aria-hidden="true">
+          <template id="coverArtwork">
+            <div class="coverArtwork">
+              <span class="crest emblem"></span>
+              <h2>成人学園</h2>
+            </div>
+          </template>
+        </section>
+        <div class="paper" inert aria-hidden="true">
+          <div class="identity">
+            <span class="portrait" role="img" aria-label="顔写真未登録"
+              ><svg viewBox="0 0 64 80" aria-hidden="true">
+                <circle cx="32" cy="27" r="12" />
+                <path d="M10 72v-8c0-13 10-21 22-21s22 8 22 21v8" /></svg
+            ></span>
+            <span
+              class="namePlaceholder"
+              role="img"
+              aria-label="名前未登録"
+            ></span>
+          </div>
+          <section class="accountActions" aria-label="アカウント操作">
+            <div id="guestActions">
+              <button class="action primary" data-view="register">
+                <span>新規登録</span><span aria-hidden="true">↗</span></button
+              ><button class="action secondary" data-view="login">
+                <span>ログイン</span><span aria-hidden="true">→</span>
+              </button>
+            </div>
+          </section>
+        </div>
+        <div class="paperCorner" aria-hidden="true"></div>
+        <div class="stickyNote" aria-hidden="true"></div>
+      </div>
+    </dialog>
+    <dialog id="auth" class="auth" aria-labelledby="authTitle">
+      <header class="authHeader">
+        <div>
+          <h2 id="authTitle">無料会員登録</h2>
+        </div>
+        <button class="close" data-close aria-label="閉じる">×</button>
+      </header>
+      <form id="form" novalidate>
+        <div class="field" id="emailField">
+          <label for="email">メールアドレス</label
+          ><input
+            id="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            aria-describedby="emailError"
+          /><span id="emailError" class="fieldError" role="alert"></span>
+        </div>
+        <div class="field" id="passwordField">
+          <label for="password">パスワード</label
+          ><input
+            id="password"
+            type="password"
+            autocomplete="new-password"
+            placeholder="8文字以上"
+            aria-describedby="passwordError"
+          /><span id="passwordError" class="fieldError" role="alert"></span>
+        </div>
+        <button class="action primary" id="submit">
+          <span>登録する</span><span aria-hidden="true">↗</span>
+        </button>
+      </form>
+      <div class="result" id="result" hidden>
+        <div class="resultSymbol" aria-hidden="true">✓</div>
+        <p id="resultText" role="status"></p>
+        <button class="action secondary" data-view="login">ログインへ</button>
+      </div>
+      <div class="authLinks" id="authLinks">
+        <button class="textButton" id="switchAuth" data-view="login">
+          ログインへ</button
+        ><button class="textButton" id="resetLink" data-view="reset">
+          パスワードを忘れた方
+        </button>
+      </div>
+    </dialog>
+    <script>
+      const handbook = document.getElementById("handbook");
+      const auth = document.getElementById("auth");
+      const menu = document.getElementById("menu");
+      const form = document.getElementById("form");
+      const email = document.getElementById("email");
+      const password = document.getElementById("password");
+      let view = "register";
+      let emailValue = "";
+      let transitionRequest = 0;
+      const paper = handbook.querySelector(".paper");
+      const closeButton = handbook.querySelector("[data-close]");
+      const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+      const cover = handbook.querySelector(".cover");
+      const artwork = document.getElementById("coverArtwork");
+      const segmentCount = 24;
+      function appendCoverFaces(host, foreEdge) {
+        const front = document.createElement("div");
+        front.className = "coverFace coverFront";
+        front.append(artwork.content.cloneNode(true));
+        const back = document.createElement("div");
+        back.className = "coverFace coverBack";
+        const lining = document.createElement("div");
+        lining.className = "coverLining";
+        back.append(lining);
+        const edge = (className) => {
+          const element = document.createElement("div");
+          element.className = `coverEdge ${className}`;
+          return element;
+        };
+        host.append(front, back, edge("coverTopEdge"), edge("coverBottomEdge"));
+        if (foreEdge) host.append(edge("coverForeEdge"));
+      }
+      const restCover = document.createElement("div");
+      restCover.className = "coverRest";
+      appendCoverFaces(restCover, true);
+      cover.append(restCover);
+      const segments = Array.from({ length: segmentCount }, (_, index) => {
+        const segment = document.createElement("div");
+        segment.className = "coverSegment";
+        segment.dataset.index = index;
+        appendCoverFaces(segment, index === 0);
+        cover.append(segment);
+        return segment;
+      });
+      const slideDuration = 300;
+      const coverDuration = 400;
+      const fullDuration = slideDuration + coverDuration;
+      let position = 0;
+      let target = 0;
+      let frame;
+      let lastTime;
+      let resolveMotion;
+      let bendDirection = 1;
+      const ease = (value) => (1 - Math.cos(Math.PI * value)) / 2;
+      function notifyPose(value) {
+        if (parent !== window)
+          parent.postMessage({ type: "pose", value }, location.origin);
+      }
+      function showInspection(pose) {
+        transitionRequest += 1;
+        auth.close();
+        resolveMotion?.(false);
+        resolveMotion = undefined;
+        if (frame !== undefined) cancelAnimationFrame(frame);
+        frame = undefined;
+        lastTime = undefined;
+        bendDirection = 1;
+        const leaf = pose === "cover" ? 0 : pose === "page" ? 1 : 0.48;
+        position =
+          slideDuration + (Math.acos(1 - 2 * leaf) / Math.PI) * coverDuration;
+        target = fullDuration;
+        if (!handbook.open) handbook.showModal();
+        menu.setAttribute("aria-expanded", "true");
+        handbook.dataset.inspection = pose;
+        renderBook();
+        notifyPose(pose);
+      }
+      function renderCover(leaf) {
+        const width = cover.clientWidth;
+        if (!width) return;
+        const step = width / segmentCount;
+        const wave = Math.sin(Math.PI * leaf) * bendDirection;
+        cover.dataset.bent = String(Math.abs(wave) > 0.000001);
+        restCover.style.transform = `rotateY(${110 * leaf}deg)`;
+        let right = width;
+        let depth = 0;
+        cover.style.setProperty("--cover-width", `${width}px`);
+        cover.style.setProperty("--foil-angle", `${132 + leaf * 24}deg`);
+        for (let distance = 0; distance < segmentCount; distance += 1) {
+          const index = segmentCount - distance - 1;
+          const segment = segments[index];
+          const across = (distance + 0.5) / segmentCount;
+          const tip = Math.min(1, Math.max(0, (across - 0.72) / 0.28));
+          const tipBend = tip * tip * (3 - 2 * tip);
+          const hingeBend = Math.exp(-(((across - 0.08) / 0.14) ** 2));
+          const bend = wave * (32 * hingeBend - 28 * tipBend);
+          const angle = 110 * leaf + bend;
+          const radians = (angle * Math.PI) / 180;
+          segment.style.width = `${step + (index < segmentCount - 1 ? 1 : 0)}px`;
+          segment.style.transformOrigin = `${step}px center`;
+          segment.style.transform = `translate3d(${right - step}px,0,${depth}px) rotateY(${angle}deg)`;
+          segment.style.setProperty("--offset", `${index * step}px`);
+          segment.style.setProperty(
+            "--shade",
+            Math.min(0.07, Math.abs(bend) * 0.003),
+          );
+          segment.dataset.angle = angle;
+          segment.dataset.right = right;
+          segment.dataset.depth = depth;
+          right -= step * Math.cos(radians);
+          depth += step * Math.sin(radians);
+        }
+      }
+      new ResizeObserver(() =>
+        renderCover(
+          ease(Math.max(0, (position - slideDuration) / coverDuration)),
+        ),
+      ).observe(cover);
+      function renderBook() {
+        const slide = ease(Math.min(1, position / slideDuration));
+        const leaf = ease(
+          Math.max(0, (position - slideDuration) / coverDuration),
+        );
+        handbook.style.setProperty("--slide", slide);
+        handbook.style.setProperty("--leaf", leaf);
+        renderCover(leaf);
+        const interactive =
+          position === fullDuration && target === fullDuration;
+        if (
+          !interactive &&
+          document.hasFocus() &&
+          paper.contains(document.activeElement)
+        )
+          closeButton.focus({ preventScroll: true });
+        paper.inert = !interactive;
+        paper.setAttribute("aria-hidden", String(!interactive));
+        handbook.dataset.phase =
+          position === 0
+            ? "closed"
+            : interactive
+              ? "open"
+              : target === fullDuration
+                ? position < slideDuration
+                  ? "entering"
+                  : "opening-cover"
+                : position > slideDuration
+                  ? "closing-cover"
+                  : "leaving";
+      }
+      function finishMotion() {
+        frame = undefined;
+        lastTime = undefined;
+        if (position === 0) {
+          handbook.close();
+          menu.setAttribute("aria-expanded", "false");
+          menu.focus({ preventScroll: true });
+        }
+        notifyPose(position === 0 ? "hidden" : "opened");
+        const resolve = resolveMotion;
+        resolveMotion = undefined;
+        resolve?.(true);
+      }
+      function tick(time) {
+        const delta =
+          lastTime === undefined ? 0 : Math.min(time - lastTime, 50);
+        lastTime = time;
+        bendDirection +=
+          ((target === fullDuration ? 1 : -1) - bendDirection) *
+          (1 - Math.exp(-delta / 80));
+        position =
+          target > position
+            ? Math.min(target, position + delta)
+            : Math.max(target, position - delta);
+        renderBook();
+        if (position === target) finishMotion();
+        else frame = requestAnimationFrame(tick);
+      }
+      function moveBook(open) {
+        delete handbook.dataset.inspection;
+        notifyPose("motion");
+        resolveMotion?.(false);
+        resolveMotion = undefined;
+        target = open ? fullDuration : 0;
+        if (open && !handbook.open) {
+          handbook.showModal();
+          menu.setAttribute("aria-expanded", "true");
+        }
+        renderBook();
+        return new Promise((resolve) => {
+          resolveMotion = resolve;
+          if (reducedMotion.matches || position === target) {
+            if (frame !== undefined) cancelAnimationFrame(frame);
+            position = target;
+            renderBook();
+            finishMotion();
+          } else if (frame === undefined) frame = requestAnimationFrame(tick);
+        });
+      }
+      reducedMotion.addEventListener("change", () => {
+        if (reducedMotion.matches && frame !== undefined) {
+          cancelAnimationFrame(frame);
+          position = target;
+          renderBook();
+          finishMotion();
+        }
+      });
+      const titles = {
+        register: "無料会員登録",
+        login: "ログイン",
+        reset: "パスワード再設定",
+        pending: "メールで本人確認",
+        sent: "メールをご確認ください",
+      };
+      function closeAll() {
+        transitionRequest += 1;
+        auth.close();
+        return moveBook(false);
+      }
+      function openBook() {
+        transitionRequest += 1;
+        auth.close();
+        return moveBook(true);
+      }
+      async function openAuth(next) {
+        const request = ++transitionRequest;
+        if (handbook.open) {
+          const completed = await moveBook(false);
+          if (!completed) return;
+        }
+        if (request !== transitionRequest) return;
+        view = next;
+        const isResult = next === "pending" || next === "sent";
+        document.getElementById("authTitle").textContent = titles[next];
+        form.hidden = isResult;
+        document.getElementById("result").hidden = !isResult;
+        document.getElementById("authLinks").hidden = isResult;
+        document.getElementById("passwordField").hidden = next === "reset";
+        document.getElementById("resetLink").hidden = next === "reset";
+        clearError(email);
+        clearError(password);
+        password.autocomplete =
+          next === "login" ? "current-password" : "new-password";
+        const submitLabel =
+          next === "login"
+            ? "ログイン"
+            : next === "reset"
+              ? "再設定メールを送信"
+              : "登録する";
+        document.querySelector("#submit span").textContent = submitLabel;
+        const switchButton = document.getElementById("switchAuth");
+        switchButton.dataset.view = next === "login" ? "register" : "login";
+        switchButton.textContent =
+          next === "login" ? "無料会員登録へ" : "ログインへ";
+        document.getElementById("resultText").textContent =
+          next === "pending"
+            ? `${emailValue} に本人確認メールを送りました。`
+            : `${emailValue} に再設定メールを送りました。`;
+        if (!auth.open) auth.showModal();
+        notifyPose("auth");
+        if (!isResult) email.focus();
+        else auth.querySelector(".result button").focus();
+      }
+      menu.addEventListener("click", openBook);
+      document.querySelectorAll("[data-close]").forEach((button) =>
+        button.addEventListener("click", () => {
+          closeAll();
+        }),
+      );
+      document
+        .querySelectorAll("[data-view]")
+        .forEach((button) =>
+          button.addEventListener("click", () => openAuth(button.dataset.view)),
+        );
+      for (const dialog of [handbook, auth]) {
+        dialog.addEventListener("keydown", (event) => {
+          if (event.key !== "Tab") return;
+          const items = [...dialog.querySelectorAll("button, input")].filter(
+            (item) =>
+              !item.disabled &&
+              !item.closest("[inert]") &&
+              item.getClientRects().length > 0,
+          );
+          const first = items[0];
+          const last = items.at(-1);
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        });
+        dialog.addEventListener("cancel", (event) => {
+          event.preventDefault();
+          closeAll();
+        });
+        dialog.addEventListener("click", (event) => {
+          const rect = dialog.getBoundingClientRect();
+          if (
+            event.target === dialog &&
+            (event.clientX < rect.left ||
+              event.clientX > rect.right ||
+              event.clientY < rect.top ||
+              event.clientY > rect.bottom)
+          ) {
+            closeAll();
+          }
+        });
+      }
+      function clearError(input) {
+        input.removeAttribute("aria-invalid");
+        document.getElementById(`${input.id}Error`).textContent = "";
+      }
+      function showError(input, text) {
+        input.setAttribute("aria-invalid", "true");
+        document.getElementById(`${input.id}Error`).textContent = text;
+        input.focus();
+      }
+      for (const input of [email, password]) {
+        input.addEventListener("input", () => clearError(input));
+      }
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        emailValue = email.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+          showError(email, "メールアドレスを確認してください。");
+          return;
+        }
+        if (
+          view !== "reset" &&
+          (password.value.length < 8 || password.value.length > 128)
+        ) {
+          showError(password, "パスワードは8〜128文字で入力してください。");
+          return;
+        }
+        if (view === "login") {
+          closeAll();
+        } else openAuth(view === "reset" ? "sent" : "pending");
+      });
+      window.addEventListener("message", (event) => {
+        if (event.origin !== location.origin || event.source !== parent) return;
+        if (event.data.type === "book" && event.data.value === "open")
+          openBook();
+        if (event.data.type === "book" && event.data.value === "closed")
+          closeAll();
+        if (
+          event.data.type === "pose" &&
+          ["cover", "page", "bend"].includes(event.data.value)
+        )
+          showInspection(event.data.value);
+      });
+      const initialPose = new URLSearchParams(location.search).get("pose");
+      if (["cover", "page", "bend"].includes(initialPose))
+        showInspection(initialPose);
+      else openBook();
+    </script>
+  </body>
+</html>
