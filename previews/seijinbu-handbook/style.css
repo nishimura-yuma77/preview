@@ -96,6 +96,49 @@ summary:focus-visible {
   margin-left: 18px;
   color: var(--muted);
 }
+.posePicker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0;
+  margin: 0 0 4px;
+  border: 0;
+}
+.posePicker legend {
+  padding: 0 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.posePicker label {
+  position: relative;
+  cursor: pointer;
+}
+.posePicker input {
+  position: absolute;
+  opacity: 0;
+}
+.posePicker span {
+  display: block;
+  padding: 12px 10px;
+  border: 1px solid #66515f;
+  font-size: 13px;
+  text-align: center;
+  color: var(--muted);
+}
+.posePicker input:checked + span {
+  background: #30212b;
+  color: var(--ink);
+  border-color: var(--rose);
+  box-shadow: inset 0 -2px var(--rose);
+}
+.posePicker input:focus-visible + span {
+  outline: 2px solid var(--rose);
+  outline-offset: 3px;
+}
+#poseStatus {
+  margin-left: auto;
+  font-size: 11px;
+}
 .previewTools {
   display: flex;
   gap: 24px;
@@ -394,20 +437,32 @@ body:has(dialog[open]) {
 .pageEdgeLeft {
   inset: 0 auto -7px -5px;
   width: 5px;
-  background: repeating-linear-gradient(
+  background: linear-gradient(
     to right,
-    #aa916b 0 1px,
-    #dac59c 1px 2px
+    #a58a5f 0 9%,
+    #e9d5aa 9% 24%,
+    #c3a577 24% 31%,
+    #dfc99e 31% 52%,
+    #bfa174 52% 60%,
+    #ead7b3 60% 83%,
+    #ba9a69 83% 91%,
+    #d6be94 91%
   );
   border-radius: 2px 0 0 2px;
 }
 .pageEdgeBottom {
   inset: auto 0 -7px -5px;
   height: 7px;
-  background: repeating-linear-gradient(
+  background: linear-gradient(
     to bottom,
-    #c6ae82 0 1px,
-    #e2cda3 1px 2px
+    #a58a5f 0 9%,
+    #e9d5aa 9% 24%,
+    #c3a577 24% 31%,
+    #dfc99e 31% 52%,
+    #bfa174 52% 60%,
+    #ead7b3 60% 83%,
+    #ba9a69 83% 91%,
+    #d6be94 91%
   );
   border-radius: 0 0 2px 2px;
 }
@@ -502,12 +557,19 @@ body:has(dialog[open]) {
   gap: min(24px, 5cqh);
   padding: min(62px, 12cqh) 28px min(36px, 8cqh);
   background: var(--surface);
-  background-image: url("./leather-grain.svg");
+  background-image:
+    radial-gradient(ellipse at 28% 24%, #9f728447, transparent 75%),
+    linear-gradient(145deg, #60354722, transparent 50%, #0b050c66),
+    url("./leather-grain.svg");
+  background-size:
+    100% 100%,
+    100% 100%,
+    192px 256px;
   border: 1px solid #452b3a;
   border-radius: 5px;
   box-shadow:
-    inset 1px 0 4px #85606a22,
-    inset -8px 0 12px -12px #0b060b;
+    inset 1px 1px 4px #a57a8c40,
+    inset -12px -8px 20px -15px #0b060b;
 }
 .coverBack {
   background: #503442;
@@ -518,10 +580,20 @@ body:has(dialog[open]) {
   left: calc(0px - var(--offset));
   width: var(--cover-width);
   height: 100%;
-  background: #503442 url("./leather-grain.svg");
+  background-color: #503442;
+  background-image:
+    radial-gradient(ellipse at 25% 20%, #b08b963b, transparent 76%),
+    linear-gradient(140deg, #b3859514, transparent 45%, #1b0d174d),
+    url("./leather-grain.svg");
+  background-size:
+    100% 100%,
+    100% 100%,
+    192px 256px;
   border: 1px solid #634350;
   border-radius: 5px;
-  box-shadow: inset 10px 0 16px -14px #130a13;
+  box-shadow:
+    inset 12px 0 18px -13px #130a1399,
+    inset 0 1px #b28b9826;
 }
 .coverFront::after,
 .coverBack::after {
@@ -562,6 +634,23 @@ body:has(dialog[open]) {
 .crest {
   width: min(190px, 48cqh, 72cqw);
   height: min(190px, 48cqh, 72cqw);
+  background-image:
+    linear-gradient(
+      var(--foil-angle, 132deg),
+      #fff3cb66,
+      transparent 23%,
+      #8d642d55 43%,
+      #fff2c266 48%,
+      transparent 55%,
+      #72502533 78%,
+      #f6e6b344
+    ),
+    url("./foil-grain.svg");
+  background-size:
+    100% 100%,
+    64px 64px;
+  filter: drop-shadow(-0.4px -0.5px 0.3px #1207118c)
+    drop-shadow(0.4px 0.5px 0.2px #f5deaf22);
 }
 .cover h2 {
   margin: 0;
@@ -582,8 +671,22 @@ body:has(dialog[open]) {
   border-radius: 2px;
   color: var(--paper-ink);
   background: var(--paper);
+  background-image:
+    radial-gradient(ellipse at 32% 16%, #fff9e438, transparent 72%),
+    linear-gradient(
+      90deg,
+      #b7985e18,
+      transparent 20%,
+      transparent 82%,
+      #84603e36
+    ),
+    url("./paper-fibers.svg");
+  background-size:
+    100% 100%,
+    100% 100%,
+    256px 256px;
   box-shadow:
-    inset -12px 0 12px -14px #49371f,
+    inset -14px 0 18px -14px #573d2290,
     inset 0 1px #f7e7c3;
   scrollbar-color: #a48a65 var(--paper);
   clip-path: polygon(26px 0, 100% 0, 100% 100%, 0 100%, 0 26px);
@@ -602,6 +705,9 @@ body:has(dialog[open]) {
   position: absolute;
   inset: 0;
   background: #f1dfb6;
+  background-image:
+    linear-gradient(135deg, #b49a6b1f, transparent 60%),
+    url("./paper-fibers.svg");
   clip-path: polygon(100% 0, 100% 100%, 0 100%);
 }
 .stickyNote {
@@ -613,6 +719,9 @@ body:has(dialog[open]) {
   height: 52px;
   border-radius: 1px 2px 5px 1px;
   background: #d8adb5;
+  background-image:
+    linear-gradient(160deg, #f8dde32e, transparent 48%, #965f6b1c),
+    url("./paper-fibers.svg");
   box-shadow:
     0 1px 1px #50322412,
     1px 4px 5px #50322436;
@@ -795,6 +904,13 @@ body:has(dialog[open]) {
   }
 }
 @media (max-width: 700px) {
+  .posePicker {
+    gap: 6px;
+  }
+  .posePicker span {
+    padding: 11px 5px;
+    font-size: 11px;
+  }
   .comparisonShell {
     padding: 18px 14px;
   }

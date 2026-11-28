@@ -10,8 +10,26 @@
     <main class="comparisonShell">
       <header class="comparisonHeader">
         <a href="../">← 一覧</a>
-        <h1>成人学園 <span>校章主役・革カバーの開閉</span></h1>
+        <h1>成人学園 <span>素材確認・3状態</span></h1>
       </header>
+      <fieldset class="posePicker">
+        <legend>固定状態</legend>
+        <label
+          ><input type="radio" name="pose" value="cover" checked /><span
+            >閉じた表紙</span
+          ></label
+        >
+        <label
+          ><input type="radio" name="pose" value="page" /><span
+            >開いた紙面</span
+          ></label
+        >
+        <label
+          ><input type="radio" name="pose" value="bend" /><span
+            >曲がり途中</span
+          ></label
+        >
+      </fieldset>
       <div class="previewTools">
         <label
           >描画幅
@@ -26,13 +44,14 @@
           <button type="button" data-book="open">開く</button
           ><button type="button" data-book="closed">閉じる</button>
         </div>
+        <output id="poseStatus" aria-live="polite">表紙を固定表示</output>
       </div>
       <div class="previewArea" id="area">
         <div class="previewSizer" id="sizer">
           <iframe
             id="screen"
             title="成人学園のメニュープレビュー"
-            src="./screen.html"
+            src="./screen.html?pose=cover"
           ></iframe>
         </div>
       </div>
@@ -61,6 +80,66 @@
       const width = document.getElementById("width");
       const fit = document.getElementById("fit");
       const area = document.getElementById("area");
+      const poses = ["cover", "page", "bend"];
+      const requested = new URLSearchParams(location.search).get("pose");
+      let selectedPose = poses.includes(requested) ? requested : "cover";
+      let pendingPoseFocus;
+      const poseLabels = {
+        cover: "表紙を固定表示",
+        page: "紙面を固定表示",
+        bend: "途中を固定表示",
+        motion: "開閉を再生中",
+        opened: "メニュー開放",
+        hidden: "メニュー閉鎖",
+        auth: "認証画面",
+      };
+      function syncPose(pose) {
+        selectedPose = poses.includes(pose) ? pose : null;
+        document.querySelectorAll("input[name=pose]").forEach((input) => {
+          input.checked = input.value === selectedPose;
+        });
+        document.getElementById("poseStatus").textContent = poseLabels[pose];
+        const url = new URL(location.href);
+        if (selectedPose) url.searchParams.set("pose", selectedPose);
+        else url.searchParams.delete("pose");
+        history.replaceState(null, "", url);
+      }
+      syncPose(selectedPose);
+      if (selectedPose !== "cover")
+        frame.src = `./screen.html?pose=${selectedPose}`;
+      document.querySelectorAll("input[name=pose]").forEach((input) =>
+        input.addEventListener("change", () => {
+          pendingPoseFocus = input;
+          syncPose(input.value);
+          frame.contentWindow.postMessage(
+            { type: "pose", value: input.value },
+            location.origin,
+          );
+        }),
+      );
+      frame.addEventListener("load", () => {
+        if (selectedPose)
+          frame.contentWindow.postMessage(
+            { type: "pose", value: selectedPose },
+            location.origin,
+          );
+      });
+      window.addEventListener("message", (event) => {
+        if (
+          event.origin === location.origin &&
+          event.source === frame.contentWindow &&
+          event.data.type === "pose" &&
+          Object.hasOwn(poseLabels, event.data.value)
+        ) {
+          if (pendingPoseFocus && pendingPoseFocus.value !== event.data.value)
+            return;
+          syncPose(event.data.value);
+          if (pendingPoseFocus) {
+            pendingPoseFocus.focus({ preventScroll: true });
+            pendingPoseFocus = undefined;
+          }
+        }
+      });
       function resize() {
         const w = Number(width.value);
         const scale = fit.checked ? Math.min(1, area.clientWidth / w) : 1;
@@ -70,16 +149,15 @@
         document.getElementById("sizer").style.width = `${w * scale}px`;
         document.getElementById("sizer").style.height = `${760 * scale}px`;
       }
-      document
-        .querySelectorAll("[data-book]")
-        .forEach((button) =>
-          button.addEventListener("click", () =>
-            frame.contentWindow.postMessage(
-              { type: "book", value: button.dataset.book },
-              location.origin,
-            ),
-          ),
-        );
+      document.querySelectorAll("[data-book]").forEach((button) =>
+        button.addEventListener("click", () => {
+          pendingPoseFocus = undefined;
+          frame.contentWindow.postMessage(
+            { type: "book", value: button.dataset.book },
+            location.origin,
+          );
+        }),
+      );
       width.addEventListener("change", resize);
       fit.addEventListener("change", resize);
       new ResizeObserver(resize).observe(area);

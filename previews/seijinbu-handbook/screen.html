@@ -189,6 +189,29 @@
       let resolveMotion;
       let bendDirection = 1;
       const ease = (value) => (1 - Math.cos(Math.PI * value)) / 2;
+      function notifyPose(value) {
+        if (parent !== window)
+          parent.postMessage({ type: "pose", value }, location.origin);
+      }
+      function showInspection(pose) {
+        transitionRequest += 1;
+        auth.close();
+        resolveMotion?.(false);
+        resolveMotion = undefined;
+        if (frame !== undefined) cancelAnimationFrame(frame);
+        frame = undefined;
+        lastTime = undefined;
+        bendDirection = 1;
+        const leaf = pose === "cover" ? 0 : pose === "page" ? 1 : 0.48;
+        position =
+          slideDuration + (Math.acos(1 - 2 * leaf) / Math.PI) * coverDuration;
+        target = fullDuration;
+        if (!handbook.open) handbook.showModal();
+        menu.setAttribute("aria-expanded", "true");
+        handbook.dataset.inspection = pose;
+        renderBook();
+        notifyPose(pose);
+      }
       function renderCover(leaf) {
         const width = cover.clientWidth;
         if (!width) return;
@@ -199,6 +222,7 @@
         let right = width;
         let depth = 0;
         cover.style.setProperty("--cover-width", `${width}px`);
+        cover.style.setProperty("--foil-angle", `${132 + leaf * 24}deg`);
         for (let distance = 0; distance < segmentCount; distance += 1) {
           const index = segmentCount - distance - 1;
           const segment = segments[index];
@@ -239,7 +263,11 @@
         renderCover(leaf);
         const interactive =
           position === fullDuration && target === fullDuration;
-        if (!interactive && paper.contains(document.activeElement))
+        if (
+          !interactive &&
+          document.hasFocus() &&
+          paper.contains(document.activeElement)
+        )
           closeButton.focus({ preventScroll: true });
         paper.inert = !interactive;
         paper.setAttribute("aria-hidden", String(!interactive));
@@ -264,6 +292,7 @@
           menu.setAttribute("aria-expanded", "false");
           menu.focus({ preventScroll: true });
         }
+        notifyPose(position === 0 ? "hidden" : "opened");
         const resolve = resolveMotion;
         resolveMotion = undefined;
         resolve?.(true);
@@ -284,6 +313,8 @@
         else frame = requestAnimationFrame(tick);
       }
       function moveBook(open) {
+        delete handbook.dataset.inspection;
+        notifyPose("motion");
         resolveMotion?.(false);
         resolveMotion = undefined;
         target = open ? fullDuration : 0;
@@ -362,6 +393,7 @@
             ? `${emailValue} に本人確認メールを送りました。`
             : `${emailValue} に再設定メールを送りました。`;
         if (!auth.open) auth.showModal();
+        notifyPose("auth");
         if (!isResult) email.focus();
         else auth.querySelector(".result button").focus();
       }
@@ -448,8 +480,16 @@
           openBook();
         if (event.data.type === "book" && event.data.value === "closed")
           closeAll();
+        if (
+          event.data.type === "pose" &&
+          ["cover", "page", "bend"].includes(event.data.value)
+        )
+          showInspection(event.data.value);
       });
-      openBook();
+      const initialPose = new URLSearchParams(location.search).get("pose");
+      if (["cover", "page", "bend"].includes(initialPose))
+        showInspection(initialPose);
+      else openBook();
     </script>
   </body>
 </html>
