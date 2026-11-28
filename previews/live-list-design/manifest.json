@@ -1,0 +1,125 @@
+{
+  "documents": [
+    {
+      "key": "posts-api",
+      "label": "API｜投稿一覧",
+      "source": "docs/specs/features/posts/API.md",
+      "id": "doc-posts-api",
+      "raw": "source/posts-api.md",
+      "sha256": "e11c3dc2f3f8b3b9d11fe211d8f150412b72638d18417e010b84f23987cf54a4"
+    },
+    {
+      "key": "metrics-api",
+      "label": "API｜計測結果",
+      "source": "docs/specs/features/metrics/API.md",
+      "id": "doc-metrics-api",
+      "raw": "source/metrics-api.md",
+      "sha256": "472d0074d1342f50332e2e1a064d1fcab312d57bfc34ca3a1115251a98264054"
+    },
+    {
+      "key": "posts-screen",
+      "label": "画面｜投稿一覧",
+      "source": "docs/specs/features/posts/SCREEN_DESIGN.md",
+      "id": "doc-posts-screen",
+      "raw": "source/posts-screen.md",
+      "sha256": "c0f42011939d537d50b630eb57ed40bd7f8eb720c50154059225d94ace56cdc5"
+    },
+    {
+      "key": "metrics-screen",
+      "label": "画面｜計測結果",
+      "source": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+      "id": "doc-metrics-screen",
+      "raw": "source/metrics-screen.md",
+      "sha256": "a3cd76cc2fd2ad7f08627236c561ef338a3c853f5b8c03f5fbbc21f870a653ad"
+    },
+    {
+      "key": "post-service",
+      "label": "Service｜投稿一覧",
+      "source": "docs/specs/features/posts/modules/POST_SERVICE.md",
+      "id": "doc-post-service",
+      "raw": "source/post-service.md",
+      "sha256": "bb453c4c238586c9fc1f26952c788c51c79c8ab56e34bc18d07a3645a3b08273"
+    },
+    {
+      "key": "metrics-service",
+      "label": "Service｜計測結果",
+      "source": "docs/specs/features/metrics/modules/METRICS_SERVICE.md",
+      "id": "doc-metrics-service",
+      "raw": "source/metrics-service.md",
+      "sha256": "185143117df2400a33c9886a2d0b17cfa731f6dbfb4d37e080f1874d735aa126"
+    },
+    {
+      "key": "post-repository",
+      "label": "Repository｜投稿・集計",
+      "source": "docs/specs/modules/POST_REPOSITORY.md",
+      "id": "doc-post-repository",
+      "raw": "source/post-repository.md",
+      "sha256": "3d0dde5dc4dfd3c60d830561ca61d2683093a6f5e3b2ee4989765de13fa1bdc4"
+    },
+    {
+      "key": "list-cursor",
+      "label": "共通｜値カーソル",
+      "source": "docs/specs/modules/LIST_CURSOR.md",
+      "id": "doc-list-cursor",
+      "raw": "source/list-cursor.md",
+      "sha256": "62513bc21fa2fe2f36453b71ca41e22d6a04bf7278d6219f935418450b2e4ebd"
+    },
+    {
+      "key": "database",
+      "label": "DB設計",
+      "source": "docs/specs/DATABASE.dbml",
+      "id": "doc-database",
+      "raw": "source/database.dbml",
+      "sha256": "a418571e181cff6c0ace984fa08954c6208f5890be33d9444ec356164e8e3104"
+    },
+    {
+      "key": "auth-api",
+      "label": "認証API",
+      "source": "docs/specs/features/auth/API.md",
+      "id": "doc-auth-api",
+      "raw": "source/auth-api.md",
+      "sha256": "54dccf4ed504ee95f55f056b785dd12eddf67eb272d820e08091e0ce72f81fa8"
+    },
+    {
+      "key": "api-index",
+      "label": "内部API一覧",
+      "source": "docs/specs/INTERNAL_API_INDEX.md",
+      "id": "doc-api-index",
+      "raw": "source/api-index.md",
+      "sha256": "dbf153f620fb49335c8d596507863a734bbb4d7515b0ac999e7c60a088fb5402"
+    },
+    {
+      "key": "class-index",
+      "label": "クラス一覧",
+      "source": "docs/specs/CLASS_INDEX.md",
+      "id": "doc-class-index",
+      "raw": "source/class-index.md",
+      "sha256": "b2f90f032ebe62225fae6e627fe397ea3907874684ae503d92764d40150a5a6b"
+    },
+    {
+      "key": "screen-index",
+      "label": "画面一覧",
+      "source": "docs/specs/SCREEN_INDEX.md",
+      "id": "doc-screen-index",
+      "raw": "source/screen-index.md",
+      "sha256": "ebd4e42eda6e35287664b9c13cae2b30e54bb3de79d84fd8a3b0001ca6eb7969"
+    },
+    {
+      "key": "usecases",
+      "label": "ユースケース",
+      "source": "docs/specs/USECASE.md",
+      "id": "doc-usecases",
+      "raw": "source/usecases.md",
+      "sha256": "e03547ca02428af3fb053569322f78d325d1b8e0c33a57989f587fced1710b65"
+    },
+    {
+      "key": "demo-dataset",
+      "label": "CLI｜デモデータ投入",
+      "source": "docs/specs/modules/DEMO_DATASET.md",
+      "id": "doc-demo-dataset",
+      "raw": "source/demo-dataset.md",
+      "sha256": "0bfece569a558454483e7710e3f115c907ac3289aafca4c08af356b5883a06f8"
+    }
+  ],
+  "diagrams": 50
+}
