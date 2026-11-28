@@ -20,12 +20,6 @@
     "Yu Gothic", "Hiragino Kaku Gothic ProN", "Noto Sans CJK JP", sans-serif;
   --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
 }
-[data-accent="mint"] {
-  --accent: #a5d8cd;
-}
-[data-accent="lilac"] {
-  --accent: #c4b5e8;
-}
 * {
   box-sizing: border-box;
 }
@@ -98,66 +92,6 @@ summary:focus-visible {
   font-size: 13px;
   margin-left: 18px;
   color: var(--muted);
-}
-.accentPicker label {
-  position: relative;
-  cursor: pointer;
-}
-.accentPicker input {
-  position: absolute;
-  opacity: 0;
-}
-.accentPicker input:focus-visible + span {
-  outline: 2px solid var(--rose);
-  outline-offset: 3px;
-}
-.accentPicker {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  border: 0;
-  margin: 18px 0 0;
-  padding: 0;
-}
-.accentPicker legend {
-  float: left;
-  margin: 0 16px 0 0;
-  padding: 10px 0;
-  font-size: 12px;
-  color: var(--muted);
-}
-.accentPicker label > span {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 40px;
-  padding: 7px 11px;
-  border: 1px solid transparent;
-  font-size: 12px;
-  color: var(--muted);
-}
-.accentPicker input:checked + span {
-  border-color: var(--rose);
-  color: var(--ink);
-  background: #211a20;
-  border-radius: 3px;
-}
-.swatch {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  flex: none;
-}
-.champagne {
-  background: #d8c49a;
-}
-.mint {
-  background: #a5d8cd;
-}
-.lilac {
-  background: #c4b5e8;
 }
 .previewTools {
   display: flex;
@@ -406,40 +340,108 @@ body:has(dialog[open]) {
   background: #42283d;
 }
 .cover {
+  --offset: 0px;
   position: absolute;
   inset: 0;
   z-index: 3;
-  transform-origin: right center;
-  transform: translateZ(8px) rotateY(calc(110deg * var(--leaf, 0)));
+  transform: translateZ(8px);
   transform-style: preserve-3d;
   pointer-events: none;
+}
+.coverRest {
+  position: absolute;
+  inset: 0;
+  transform-origin: right center;
+  transform-style: preserve-3d;
+}
+.coverRest .coverFace {
+  border-radius: 5px;
+}
+.cover[data-bent="false"] .coverSegment,
+.cover[data-bent="true"] .coverRest {
+  display: none;
+}
+.coverSegment {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.coverSegment::before,
+.coverSegment::after {
+  content: "";
+  position: absolute;
+  inset: 0 -1px;
+  backface-visibility: hidden;
+}
+.coverSegment::before {
+  background: var(--surface);
+  transform: translateZ(1.7px);
+}
+.coverSegment::after {
+  background: #503442;
+  transform: rotateY(180deg) translateZ(1.7px);
 }
 .coverFace {
   position: absolute;
   inset: 0;
-  border-radius: 3px;
   backface-visibility: hidden;
+  overflow: hidden;
 }
 .coverFront {
+  background: var(--surface);
+  transform: translateZ(2px);
+}
+.coverArtwork {
+  position: absolute;
+  left: calc(0px - var(--offset));
+  top: 0;
+  width: var(--cover-width);
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: min(24px, 5cqh);
   padding: min(62px, 12cqh) 28px min(36px, 8cqh);
   background: var(--surface);
-  border: 1px solid #4b2f43;
-  transform: translateZ(2px);
-  box-shadow: inset 0 1px #67435770;
+  background-image: url("./leather-grain.svg");
+  border: 1px solid #452b3a;
+  border-radius: 5px;
+  box-shadow:
+    inset 1px 0 4px #85606a22,
+    inset -8px 0 12px -12px #0b060b;
 }
 .coverBack {
-  background: #593b4b;
-  border: 1px solid #745260;
+  background: #503442;
   transform: rotateY(180deg) translateZ(2px);
+}
+.coverLining {
+  position: absolute;
+  left: calc(0px - var(--offset));
+  width: var(--cover-width);
+  height: 100%;
+  background: #503442 url("./leather-grain.svg");
+  border: 1px solid #634350;
+  border-radius: 5px;
   box-shadow: inset 10px 0 16px -14px #130a13;
+}
+.coverFront::after,
+.coverBack::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / var(--shade, 0));
+}
+.coverSegment[data-index="0"] .coverFace {
+  border-radius: 5px 0 0 5px;
+}
+.coverSegment[data-index="15"] .coverFace {
+  border-radius: 0 5px 5px 0;
 }
 .coverEdge {
   position: absolute;
-  background: #876171;
+  background: #72505d;
 }
 .coverForeEdge {
   inset: 0 auto 0 0;
@@ -458,7 +460,7 @@ body:has(dialog[open]) {
   height: 4px;
   transform-origin: center bottom;
   transform: translateZ(2px) rotateX(90deg);
-  background: #684251;
+  background: #583744;
 }
 .crest {
   width: min(190px, 48cqh, 72cqw);
@@ -662,27 +664,6 @@ body:has(dialog[open]) {
     margin: 2px 0 0;
     font-size: 12px;
   }
-  .accentPicker {
-    gap: 4px;
-    margin-top: 14px;
-  }
-  .accentPicker legend {
-    float: none;
-    padding: 0 0 6px;
-    font-size: 11px;
-  }
-  .accentPicker label {
-    flex: 1;
-  }
-  .accentPicker label > span {
-    padding: 8px 5px;
-    gap: 6px;
-    font-size: 11px;
-  }
-  .swatch {
-    width: 10px;
-    height: 10px;
-  }
   .previewTools {
     gap: 10px 18px;
     font-size: 11px;
@@ -716,7 +697,7 @@ body:has(dialog[open]) {
   }
 }
 @media (max-width: 360px) {
-  .coverFront {
+  .coverArtwork {
     padding-inline: 20px;
   }
   .paper {

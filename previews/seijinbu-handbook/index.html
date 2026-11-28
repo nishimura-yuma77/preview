@@ -10,26 +10,8 @@
     <main class="comparisonShell">
       <header class="comparisonHeader">
         <a href="../">← 一覧</a>
-        <h1>成人学園 <span>校章主役・表紙の開閉</span></h1>
+        <h1>成人学園 <span>校章主役・革カバーの開閉</span></h1>
       </header>
-      <fieldset class="accentPicker">
-        <legend>エンブレム</legend>
-        <label
-          ><input type="radio" name="accent" value="champagne" checked /><span
-            ><i class="swatch champagne" aria-hidden="true"></i>シャンパン</span
-          ></label
-        >
-        <label
-          ><input type="radio" name="accent" value="mint" /><span
-            ><i class="swatch mint" aria-hidden="true"></i>アイスミント</span
-          ></label
-        >
-        <label
-          ><input type="radio" name="accent" value="lilac" /><span
-            ><i class="swatch lilac" aria-hidden="true"></i>ライラック</span
-          ></label
-        >
-      </fieldset>
       <div class="previewTools">
         <label
           >描画幅
@@ -50,7 +32,7 @@
           <iframe
             id="screen"
             title="成人学園のメニュープレビュー"
-            src="./screen.html?accent=champagne"
+            src="./screen.html"
           ></iframe>
         </div>
       </div>
@@ -75,21 +57,10 @@
       </details>
     </main>
     <script>
-      const params = new URLSearchParams(location.search);
-      const accents = ["champagne", "mint", "lilac"];
-      let accent = accents.includes(params.get("accent"))
-        ? params.get("accent")
-        : "champagne";
       const frame = document.getElementById("screen");
       const width = document.getElementById("width");
       const fit = document.getElementById("fit");
       const area = document.getElementById("area");
-      function updateUrl() {
-        const url = new URL(location.href);
-        url.searchParams.delete("concept");
-        url.searchParams.set("accent", accent);
-        history.replaceState(null, "", url);
-      }
       function resize() {
         const w = Number(width.value);
         const scale = fit.checked ? Math.min(1, area.clientWidth / w) : 1;
@@ -99,19 +70,6 @@
         document.getElementById("sizer").style.width = `${w * scale}px`;
         document.getElementById("sizer").style.height = `${760 * scale}px`;
       }
-      document.querySelector(`input[name=accent][value=${accent}]`).checked =
-        true;
-      frame.src = `./screen.html?accent=${accent}`;
-      document.querySelectorAll("input[name=accent]").forEach((input) =>
-        input.addEventListener("change", () => {
-          accent = input.value;
-          updateUrl();
-          frame.contentWindow.postMessage(
-            { type: "accent", value: accent },
-            location.origin,
-          );
-        }),
-      );
       document
         .querySelectorAll("[data-book]")
         .forEach((button) =>
@@ -122,12 +80,6 @@
             ),
           ),
         );
-      frame.addEventListener("load", () =>
-        frame.contentWindow.postMessage(
-          { type: "accent", value: accent },
-          location.origin,
-        ),
-      );
       width.addEventListener("change", resize);
       fit.addEventListener("change", resize);
       new ResizeObserver(resize).observe(area);

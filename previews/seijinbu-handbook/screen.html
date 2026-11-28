@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja" data-accent="champagne">
+<html lang="ja">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -50,14 +50,12 @@
         <div class="pageEdge pageEdgeBottom" aria-hidden="true"></div>
         <div class="bookSpine" aria-hidden="true"></div>
         <section class="cover" aria-hidden="true">
-          <div class="coverFace coverFront">
-            <span class="crest emblem" aria-hidden="true"></span>
-            <h2 id="bookTitle">成人学園</h2>
-          </div>
-          <div class="coverFace coverBack"></div>
-          <div class="coverEdge coverForeEdge"></div>
-          <div class="coverEdge coverTopEdge"></div>
-          <div class="coverEdge coverBottomEdge"></div>
+          <template id="coverArtwork">
+            <div class="coverArtwork">
+              <span class="crest emblem"></span>
+              <h2>成人学園</h2>
+            </div>
+          </template>
         </section>
         <div class="paper" inert aria-hidden="true">
           <div class="identity">
@@ -130,12 +128,6 @@
       </div>
     </dialog>
     <script>
-      const root = document.documentElement;
-      const params = new URLSearchParams(location.search);
-      const accents = ["champagne", "mint", "lilac"];
-      root.dataset.accent = accents.includes(params.get("accent"))
-        ? params.get("accent")
-        : "champagne";
       const handbook = document.getElementById("handbook");
       const auth = document.getElementById("auth");
       const menu = document.getElementById("menu");
@@ -148,6 +140,38 @@
       const paper = handbook.querySelector(".paper");
       const closeButton = handbook.querySelector("[data-close]");
       const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+      const cover = handbook.querySelector(".cover");
+      const artwork = document.getElementById("coverArtwork");
+      const segmentCount = 16;
+      function appendCoverFaces(host, foreEdge) {
+        const front = document.createElement("div");
+        front.className = "coverFace coverFront";
+        front.append(artwork.content.cloneNode(true));
+        const back = document.createElement("div");
+        back.className = "coverFace coverBack";
+        const lining = document.createElement("div");
+        lining.className = "coverLining";
+        back.append(lining);
+        const edge = (className) => {
+          const element = document.createElement("div");
+          element.className = `coverEdge ${className}`;
+          return element;
+        };
+        host.append(front, back, edge("coverTopEdge"), edge("coverBottomEdge"));
+        if (foreEdge) host.append(edge("coverForeEdge"));
+      }
+      const restCover = document.createElement("div");
+      restCover.className = "coverRest";
+      appendCoverFaces(restCover, true);
+      cover.append(restCover);
+      const segments = Array.from({ length: segmentCount }, (_, index) => {
+        const segment = document.createElement("div");
+        segment.className = "coverSegment";
+        segment.dataset.index = index;
+        appendCoverFaces(segment, index === 0);
+        cover.append(segment);
+        return segment;
+      });
       const slideDuration = 300;
       const coverDuration = 400;
       const fullDuration = slideDuration + coverDuration;
@@ -156,7 +180,42 @@
       let frame;
       let lastTime;
       let resolveMotion;
+      let bendDirection = 1;
       const ease = (value) => (1 - Math.cos(Math.PI * value)) / 2;
+      function renderCover(leaf) {
+        const width = cover.clientWidth;
+        if (!width) return;
+        const step = width / segmentCount;
+        const wave = Math.sin(Math.PI * leaf) * bendDirection;
+        cover.dataset.bent = String(Math.abs(wave) > 0.000001);
+        restCover.style.transform = `rotateY(${110 * leaf}deg)`;
+        let right = width;
+        let depth = 0;
+        cover.style.setProperty("--cover-width", `${width}px`);
+        for (let distance = 0; distance < segmentCount; distance += 1) {
+          const index = segmentCount - distance - 1;
+          const segment = segments[index];
+          const across = (distance + 0.5) / segmentCount;
+          const bend = wave * (8 * Math.exp(-10 * across) - 6 * across ** 6);
+          const angle = 110 * leaf + bend;
+          const radians = (angle * Math.PI) / 180;
+          segment.style.width = `${step + (index < segmentCount - 1 ? 1 : 0)}px`;
+          segment.style.transformOrigin = `${step}px center`;
+          segment.style.transform = `translate3d(${right - step}px,0,${depth}px) rotateY(${angle}deg)`;
+          segment.style.setProperty("--offset", `${index * step}px`);
+          segment.style.setProperty("--shade", Math.abs(bend) * 0.007);
+          segment.dataset.angle = angle;
+          segment.dataset.right = right;
+          segment.dataset.depth = depth;
+          right -= step * Math.cos(radians);
+          depth += step * Math.sin(radians);
+        }
+      }
+      new ResizeObserver(() =>
+        renderCover(
+          ease(Math.max(0, (position - slideDuration) / coverDuration)),
+        ),
+      ).observe(cover);
       function renderBook() {
         const slide = ease(Math.min(1, position / slideDuration));
         const leaf = ease(
@@ -164,6 +223,7 @@
         );
         handbook.style.setProperty("--slide", slide);
         handbook.style.setProperty("--leaf", leaf);
+        renderCover(leaf);
         const interactive =
           position === fullDuration && target === fullDuration;
         if (!interactive && paper.contains(document.activeElement))
@@ -199,6 +259,9 @@
         const delta =
           lastTime === undefined ? 0 : Math.min(time - lastTime, 50);
         lastTime = time;
+        bendDirection +=
+          ((target === fullDuration ? 1 : -1) - bendDirection) *
+          (1 - Math.exp(-delta / 80));
         position =
           target > position
             ? Math.min(target, position + delta)
@@ -368,8 +431,6 @@
       });
       window.addEventListener("message", (event) => {
         if (event.origin !== location.origin || event.source !== parent) return;
-        if (event.data.type === "accent" && accents.includes(event.data.value))
-          root.dataset.accent = event.data.value;
         if (event.data.type === "book" && event.data.value === "open")
           openBook();
         if (event.data.type === "book" && event.data.value === "closed")
