@@ -1,6 +1,6 @@
 // One project owns one channel. Persist the latest undelivered operation per
 // thread with the existing session state; a slow dashboard never blocks Slack.
-export function createReplyWatch({ state, save, client, team, channel, bot, token, port = 8787, onError }) {
+export function createReplyWatch({ state, save, client, team, channel, channelName, bot, token, port = 8787, onError }) {
   if (!token) return null
   if (!team || !Number.isInteger(Number(port)) || port < 1 || port > 65535) throw Error('Invalid reply-watch configuration')
   const { threads, outbox } = state.replyWatch ??= { threads: {}, outbox: {} }
@@ -14,7 +14,10 @@ export function createReplyWatch({ state, save, client, team, channel, bot, toke
           const body = { occurred_us_at: Number(item.ts.replace('.', '')) }
           if (item.status === 'pending') {
             const [info, link] = await Promise.all([
-              client.conversations.info({ channel }), client.chat.getPermalink({ channel, message_ts: item.ts }),
+              client.conversations.info({ channel }).catch(error => {
+                if (channelName && error.data?.error === 'missing_scope') return { channel: { name: channelName } }
+                throw error
+              }), client.chat.getPermalink({ channel, message_ts: item.ts }),
             ])
             if (!info.channel?.name || !link.permalink) throw Error('Missing reply destination')
             Object.assign(body, { display_name: `#${info.channel.name}`, reference_url: link.permalink })

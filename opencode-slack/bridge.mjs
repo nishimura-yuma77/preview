@@ -322,7 +322,7 @@ async function registerProject(app, botId, project, password, drain, supervisors
   state.pending ??= {}
   const save = createStateSaver(stateFile, () => state)
   const watch = createReplyWatch({ state, save, client: app.client, team: teamId, channel: channelId, bot: botId,
-    token: process.env.REPLY_WATCH_TOKEN, port: process.env.REPLY_WATCH_PORT,
+    channelName: project.name, token: process.env.REPLY_WATCH_TOKEN, port: process.env.REPLY_WATCH_PORT,
     onError: error => log('WARN', 'reply-watch.delivery.failed', { error: error.message }),
   })
 
