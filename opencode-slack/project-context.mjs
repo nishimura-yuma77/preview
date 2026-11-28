@@ -10,6 +10,7 @@ export class ProjectInstructionsError extends Error {
 export function projectEnvironment(project, environment) {
   const env = { ...environment, OPENCODE_SERVER_USERNAME: 'opencode' }
   delete env.SLACK_APP_TOKEN
+  delete env.REPLY_WATCH_TOKEN
   delete env.SLACK_BOT_TOKEN
   if (project.skillsPath) {
     const config = JSON.parse(env.OPENCODE_CONFIG_CONTENT || '{}')

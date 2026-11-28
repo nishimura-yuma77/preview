@@ -33,7 +33,7 @@ export async function retrySlack(task, { signal, pause = sleep, onRetry = () => 
 export async function deliverChunks(client, chunks, delivery, save, { signal, checkpoint = () => {}, pause } = {}) {
   for (let index = delivery.sent ?? 0; index < chunks.length; index++) {
     checkpoint()
-    await retrySlack(() => {
+    const receipt = await retrySlack(() => {
       checkpoint()
       return client.chat.postMessage({ ...chunks[index], client_msg_id: delivery.ids[index] })
     }, {
@@ -41,6 +41,7 @@ export async function deliverChunks(client, chunks, delivery, save, { signal, ch
       onRetry: (error, delayMs) => diagnostic('WARN', 'slack.delivery.retry', { error, delayMs, chunk: index }),
     })
     delivery.sent = index + 1
+    if (receipt?.ts) delivery.lastTs = receipt.ts
     await save()
   }
   diagnostic('INFO', 'slack.delivery.completed', { chunks: chunks.length })

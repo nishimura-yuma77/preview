@@ -1,1 +1,4 @@
 /certbot/
+/nginx/reply-watch.htpasswd
+/reply-watch/runtime.env
+/reply-watch/data/

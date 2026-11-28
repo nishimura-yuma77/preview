@@ -1,14 +1,26 @@
 services:
   nginx:
     image: nginx:stable-alpine
-    ports:
-      - "80:80"
-      - "443:443"
+    network_mode: host
     volumes:
       - ./previews:/usr/share/nginx/html:ro
+      - ./reply-watch/public:/usr/share/nginx/reply-watch:ro
+      - ./nginx/reply-watch.htpasswd:/etc/nginx/reply-watch.htpasswd:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./certbot/www:/var/www/certbot:ro
       - ./certbot/conf:/etc/letsencrypt:ro
+    restart: unless-stopped
+
+  reply-watch:
+    image: node:24.22.2-alpine
+    profiles: [reply-watch]
+    network_mode: host
+    working_dir: /app
+    command: [node, src/server.mjs]
+    env_file: ./reply-watch/runtime.env
+    volumes:
+      - ./reply-watch/src:/app/src:ro
+      - ./reply-watch/data:/app/data
     restart: unless-stopped
 
   certbot:
