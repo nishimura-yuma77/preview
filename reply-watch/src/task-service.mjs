@@ -8,10 +8,10 @@ export class TaskService {
   }
 
   markPending({ source_id, occurred_us_at, display_name, reference_url }) {
-    this.#store.save(source_id, 'pending', occurred_us_at, display_name, reference_url)
+    this.#store.save({ source_id, status: 'pending', occurred_us_at, display_name, reference_url })
   }
 
   markDone({ source_id, occurred_us_at }) {
-    this.#store.save(source_id, 'done', occurred_us_at, null, null)
+    this.#store.save({ source_id, status: 'done', occurred_us_at, display_name: null, reference_url: null })
   }
 }
