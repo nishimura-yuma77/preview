@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 768" width="384" height="768" fill="none">
+  <defs>
+    <filter id="fibers" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".11 .012" numOctaves="3" seed="17" stitchTiles="stitch"/>
+      <feColorMatrix values="0 0 0 0 .09  0 0 0 0 .045  0 0 0 0 .02  .28 0 0 0 -.09"/>
+    </filter>
+    <filter id="softPatches"><feGaussianBlur stdDeviation="35"/></filter>
+    <mask id="grainPatches" maskUnits="userSpaceOnUse" x="0" y="0" width="384" height="768">
+      <g fill="white" filter="url(#softPatches)"><ellipse cx="55" cy="115" rx="78" ry="105"/><ellipse cx="270" cy="360" rx="105" ry="125"/><ellipse cx="140" cy="660" rx="100" ry="95"/></g>
+    </mask>
+  </defs>
+  <g fill="#b68b60" fill-opacity=".025" mask="url(#grainPatches)">
+    <path d="M38-16C4 123 78 211 48 339S19 606 54 784H74C36 605 85 443 64 330S27 128 55-16Z"/>
+    <path d="M167-16c28 135-30 249-4 359s35 286 9 441h18c23-126 1-281-15-428s37-218 11-372Z"/>
+    <path d="M292-16c-20 117 29 192 15 295s-46 287-11 505h24c-26-210 5-363 10-486s-38-176-19-314Z"/>
+  </g>
+  <g stroke="#120b07" stroke-opacity=".07" stroke-width=".8" mask="url(#grainPatches)">
+    <path d="M18-8c-7 116 41 233 20 361S6 612 25 776M85-8c33 147-31 265-9 411s28 254 11 373M123-8c-15 133 30 236 15 371s-18 286-5 413M221-8c-25 145 23 238 6 382s-22 274-1 402M263-8c24 124-24 254-6 390s33 260 12 394M353-8c-19 113 17 262 5 391s-18 254-2 393"/>
+  </g>
+  <rect width="384" height="768" filter="url(#fibers)"/>
+</svg>
