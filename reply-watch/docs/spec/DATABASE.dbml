@@ -3,7 +3,8 @@ Project reply_watch {
 }
 
 Table reply {
-  key text [pk, not null, note: '用件キー']
+  id integer [pk, increment, note: '用件ID（SQLite INTEGER PRIMARY KEY AUTOINCREMENT）']
+  source_id text [not null, unique, note: '連携元ID']
   status text [not null, note: '用件の状態']
   occurred_us_at integer [not null, note: '採用した操作の発生時刻（Unixマイクロ秒）']
   display_name text [note: '表示名']

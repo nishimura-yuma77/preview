@@ -21,7 +21,8 @@ sequenceDiagram
     Slack->>Bridge: メンションを配信
     Bridge->>Slack: 最終回答を投稿
     Slack-->>Bridge: 投稿成功
-    Bridge->>App: 用件キー・表示名・URL・発生時刻を指定して返信待ちを登録
+    Bridge->>App: 連携元ID・表示名・URL・発生時刻を指定して返信待ちを登録
+    App->>App: 未登録の連携元IDに用件IDを自動採番
     App-->>Bridge: 返信待ちを記録
 ```
 
@@ -56,7 +57,7 @@ sequenceDiagram
     actor U as スレッド参加者
     U->>Slack: 対象スレッドに返信
     Slack->>Bridge: 人の新規返信
-    Bridge->>App: 同じ用件キーと発生時刻で完了を登録
+    Bridge->>App: 同じ連携元IDと返信の発生時刻で完了を登録
     App-->>Bridge: 完了を記録
     Browser->>App: 一覧を再取得
     App-->>Browser: 完了した行を除いた一覧
@@ -74,7 +75,7 @@ sequenceDiagram
 sequenceDiagram
     Bridge->>Slack: 完了済みスレッドに最終回答を再投稿
     Slack-->>Bridge: 投稿成功
-    Bridge->>App: 同じキー・新しい発生時刻とリンクで返信待ちを登録
+    Bridge->>App: 同じ連携元ID・新しい発生時刻とリンクで返信待ちを登録
     App-->>Bridge: 同じ用件を返信待ちとして確定
     Browser->>App: 一覧を再取得
     App-->>Browser: 最新の回答を指す行

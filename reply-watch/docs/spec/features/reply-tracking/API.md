@@ -5,13 +5,13 @@
 | メソッド | パス | 処理概要 |
 | --- | --- | --- |
 | GET | [`/task/api/pending`](#返信待ち一覧の取得) | 返信待ち一覧の取得 |
-| PUT | [`/internal/reply/{key}/pending`](#返信待ちの登録) | 用件の登録・再開 |
-| PUT | [`/internal/reply/{key}/done`](#完了の登録) | 用件の完了 |
+| PUT | [`/internal/reply/{source_id}/pending`](#返信待ちの登録) | 用件の登録・再開 |
+| PUT | [`/internal/reply/{source_id}/done`](#完了の登録) | 用件の完了 |
 
 ## 返信待ち一覧の取得
 
 ### 処理概要・関連ユースケース
-[回答を開く](USECASE.md#回答を開く)。[閲覧認証](../../EXTERNAL_API_INDEX.md)を通過した利用者に、返信待ちの用件を発生時刻の降順（同時刻はキー昇順）で返す。
+[回答を開く](USECASE.md#回答を開く)。[閲覧認証](../../EXTERNAL_API_INDEX.md)を通過した利用者に、返信待ちの用件を発生時刻の降順（同時刻は用件IDの昇順）で返す。
 
 ### シーケンス図
 ```mermaid
@@ -54,12 +54,12 @@ Cache-Control: no-store
 ## 返信待ちの登録
 
 ### 処理概要・関連ユースケース
-[用件を登録する](USECASE.md#用件を登録する)・[返信待ちを再開する](USECASE.md#返信待ちを再開する)。同じキーの用件に表示名・参照 URL を設定して返信待ちにする。
+[用件を登録する](USECASE.md#用件を登録する)・[返信待ちを再開する](USECASE.md#返信待ちを再開する)。指定の `source_id` に対応する用件に表示名・参照 URL を設定して返信待ちにする。
 
 ### リクエスト
 
 ```http
-PUT /internal/reply/r-123/pending HTTP/1.1
+PUT /internal/reply/slack_T123_C456_1800000000_000001/pending HTTP/1.1
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -75,12 +75,12 @@ Content-Type: application/json
 ## 完了の登録
 
 ### 処理概要・関連ユースケース
-[返信待ちを完了する](USECASE.md#返信待ちを完了する)。指定キーの完了を記録し、一覧から外す。未登録でも完了時刻を保存する。
+[返信待ちを完了する](USECASE.md#返信待ちを完了する)。指定の `source_id` に対応する用件の完了を記録し、一覧から外す。未登録でも用件IDを自動採番し、完了時刻を保存する。
 
 ### リクエスト
 
 ```http
-PUT /internal/reply/r-123/done HTTP/1.1
+PUT /internal/reply/slack_T123_C456_1800000000_000001/done HTTP/1.1
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -91,14 +91,14 @@ Content-Type: application/json
 
 ## 内部 API の共通契約
 
-[内部認証](../../INTERNAL_API_INDEX.md)を通過したブリッジのみ呼び出せる。`key` は呼び出し側が一意に割り当てる不透明なパス要素（英数字・`_`・`-` の1～255文字）。`occurred_us_at` は Unix マイクロ秒を表す非負の JSON 整数で、Node.js の安全な整数範囲内とする。同じ操作の再送には同じキー・時刻・ボディを使う。
+[内部認証](../../INTERNAL_API_INDEX.md)を通過したブリッジのみ呼び出せる。パスの `source_id` は呼び出し側が一意に割り当てる不透明な文字列（英数字・`_`・`-` の1～255文字）。ブリッジは用件IDの取得・指定を必要としない。`occurred_us_at` は Unix マイクロ秒を表す非負の JSON 整数で、Node.js の安全な整数範囲内とする。同じ操作の再送には同じ `source_id`・時刻・ボディを使う。
 
 ### シーケンス図
 ```mermaid
 sequenceDiagram
-    Bridge->>API: PUT 用件キー・状態別の入力
+    Bridge->>API: PUT 連携元ID・状態別の入力
     API->>DB: トランザクション開始
-    API->>DB: キーごとに発生時刻を比較し、条件を満たす場合だけ更新
+    API->>DB: source_id で特定し、未登録なら採番・登録、登録済みなら更新規則を適用
     API->>DB: 確定
     DB-->>API: 確定結果
     API-->>Bridge: 204 No Content
@@ -127,7 +127,7 @@ HTTP/1.1 204 No Content
 
 | HTTP | コード | 発生条件 | 応答 |
 | --- | --- | --- | --- |
-| 400 | `invalid_request` | JSON・キー・ボディ項目の制約違反 | 変更なし |
+| 400 | `invalid_request` | JSON・連携元ID・ボディ項目の制約違反 | 変更なし |
 | 401 | `unauthorized` | トークンなし・不一致 | 変更なし |
 | 415 | `unsupported_media_type` | JSON 以外 | 変更なし |
 | 503 | `unavailable` | DB 処理失敗 | 未確定で終了 |
