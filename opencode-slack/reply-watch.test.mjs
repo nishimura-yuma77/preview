@@ -14,8 +14,9 @@ test('tracked final answer, third-party reply, and recovered final answer update
   const api = createReplyServer(db, { token })
   api.listen(0, '127.0.0.1'); await once(api, 'listening')
   t.after(async () => { await api[Symbol.asyncDispose](); db.close() })
+  const notices = []
   const client = { conversations: { info: async () => ({ channel: { name: 'butler' } }) },
-    chat: { getPermalink: async ({ message_ts }) => ({ permalink: `https://example.slack.com/${message_ts}` }) } }
+    chat: { postMessage: async message => notices.push(message), getPermalink: async ({ message_ts }) => ({ permalink: `https://example.slack.com/${message_ts}` }) } }
   const state = {}, port = api.address().port
   const options = { state, save: async () => {}, client, port, token, team: 'T1', channel: 'C1', bot: 'U0', onError: e => assert.fail(e.message) }
   const watch = createReplyWatch(options)
@@ -57,4 +58,5 @@ test('tracked final answer, third-party reply, and recovered final answer update
   await check('1800000007.000001', 'pending')
   await recovered.end({ ...end, text: '!end', ts: '1800000008.000001' })
   await check('1800000008.000001', 'done')
+  assert.deepEqual(notices, Array(2).fill({ channel: 'C1', thread_ts: thread, text: 'クローズしました。再開には再度メンションしてください。' }))
 })

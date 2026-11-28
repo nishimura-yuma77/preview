@@ -78,6 +78,7 @@ sequenceDiagram
     U->>Slack: 追跡中のスレッドに !end（または !e）だけを投稿
     Slack->>Bridge: 人の新規返信
     Bridge->>Bridge: このスレッドの追跡を終了
+    Bridge->>Slack: 同じスレッドにクローズと再開方法を通知
     Bridge->>App: 同じ連携元IDとコマンド投稿時刻で完了を登録
     App-->>Bridge: 完了を記録
     Browser->>App: 一覧を再取得

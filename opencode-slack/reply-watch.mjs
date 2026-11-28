@@ -62,7 +62,9 @@ export function createReplyWatch({ state, save, client, team, channel, channelNa
       if (!threads[thread] || (threads[thread] !== true && event.ts <= threads[thread])) return Promise.resolve()
       delete threads[thread]
       ended[thread] = event.ts
-      return record(thread, event.ts, 'done').then(save)
+      return record(thread, event.ts, 'done').then(save).then(() => client.chat.postMessage({
+        channel, thread_ts: thread, text: 'クローズしました。再開には再度メンションしてください。',
+      }))
     },
     human(event) {
       if (!isHumanReply(event) || !threads[event.thread_ts]) return
