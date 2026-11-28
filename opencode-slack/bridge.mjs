@@ -12,6 +12,7 @@ import { ProjectInstructionsError, projectEnvironment, projectPrompt } from './p
 import { createDrainController, drainingMessage, openCodeActivity, startRestartControl } from './restart-control.mjs'
 import { diffPages, diffView, patchDetails, todoLines, toolLabel, webFetchResult } from './tool-display.mjs'
 import { deliverChunks } from './slack-retry.mjs'
+import { createReplyWatch } from './reply-watch.mjs'
 import { superviseProject } from './project-supervisor.mjs'
 import { clearThreadPending, finishPending, submitPromptOnce } from './request-recovery.mjs'
 import { initializeDiagnostics, diagnostic, closeDiagnostics, withLogContext, updateLogContext, createFailureTracker, captureChildDiagnostics } from './diagnostics.mjs'
@@ -239,6 +240,7 @@ export async function postCompletedAnswer(client, thread, answer, targetChannel 
   }
   const delivery = recovery.delivery ?? { ids: chunks.map(() => randomUUID()), sent: 0 }
   await deliverChunks(client, chunks, delivery, recovery.save ?? (async () => {}), { checkpoint, signal: recovery.signal })
+  if (delivery.lastTs) await recovery.onFinal?.(thread, delivery.lastTs)
 }
 
 export async function main() {
@@ -262,7 +264,7 @@ export async function main() {
     timeout: 15000, retryConfig: { retries: 3, minTimeout: 1000, maxTimeout: 5000, randomize: true },
     rejectRateLimitedCalls: true,
   } })
-  const { user_id: botId } = await app.client.auth.test()
+  const { user_id: botId, team_id: teamId } = await app.client.auth.test()
   if (!botId) throw Error('Could not identify Slack bot.')
   const configured = loadProjects().filter(project => project.channelId)
   const drain = createDrainController()
@@ -285,7 +287,7 @@ export async function main() {
         ? args.ack()
         : drain.track(`callback:${project.name}`, () => handler(args)))
     }
-    await registerProject(scoped, botId, project, password, drain, supervisors)
+    await registerProject(scoped, botId, project, password, drain, supervisors, teamId)
   }
   app.error(async error => { diagnostic('ERROR', 'slack.event.failed', { error }) })
   diagnostic('INFO', 'slack.connecting')
@@ -302,7 +304,7 @@ export async function main() {
   await startRestartControl(drain)
 }
 
-async function registerProject(app, botId, project, password, drain, supervisors) {
+async function registerProject(app, botId, project, password, drain, supervisors, teamId) {
   const { channelId, stateFile } = project
   const endpoint = `http://127.0.0.1:${project.port}`
   const newKey = () => `${project.name}:${randomUUID()}`
@@ -319,6 +321,10 @@ async function registerProject(app, botId, project, password, drain, supervisors
   }
   state.pending ??= {}
   const save = createStateSaver(stateFile, () => state)
+  const watch = createReplyWatch({ state, save, client: app.client, team: teamId, channel: channelId, bot: botId,
+    channelName: project.name, token: process.env.REPLY_WATCH_TOKEN, port: process.env.REPLY_WATCH_PORT,
+    onError: error => log('WARN', 'reply-watch.delivery.failed', { error: error.message }),
+  })
 
   const authorization = `Basic ${Buffer.from(`opencode:${password}`).toString('base64')}`
   async function rawApi(path, body, signal) {
@@ -705,7 +711,7 @@ async function registerProject(app, botId, project, password, drain, supervisors
       send = (...args) => { request.checkpoint(); return rawSend(...args) }
       if (pending?.answer) {
         return await postCompletedAnswer(client, thread, pending.answer, channelId, request.checkpoint,
-          { delivery: pending.delivery, save, signal: request.signal })
+          { delivery: pending.delivery, save, signal: request.signal, onFinal: watch?.final })
       }
       await supervisor.waitReady(request.signal)
       const skill = pending?.messageID ? null : parseSkill(prompt)
@@ -746,6 +752,7 @@ async function registerProject(app, botId, project, password, drain, supervisors
   }
 
   const onMessage = ({ event, body, client }) => {
+    watch?.human(event)?.catch(error => log('ERROR', 'reply-watch.state.failed', { error }))
     if (event.channel !== channelId || event.user !== memberId || !event.ts || !body.event_id) return
     const thread = event.thread_ts ?? event.ts
     const messageKey = `${event.channel}:${event.ts}`
@@ -773,6 +780,7 @@ async function registerProject(app, botId, project, password, drain, supervisors
       })
     }
     if (drain.draining) return send(drainingMessage).catch(() => {})
+    if (event.text?.includes(`<@${botId}>`)) watch?.track(thread)
     state.received = [...state.received.slice(-499), messageKey]
     const { agent, prompt } = parseAgent(text)
     const pending = state.pending[messageKey] = { agent, prompt, thread, requestID: randomUUID() }
@@ -850,7 +858,7 @@ async function registerProject(app, botId, project, password, drain, supervisors
     pending.delivery = { ids: splitMarkdown(formatted).map(() => randomUUID()), sent: 0 }
     await save()
     await postCompletedAnswer(client, thread, formatted, channelId, request.checkpoint,
-      { delivery: pending.delivery, save, signal: request.signal })
+      { delivery: pending.delivery, save, signal: request.signal, onFinal: watch?.final })
   }
   app.event('app_mention', onMessage)
   app.event('message', onMessage)

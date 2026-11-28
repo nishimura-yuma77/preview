@@ -1,0 +1,20 @@
+Project reply_watch {
+  database_type: 'SQLite'
+}
+
+Table reply {
+  id integer [pk, increment, note: '用件ID（SQLite INTEGER PRIMARY KEY AUTOINCREMENT）']
+  source_id text [not null, unique, note: '連携元ID']
+  status text [not null, note: '用件の状態']
+  occurred_us_at integer [not null, note: '採用した操作の発生時刻（Unixマイクロ秒）']
+  display_name text [note: '表示名']
+  reference_url text [note: '参照URL']
+
+  indexes {
+    (status, occurred_us_at)
+  }
+  checks {
+    `occurred_us_at >= 0`
+    `(status = 'pending' AND display_name IS NOT NULL AND reference_url IS NOT NULL) OR (status = 'done' AND display_name IS NULL AND reference_url IS NULL)`
+  }
+}
