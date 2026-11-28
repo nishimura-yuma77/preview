@@ -1,0 +1,4628 @@
+{
+  "version": 2,
+  "title": "Hiromeru テスト変更案",
+  "totals": {
+    "methods": 82,
+    "cases": 297,
+    "retired": 15,
+    "pendingItems": 26,
+    "unresolvedRows": 18
+  },
+  "groups": {
+    "auth-api": {
+      "key": "auth-api",
+      "title": "認証API",
+      "area": "認証",
+      "file": "backend/tests/integration/test_auth.py",
+      "references": [
+        {
+          "file": "docs/specs/features/auth/API.md",
+          "section": "認証・返却項目"
+        }
+      ],
+      "shared": [
+        "actors"
+      ]
+    },
+    "auth-deps": {
+      "key": "auth-deps",
+      "title": "認証依存",
+      "area": "認証",
+      "file": "backend/tests/unit/api/test_auth_dependencies.py",
+      "references": [
+        {
+          "file": "docs/specs/modules/api/AUTH_DEPENDENCIES.md",
+          "section": "公開関数・例外"
+        }
+      ],
+      "shared": [
+        "actors"
+      ]
+    },
+    "identity": {
+      "key": "identity",
+      "title": "Identity初期登録",
+      "area": "認証",
+      "file": "backend/tests/unit/repositories/test_identity_repository.py",
+      "references": [
+        {
+          "file": "docs/specs/modules/IDENTITY_REPOSITORY.md",
+          "section": "create_company_with_responsible"
+        }
+      ],
+      "shared": [
+        "actors"
+      ]
+    },
+    "migration": {
+      "key": "migration",
+      "title": "DB移行",
+      "area": "DB",
+      "file": "backend/tests/integration/test_migrations.py",
+      "references": [
+        {
+          "file": "docs/specs/DATABASE.dbml",
+          "section": "列・外部キー・一意制約・索引"
+        }
+      ],
+      "shared": [
+        "actors"
+      ]
+    },
+    "storage": {
+      "key": "storage",
+      "title": "ユーザー参照の保存",
+      "area": "DB",
+      "file": "backend/tests/integration/repositories/test_user_identity_storage.py",
+      "references": [
+        {
+          "file": "docs/specs/DATABASE.dbml",
+          "section": "列・外部キー・一意制約・索引"
+        },
+        {
+          "file": "docs/specs/harness/README.md",
+          "section": "保存境界・共通型・公開契約"
+        }
+      ],
+      "shared": [
+        "actors"
+      ]
+    },
+    "sql-record": {
+      "key": "sql-record",
+      "title": "SQL記録層",
+      "area": "会話・記録",
+      "file": "backend/tests/unit/repositories/test_agent_record_repository.py",
+      "references": [
+        {
+          "file": "docs/specs/harness/README.md",
+          "section": "保存境界・共通型・公開契約"
+        },
+        {
+          "file": "docs/specs/DATABASE.dbml",
+          "section": "列・外部キー・一意制約・索引"
+        }
+      ],
+      "shared": [
+        "actors"
+      ]
+    },
+    "memory-record": {
+      "key": "memory-record",
+      "title": "インメモリ記録層",
+      "area": "会話・記録",
+      "file": "backend/tests/unit/harness/test_inmemory_agent_record_repository.py",
+      "references": [
+        {
+          "file": "docs/specs/harness/README.md",
+          "section": "保存境界・共通型・公開契約"
+        }
+      ],
+      "shared": [
+        "actors"
+      ]
+    },
+    "agent-service": {
+      "key": "agent-service",
+      "title": "会話Service",
+      "area": "会話・記録",
+      "file": "backend/tests/unit/test_agent_service.py",
+      "references": [
+        {
+          "file": "docs/specs/features/chat/API.md",
+          "section": "認可・各API"
+        },
+        {
+          "file": "docs/specs/harness/README.md",
+          "section": "保存境界・共通型・公開契約"
+        }
+      ],
+      "shared": [
+        "actors",
+        "O4"
+      ]
+    },
+    "conversation": {
+      "key": "conversation",
+      "title": "Conversation配線",
+      "area": "会話・記録",
+      "file": "backend/tests/unit/harness/test_conversation.py",
+      "references": [
+        {
+          "file": "docs/specs/harness/README.md",
+          "section": "保存境界・共通型・公開契約"
+        }
+      ],
+      "shared": [
+        "actors"
+      ]
+    },
+    "task": {
+      "key": "task",
+      "title": "Task配線",
+      "area": "会話・記録",
+      "file": "backend/tests/unit/harness/test_task.py",
+      "references": [
+        {
+          "file": "docs/specs/harness/README.md",
+          "section": "保存境界・共通型・公開契約"
+        }
+      ],
+      "shared": [
+        "actors"
+      ]
+    },
+    "container": {
+      "key": "container",
+      "title": "DI配線",
+      "area": "会話・記録",
+      "file": "backend/tests/unit/api/test_container.py",
+      "references": [
+        {
+          "file": "docs/specs/harness/README.md",
+          "section": "保存境界・共通型・公開契約"
+        },
+        {
+          "file": "docs/specs/features/chat/API.md",
+          "section": "認可・各API"
+        }
+      ],
+      "shared": [
+        "actors"
+      ]
+    },
+    "session-create": {
+      "key": "session-create",
+      "title": "会話作成API",
+      "area": "会話・記録",
+      "file": "backend/tests/integration/api/sessions/test_create_session.py",
+      "references": [
+        {
+          "file": "docs/specs/features/chat/API.md",
+          "section": "認可・各API"
+        }
+      ],
+      "shared": [
+        "actors",
+        "F3"
+      ]
+    },
+    "session-list": {
+      "key": "session-list",
+      "title": "会話一覧API",
+      "area": "会話・記録",
+      "file": "backend/tests/integration/api/sessions/test_list_sessions.py",
+      "references": [
+        {
+          "file": "docs/specs/features/chat/API.md",
+          "section": "認可・各API"
+        }
+      ],
+      "shared": [
+        "actors",
+        "F3"
+      ]
+    },
+    "session-history": {
+      "key": "session-history",
+      "title": "会話履歴API",
+      "area": "会話・記録",
+      "file": "backend/tests/integration/api/sessions/test_get_history.py",
+      "references": [
+        {
+          "file": "docs/specs/features/chat/API.md",
+          "section": "認可・各API"
+        }
+      ],
+      "shared": [
+        "actors",
+        "F3"
+      ]
+    },
+    "session-execute": {
+      "key": "session-execute",
+      "title": "会話実行API",
+      "area": "会話・記録",
+      "file": "backend/tests/integration/api/sessions/test_execute.py",
+      "references": [
+        {
+          "file": "docs/specs/features/chat/API.md",
+          "section": "認可・各API"
+        },
+        {
+          "file": "docs/specs/features/auth/API.md",
+          "section": "認証・返却項目"
+        }
+      ],
+      "shared": [
+        "actors",
+        "F3"
+      ]
+    },
+    "posts-api": {
+      "key": "posts-api",
+      "title": "投稿API",
+      "area": "一覧Backend",
+      "file": "backend/tests/integration/api/posts/test_list_posts.py",
+      "references": [
+        {
+          "file": "docs/specs/features/posts/API.md",
+          "section": "正常ケース・取得規則・エラー"
+        }
+      ],
+      "shared": [
+        "actors",
+        "P6"
+      ]
+    },
+    "metrics-api": {
+      "key": "metrics-api",
+      "title": "計測API",
+      "area": "一覧Backend",
+      "file": "backend/tests/integration/api/metrics/test_get_metrics.py",
+      "references": [
+        {
+          "file": "docs/specs/features/metrics/API.md",
+          "section": "正常ケース・集計規則・エラー"
+        }
+      ],
+      "shared": [
+        "actors",
+        "P6",
+        "M4"
+      ]
+    },
+    "posts-repo": {
+      "key": "posts-repo",
+      "title": "PostRepository",
+      "area": "一覧Backend",
+      "file": "backend/tests/unit/repositories/test_post_repository.py",
+      "references": [
+        {
+          "file": "docs/specs/modules/POST_REPOSITORY.md",
+          "section": "公開メソッドの取得・集計・例外"
+        }
+      ],
+      "shared": [
+        "actors",
+        "P6"
+      ]
+    },
+    "cursor": {
+      "key": "cursor",
+      "title": "値カーソル",
+      "area": "一覧Backend",
+      "file": "backend/tests/unit/services/test_list_cursor.py",
+      "references": [
+        {
+          "file": "docs/specs/modules/LIST_CURSOR.md",
+          "section": "issue_list_cursor・read_list_cursor・型制約"
+        }
+      ],
+      "shared": [
+        "actors",
+        "P6"
+      ]
+    },
+    "post-service": {
+      "key": "post-service",
+      "title": "PostService",
+      "area": "一覧Backend",
+      "file": "backend/tests/unit/services/test_post_service.py",
+      "references": [
+        {
+          "file": "docs/specs/features/posts/modules/POST_SERVICE.md",
+          "section": "list・フロー・引数・例外"
+        }
+      ],
+      "shared": [
+        "actors",
+        "P6"
+      ]
+    },
+    "metrics-service": {
+      "key": "metrics-service",
+      "title": "MetricsService",
+      "area": "一覧Backend",
+      "file": "backend/tests/unit/services/test_metrics_service.py",
+      "references": [
+        {
+          "file": "docs/specs/features/metrics/modules/METRICS_SERVICE.md",
+          "section": "report・フロー・引数・例外"
+        }
+      ],
+      "shared": [
+        "actors",
+        "P6"
+      ]
+    },
+    "auth-ui": {
+      "key": "auth-ui",
+      "title": "Frontend認証",
+      "area": "Frontend画面",
+      "file": "frontend/features/auth/tests/authEntry.integration.test.tsx",
+      "references": [
+        {
+          "file": "docs/specs/features/auth/API.md",
+          "section": "認証・返却項目"
+        },
+        {
+          "file": "docs/specs/USECASE.md",
+          "section": "マーケター／管理者のログイン"
+        },
+        {
+          "file": "docs/specs/SCREEN_INDEX.md",
+          "section": "ログイン・チャット"
+        }
+      ],
+      "shared": [
+        "frontend"
+      ]
+    },
+    "shell-ui": {
+      "key": "shell-ui",
+      "title": "Frontend共通領域",
+      "area": "Frontend画面",
+      "file": "frontend/features/shell/tests/roleNavigation.integration.test.tsx",
+      "references": [
+        {
+          "file": "docs/specs/features/auth/API.md",
+          "section": "認証・返却項目"
+        },
+        {
+          "file": "docs/specs/features/shell/SCREEN_DESIGN.md",
+          "section": "アカウント"
+        },
+        {
+          "file": "docs/specs/features/shell/ADMIN_SCREEN_DESIGN.md",
+          "section": "業務画面へ"
+        }
+      ],
+      "shared": [
+        "frontend"
+      ]
+    },
+    "posts-ui": {
+      "key": "posts-ui",
+      "title": "Frontend投稿",
+      "area": "Frontend画面",
+      "file": "frontend/features/posts/tests/postList.integration.test.tsx",
+      "references": [
+        {
+          "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+          "section": "ページ移動・空表示・取得エラー"
+        },
+        {
+          "file": "docs/specs/features/posts/API.md",
+          "section": "正常ケース・取得規則・エラー"
+        }
+      ],
+      "shared": [
+        "frontend"
+      ]
+    },
+    "metrics-ui": {
+      "key": "metrics-ui",
+      "title": "Frontend計測",
+      "area": "Frontend画面",
+      "file": "frontend/features/metrics/tests/metricsReport.integration.test.tsx",
+      "references": [
+        {
+          "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+          "section": "ページ移動・全体0件・続き0件・エラー"
+        },
+        {
+          "file": "docs/specs/features/metrics/API.md",
+          "section": "正常ケース・集計規則・エラー"
+        }
+      ],
+      "shared": [
+        "frontend"
+      ]
+    },
+    "demo-main": {
+      "key": "demo-main",
+      "title": "デモCLI main",
+      "area": "デモ",
+      "file": "backend/tests/unit/scripts/test_demo_dataset.py",
+      "references": [
+        {
+          "file": "docs/specs/modules/DEMO_DATASET.md",
+          "section": "main・run・seed_demo"
+        }
+      ],
+      "shared": [
+        "actors",
+        "demo"
+      ]
+    },
+    "demo-run": {
+      "key": "demo-run",
+      "title": "デモCLI run",
+      "area": "デモ",
+      "file": "backend/tests/unit/scripts/test_demo_dataset.py",
+      "references": [
+        {
+          "file": "docs/specs/modules/DEMO_DATASET.md",
+          "section": "main・run・seed_demo"
+        }
+      ],
+      "shared": [
+        "actors",
+        "demo"
+      ]
+    },
+    "demo-seed": {
+      "key": "demo-seed",
+      "title": "デモCLI seed_demo",
+      "area": "デモ",
+      "file": "backend/tests/unit/scripts/test_demo_dataset.py",
+      "references": [
+        {
+          "file": "docs/specs/modules/DEMO_DATASET.md",
+          "section": "main・run・seed_demo"
+        }
+      ],
+      "shared": [
+        "actors",
+        "demo"
+      ]
+    }
+  },
+  "fixtures": {
+    "actors": {
+      "title": "利用者とロール",
+      "text": "認証・一覧はUser101／Marketer301／Admin401／会社201。会話・デモはUser21／Marketer11／会社1。同社の別人User22、他社User23／会社2。登録状態は通常registered。固定UTC日時を使う。外部サービスはFakeまたはMock。"
+    },
+    "R9": {
+      "title": "R9：ロールの状態",
+      "text": "N＝行なし、E＝有効、D＝無効。IDはadmin／marketerの順。",
+      "columns": [
+        "ID",
+        "admin / marketer",
+        "is_admin / is_marketer"
+      ],
+      "rows": [
+        [
+          "NN",
+          "N / N",
+          "false / false"
+        ],
+        [
+          "NE",
+          "N / E",
+          "false / true"
+        ],
+        [
+          "ND",
+          "N / D",
+          "false / false"
+        ],
+        [
+          "EN",
+          "E / N",
+          "true / false"
+        ],
+        [
+          "EE",
+          "E / E",
+          "true / true"
+        ],
+        [
+          "ED",
+          "E / D",
+          "true / false"
+        ],
+        [
+          "DN",
+          "D / N",
+          "false / false"
+        ],
+        [
+          "DE",
+          "D / E",
+          "false / true"
+        ],
+        [
+          "DD",
+          "D / D",
+          "false / false"
+        ]
+      ]
+    },
+    "P6": {
+      "title": "P6：投稿・計測の共通データ",
+      "text": "会社201の公開成功済み投稿。施策12はアーカイブ済み。日時は2026年10月のUTC。S＝投稿6・完了4・待ち1・失敗1・PV710・流入81・率81/710。 API結合の正常ケースには他社投稿・公開失敗投稿も置き、返却・集計からの除外を同じケースで確認する。 会社境界用に投稿901は会社202/施策202、902は投稿側201/施策側202、903は投稿側202/施策側201、904は会社201の公開失敗投稿を置く。全て返却・集計から除外。各ケースのデータは独立準備。",
+      "columns": [
+        "投稿",
+        "施策",
+        "公開日時",
+        "計測状態",
+        "PV / 流入"
+      ],
+      "rows": [
+        [
+          "101",
+          "12",
+          "10-01 00:00Z",
+          "completed",
+          "10 / 1"
+        ],
+        [
+          "102",
+          "12",
+          "10-02 00:00Z",
+          "completed",
+          "100 / 10"
+        ],
+        [
+          "103",
+          "12",
+          "10-02 00:00Z",
+          "completed",
+          "100 / 20"
+        ],
+        [
+          "104",
+          "12",
+          "10-03 00:00Z",
+          "pending",
+          "部分値999 / 999"
+        ],
+        [
+          "105",
+          "12",
+          "10-03 00:00Z",
+          "failed",
+          "部分値999 / 999"
+        ],
+        [
+          "106",
+          "13",
+          "10-04 00:00Z",
+          "completed",
+          "500 / 50"
+        ]
+      ]
+    },
+    "O4": {
+      "title": "O4：参照不可の会話",
+      "text": "認証済み本人はUser21、Session101、対象定義prototype。",
+      "columns": [
+        "ID",
+        "条件",
+        "期待"
+      ],
+      "rows": [
+        [
+          "same-company-owner22",
+          "同社User22が所有",
+          "参照拒否"
+        ],
+        [
+          "other-company-owner23",
+          "他社User23が所有",
+          "同じ参照拒否"
+        ],
+        [
+          "missing",
+          "Session101なし",
+          "同じ参照拒否"
+        ],
+        [
+          "research-owner21",
+          "本人所有だがresearch",
+          "同じ参照拒否"
+        ]
+      ]
+    },
+    "F3": {
+      "title": "F3：チャットの権限不足",
+      "text": "本人認証は成立させ、POSTには有効なOriginと本人用CSRFを与える。",
+      "columns": [
+        "ID",
+        "状態",
+        "期待"
+      ],
+      "rows": [
+        [
+          "no-role",
+          "両ロールなし",
+          "403 MARKETER_FORBIDDEN"
+        ],
+        [
+          "admin-only",
+          "有効adminだけ",
+          "同上"
+        ],
+        [
+          "disabled-marketer",
+          "marketer行が無効",
+          "同上"
+        ]
+      ]
+    },
+    "frontend": {
+      "title": "Frontendの入力と通信境界",
+      "text": "Vitest・jsdomで実画面を描画し、通信境界をMock。parser・controller単体テストや、新しいPlaywright画面結合テストは作らない。",
+      "columns": [
+        "集合",
+        "入力・応答"
+      ],
+      "rows": [
+        [
+          "認証",
+          "User2。M=/login → /api/v1/auth/login → /chat。A=/admin/login → /api/v1/admin/auth/login → /admin/users。next未指定。メールmarketer@example.testまたはadmin@example.test、パスワードExamplePassword1!。新応答にmarketer_idを含めない。"
+        ],
+        [
+          "P：投稿",
+          "施策12、公開日2026-10-01〜10-31（日本時間）、公開日時降順、limit20。APIは09-30T15:00Z以上・10-31T15:00Z未満。初回101、続き102、復帰103。不透明cursor C-P / OLD-P。"
+        ],
+        [
+          "T：計測",
+          "同じ公開期間、limit20。初回summary＝投稿3・PV1000・流入50・率0.05。更新summary＝投稿4・PV2000・流入120・率0.06。施策12、続き11。不透明cursor C-M / OLD-M。"
+        ],
+        [
+          "server",
+          "旧cursor付きURLを実async Pageから初期表示。"
+        ],
+        [
+          "client",
+          "正常先頭のnext_cursorを実画面の「次の20件」で送る。"
+        ],
+        [
+          "復帰",
+          "cursor付き400の後、cursorだけ除去して同条件の先頭を1回取得する。"
+        ]
+      ]
+    },
+    "demo": {
+      "title": "デモCLI単体の依存",
+      "text": "DBセッション・接続設定・時計・投入先照合・保存処理はFake/Mock。実DBへの接続と別transactionでの行復元確認は対象外。User21はregistered、User999なし、別人User22。外部通信・実Taskなし。",
+      "columns": [
+        "依存",
+        "確認する契約"
+      ],
+      "rows": [
+        [
+          "main",
+          "runをMockに差し替え、確定済み結果のJSON出力を確認。DB準備なし。"
+        ],
+        [
+          "run",
+          "入力・環境の検証、取得と削除・投入の委譲、identity照合後のcommit、例外時の開始済み操作のrollbackと終了。"
+        ],
+        [
+          "seed_demo",
+          "取得と保存をFakeに委譲。所有者User21、投入済みによる省略、契約どおりの戻り値・例外。自身でcommitしない。"
+        ]
+      ]
+    },
+    "M4": {
+      "title": "M4：計測の同PV境界",
+      "text": "P6とは独立した会社201の公開成功済み投稿。201→施策13/completed/PV500/流入50、202→施策14/completed/210/21、203→施策12/completed/210/42、204→施策15/pending。全体は投稿4・完了3・待ち1・失敗0・PV920・流入113・率113/920。"
+    }
+  },
+  "tests": [
+    {
+      "id": 1,
+      "key": "auth-api",
+      "name": "test_マーケターログインは本人のユーザーIDを返す_User101とMarketer301なら200でuser_id101とメールとCSRF_Tokenを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "registered、有効marketer301、正しいパスワード。",
+          "expected": "200。user_id101・メール・CSRF Token、marketer_idなし。Cookie/JWT/本人束縛を維持。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/auth/API.md",
+        "section": "POST /auth/login：マーケターユーザーとしてログインする",
+        "lines": 53,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 2,
+      "key": "auth-api",
+      "name": "test_管理者ログインは本人のユーザーIDを返す_User101とAdmin401なら200でuser_id101とis_admin_trueを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "registered、有効admin401、正しいパスワード。",
+          "expected": "200。user_id101・メール・is_admin=true・CSRF Token、marketer_idなし。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/auth/API.md",
+        "section": "POST /admin/auth/login：管理者ユーザーとしてログインする",
+        "lines": 189,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 3,
+      "key": "auth-api",
+      "name": "test_GET_auth_meはマーケターログイン入口へ本人情報を返す_User101なら両ロールの有効状態に応じたbooleanを返す",
+      "params": [
+        {
+          "id": "NN",
+          "input": "マーケターログイン入口から本人情報取得。R9のNN、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "NE",
+          "input": "マーケターログイン入口から本人情報取得。R9のNE、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=trueの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "ND",
+          "input": "マーケターログイン入口から本人情報取得。R9のND、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "EN",
+          "input": "マーケターログイン入口から本人情報取得。R9のEN、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=true・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "EE",
+          "input": "マーケターログイン入口から本人情報取得。R9のEE、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=true・is_marketer=trueの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "ED",
+          "input": "マーケターログイン入口から本人情報取得。R9のED、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=true・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "DN",
+          "input": "マーケターログイン入口から本人情報取得。R9のDN、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "DE",
+          "input": "マーケターログイン入口から本人情報取得。R9のDE、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=trueの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "DD",
+          "input": "マーケターログイン入口から本人情報取得。R9のDD、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/auth/API.md",
+        "section": "GET /auth/me：マーケターログイン画面での確認",
+        "lines": 296,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 4,
+      "key": "auth-api",
+      "name": "test_GET_auth_meは管理者ログイン入口へ本人情報を返す_User101なら両ロールの有効状態に応じたbooleanを返す",
+      "params": [
+        {
+          "id": "NN",
+          "input": "管理者ログイン入口から本人情報取得。R9のNN、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "NE",
+          "input": "管理者ログイン入口から本人情報取得。R9のNE、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=trueの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "ND",
+          "input": "管理者ログイン入口から本人情報取得。R9のND、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "EN",
+          "input": "管理者ログイン入口から本人情報取得。R9のEN、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=true・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "EE",
+          "input": "管理者ログイン入口から本人情報取得。R9のEE、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=true・is_marketer=trueの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "ED",
+          "input": "管理者ログイン入口から本人情報取得。R9のED、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=true・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "DN",
+          "input": "管理者ログイン入口から本人情報取得。R9のDN、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "DE",
+          "input": "管理者ログイン入口から本人情報取得。R9のDE、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=trueの4項目。Browser要求では認証Cookie更新。"
+        },
+        {
+          "id": "DD",
+          "input": "管理者ログイン入口から本人情報取得。R9のDD、有効JWTのUser101。",
+          "expected": "200。user_id101・email・is_admin=false・is_marketer=falseの4項目。Browser要求では認証Cookie更新。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/auth/API.md",
+        "section": "GET /auth/me：管理者ログイン画面での確認",
+        "lines": 297,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 5,
+      "key": "auth-deps",
+      "name": "test_csrf_protectedは本人IDで検証する_User101がロールなしでも本人用Tokenが一致すれば同じ本人情報を返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "User101、Roleなし、許可Origin、本人101用CSRFのCookieとHeader一致。",
+          "expected": "同じAuthenticatedUserを返す。Roleは要求しない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/api/AUTH_DEPENDENCIES.md",
+        "section": "csrf_protected：正常",
+        "lines": 147,
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 6,
+      "key": "auth-deps",
+      "name": "test_csrf_protectedは検証できない要求を拒否する_OriginかTokenが不正ならCSRF_VALIDATION_FAILEDになる",
+      "params": [
+        {
+          "id": "origin",
+          "input": "許可外Origin。",
+          "expected": "CSRF_VALIDATION_FAILED"
+        },
+        {
+          "id": "cookie-missing",
+          "input": "CSRF Cookie欠落。",
+          "expected": "CSRF_VALIDATION_FAILED"
+        },
+        {
+          "id": "header-missing",
+          "input": "CSRF Header欠落。",
+          "expected": "CSRF_VALIDATION_FAILED"
+        },
+        {
+          "id": "token-mismatch",
+          "input": "CookieとHeader不一致。",
+          "expected": "CSRF_VALIDATION_FAILED"
+        },
+        {
+          "id": "other-user",
+          "input": "User102用署名、CookieとHeader自体は一致。",
+          "expected": "CSRF_VALIDATION_FAILED"
+        },
+        {
+          "id": "tampered",
+          "input": "署名改ざん、CookieとHeader自体は一致。",
+          "expected": "CSRF_VALIDATION_FAILED"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/api/AUTH_DEPENDENCIES.md",
+        "section": "csrf_protected：AppError",
+        "lines": "153-157",
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 7,
+      "key": "auth-deps",
+      "name": "test_marketer_readerは取得済みロールで認可する_User101に有効Marketer301があれば同じ本人情報を返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "User101、有効marketer301／会社201。",
+          "expected": "同じ本人情報を返す。本人IDとRole IDを混同せず再取得しない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/api/AUTH_DEPENDENCIES.md",
+        "section": "marketer_reader：正常",
+        "lines": 244,
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 8,
+      "key": "auth-deps",
+      "name": "test_marketer_readerは権限不足を拒否する_marketerがNoneならMARKETER_FORBIDDENになる",
+      "params": [
+        {
+          "id": "single",
+          "input": "認証済み、marketer=None。",
+          "expected": "MARKETER_FORBIDDEN"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/api/AUTH_DEPENDENCIES.md",
+        "section": "marketer_reader：AppError",
+        "lines": 250,
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 9,
+      "key": "auth-deps",
+      "name": "test_marketer_writerはCSRF通過後に認可する_User101に有効Marketer301があれば同じ本人情報を返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "User101、有効marketer301、正規CSRF。",
+          "expected": "CSRF通過後に認可し、同じ本人情報を返す。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/api/AUTH_DEPENDENCIES.md",
+        "section": "marketer_writer：正常",
+        "lines": 275,
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 10,
+      "key": "auth-deps",
+      "name": "test_marketer_writerは権限不足を拒否する_CSRF通過済みでもmarketerがNoneならMARKETER_FORBIDDENになる",
+      "params": [
+        {
+          "id": "single",
+          "input": "正規CSRF、marketer=None。",
+          "expected": "MARKETER_FORBIDDEN"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/api/AUTH_DEPENDENCIES.md",
+        "section": "marketer_writer：AppError",
+        "lines": 281,
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 12,
+      "key": "identity",
+      "name": "test_create_company_with_responsibleは責任者を登録する_企業Aと本人名とhashならregisteredの本人と同社の有効な両ロールを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "DBセッションFake。企業A・責任者名・正規化メール・hash・固定now。Fakeがflush後のIDを供給。",
+          "expected": "返却IdentityRecordは本人名・registered・世代0・有効両Role・責任者=trueを持つ。共通nowは企業・本人・両Roleの作成/更新の保存値として依存へ渡す。DTOへの日時属性追加は対象外。自身でcommitしない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/IDENTITY_REPOSITORY.md",
+        "section": "create_company_with_responsible：正常",
+        "lines": "165-213",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 13,
+      "key": "identity",
+      "name": "test_IdentityRepositoryのcreate_company_with_responsibleは整合性違反を伝播する_DB依存のIntegrityErrorを同じ例外で送出する",
+      "params": [
+        {
+          "id": "email-unique",
+          "input": "DB依存がメール一意制約のIntegrityError Eを送出。",
+          "expected": "同じIntegrityError Eを伝播。自身のcommitなし。rollbackによる実DB復元はこの単体テストの対象外。"
+        },
+        {
+          "id": "other-integrity",
+          "input": "DB依存がメール以外のIntegrityError Eを送出。制約判定自体はDBの責務。",
+          "expected": "同じIntegrityError Eを伝播。自身のcommitなし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/IDENTITY_REPOSITORY.md",
+        "section": "create_company_with_responsible：IntegrityError",
+        "lines": "219-220",
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 14,
+      "key": "identity",
+      "name": "test_IdentityRepositoryのcreate_company_with_responsibleはDB障害を伝播する_DB依存のSQLAlchemyErrorを同じ例外で送出する",
+      "params": [
+        {
+          "id": "single",
+          "input": "初期登録のDB依存をFakeにし、SQLAlchemyError Eを送出。",
+          "expected": "同一SQLAlchemyError Eを伝播。自身でcommitしない。実DBの復元結果を単体で検証しない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/IDENTITY_REPOSITORY.md",
+        "section": "create_company_with_responsible：SQLAlchemyError",
+        "lines": 221,
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 21,
+      "key": "sql-record",
+      "name": "test_AgentRecordRepositoryのcreate_sessionは本人IDを保存へ渡す_ロールなしUser21ならowner21の空Sessionを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "DBセッションFake、meta.user_id21、定義prototype。Fakeが保存ID101と日時を供給。",
+          "expected": "保存依存へuser_id21を渡し、返却SessionRecord.user_id21・title=None。会社・Role照合なし。空作成でTurn/Item追加なし。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/harness/README.md",
+        "section": "RecordStore.create_session：空Sessionの作成",
+        "lines": 724,
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 23,
+      "key": "sql-record",
+      "name": "test_AgentRecordRepositoryのlist_sessionsは本人の条件を渡す_User21とprototypeとlimit20なら取得したSessionページを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "DB依存Fakeが本人User21のSession101・102と次位置を返す。meta21、prototype、limit20。",
+          "expected": "指定した本人・定義・件数・位置で取得を委譲し、Fakeのページ情報を返す。SQLによる絞込みと順序の実動作をFakeで証明したとは扱わない。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/harness/README.md",
+        "section": "RecordStore.list_sessions：指定ユーザーと定義のページ取得",
+        "lines": 725,
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 24,
+      "key": "memory-record",
+      "name": "test_InmemoryAgentRecordRepositoryのcreate_sessionは会社なしで会話を作る_所有者User21なら空のprototypeを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "owner21だけを登録、会社・marketer登録なし。",
+          "expected": "user_id21、prototype、Turn/Itemなし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/harness/README.md",
+        "section": "RecordStore.create_session：空Sessionの作成",
+        "lines": 724,
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 26,
+      "key": "agent-service",
+      "name": "導出保留：会話Service — 旧 #26",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "modify",
+      "kind": "pending",
+      "oldName": "test_AgentServiceのcreate_sessionは本人IDを渡す_User21とMarketer11なら所有者として渡すmetaは21になる",
+      "pendingReason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "id": 27,
+      "key": "agent-service",
+      "name": "導出保留：会話Service — 旧 #27",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "modify",
+      "kind": "pending",
+      "oldName": "test_AgentServiceのlist_sessionsは本人IDで検索する_User21とlimit20なら21とprototypeを渡す",
+      "pendingReason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "id": 28,
+      "key": "agent-service",
+      "name": "導出保留：会話Service — 旧 #28",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "modify",
+      "kind": "pending",
+      "oldName": "test_AgentServiceのexecuteは本人IDと予算を渡す_User21のSession101ならmetaは21で時間上限は200秒になる",
+      "pendingReason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "id": 29,
+      "key": "agent-service",
+      "name": "導出保留：会話Service — 旧 #29",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "modify",
+      "kind": "pending",
+      "oldName": "test_AgentServiceのhistoryは本人IDで取得する_User21とSession101とlimit20と過去位置3なら同じ条件で取得する",
+      "pendingReason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "id": 30,
+      "key": "agent-service",
+      "name": "導出保留：会話Service — 旧 #30",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_AgentServiceのhistoryは参照不可の会話を拒否する_所有者不一致か不存在かresearchなら履歴と復旧とTask生成は0回になる",
+      "pendingReason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "id": 31,
+      "key": "agent-service",
+      "name": "導出保留：会話Service — 旧 #31",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_AgentServiceのexecuteは参照不可の会話を拒否する_初回入力か回答で所有者不一致か不存在かresearchならruntimeを呼ばない",
+      "pendingReason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "id": 32,
+      "key": "conversation",
+      "name": "test_Conversationのnewはユーザー所有で保存する_User21とprototypeを渡せば同じ所有者と定義の空会話を返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "meta.user_id21、prototype。",
+          "expected": "返却・保存Session.user_id21、定義一致、Turn/Itemなし。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/harness/README.md",
+        "section": "Conversation.new：空Sessionを作成",
+        "lines": 102,
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 33,
+      "key": "task",
+      "name": "test_Taskのresumeは本人IDを回答ハンドラへ渡す_User21がdemo_actionを承認するとTerminalToolMetaも21になる",
+      "params": [
+        {
+          "id": "single",
+          "input": "User21、Session101。保存済みdemo_action提示artifact.message=確認、reply={approved:true}。Runnerと記録先はFake。",
+          "expected": "回答ハンドラのTerminalToolMeta.user_id21・session_id101。成功回答結果を保存し、後続生成へ引き継ぐ。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/harness/README.md",
+        "section": "Task.resume：保存済み提示への回答とMeta引継ぎ",
+        "lines": "512-573",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 35,
+      "key": "session-create",
+      "name": "test_POST_agent_sessionsは本人所有の空会話を作る_User21とMarketer11がBodyなしで送ると201でowner21を保存する",
+      "params": [
+        {
+          "id": "single",
+          "input": "有効CSRF、Bodyなし。",
+          "expected": "201、owner21、prototype、title=None、Turn/Item0件。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/chat/API.md",
+        "section": "空会話の作成",
+        "lines": 95,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 36,
+      "key": "session-create",
+      "name": "test_POST_agent_sessionsは両ロールの本人を受け付ける_User21のadminとmarketerが有効なら201でowner21になる",
+      "params": [
+        {
+          "id": "single",
+          "input": "有効両Role、本人21。",
+          "expected": "同じ201、owner21。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/chat/API.md",
+        "section": "両ロールでの作成",
+        "lines": 96,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 37,
+      "key": "session-create",
+      "name": "test_POST_agent_sessionsはBodyを入力に使わない_messageとUser22と会社2を送っても本人21の空会話を返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "Bodyにmessage・user_id22・company_id2。",
+          "expected": "Bodyを採用せず本人21の空会話。Turn/Item0件。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/chat/API.md",
+        "section": "Bodyを使用しない",
+        "lines": 97,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 38,
+      "key": "session-create",
+      "name": "test_POST_agent_sessionsはマーケター権限を要求する_ロールなしかadminのみか無効marketerなら403でSessionを追加しない",
+      "params": [
+        {
+          "id": "no-role",
+          "input": "F3、有効JWT/Origin/CSRF：no-role",
+          "expected": "403 MARKETER_FORBIDDEN。retryable=false、agent_turn_id=null、field_errors=[]。Session追加/runtime作成0。"
+        },
+        {
+          "id": "admin-only",
+          "input": "F3、有効JWT/Origin/CSRF：admin-only",
+          "expected": "403 MARKETER_FORBIDDEN。retryable=false、agent_turn_id=null、field_errors=[]。Session追加/runtime作成0。"
+        },
+        {
+          "id": "disabled-marketer",
+          "input": "F3、有効JWT/Origin/CSRF：disabled-marketer",
+          "expected": "403 MARKETER_FORBIDDEN。retryable=false、agent_turn_id=null、field_errors=[]。Session追加/runtime作成0。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/chat/API.md",
+        "section": "MARKETER_FORBIDDEN",
+        "lines": 186,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 39,
+      "key": "session-list",
+      "name": "test_GET_agent_sessionsは表示対象を分離する_同社か他社の別人会話が混在してもUser21のprototypeだけを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "User21/同社22の会話。 本人User21のresearch会話も混在。",
+          "expected": "User21のprototypeだけを返し、同社・他社の別人会話と本人researchを除外する。"
+        },
+        {
+          "id": "other-company-single",
+          "input": "User21/他社23の会話。 本人User21のresearch会話も混在。",
+          "expected": "User21のprototypeだけを返し、同社・他社の別人会話と本人researchを除外する。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/chat/API.md",
+        "section": "表示対象の分離",
+        "lines": 205,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 41,
+      "key": "session-list",
+      "name": "test_GET_agent_sessionsはマーケター権限を要求する_ロールなしかadminのみか無効marketerなら403で一覧を取得しない",
+      "params": [
+        {
+          "id": "no-role",
+          "input": "F3、有効JWT：no-role",
+          "expected": "403。空一覧で成功化せず、一覧呼出し0回。"
+        },
+        {
+          "id": "admin-only",
+          "input": "F3、有効JWT：admin-only",
+          "expected": "403。空一覧で成功化せず、一覧呼出し0回。"
+        },
+        {
+          "id": "disabled-marketer",
+          "input": "F3、有効JWT：disabled-marketer",
+          "expected": "403。空一覧で成功化せず、一覧呼出し0回。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/chat/API.md",
+        "section": "MARKETER_FORBIDDEN",
+        "lines": 294,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 42,
+      "key": "session-history",
+      "name": "test_GET_agent_sessionは参照不可を拒否する_User21に対し別人所有か不存在かresearchなら404で履歴と復旧を実行しない",
+      "params": [
+        {
+          "id": "same-company-owner22",
+          "input": "操作者User21は両Role有効。O4=same-company-owner22、存在する対象には331秒経過running。",
+          "expected": "404 AGENT_SESSION_NOT_FOUND。認可後の履歴・中断復旧0回、既存記録不変。"
+        },
+        {
+          "id": "other-company-owner23",
+          "input": "操作者User21は両Role有効。O4=other-company-owner23、存在する対象には331秒経過running。",
+          "expected": "404 AGENT_SESSION_NOT_FOUND。認可後の履歴・中断復旧0回、既存記録不変。"
+        },
+        {
+          "id": "missing",
+          "input": "操作者User21は両Role有効。O4=missing、存在する対象には331秒経過running。",
+          "expected": "404 AGENT_SESSION_NOT_FOUND。認可後の履歴・中断復旧0回、既存記録不変。"
+        },
+        {
+          "id": "research-owner21",
+          "input": "操作者User21は両Role有効。O4=research-owner21、存在する対象には331秒経過running。",
+          "expected": "404 AGENT_SESSION_NOT_FOUND。認可後の履歴・中断復旧0回、既存記録不変。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/chat/API.md",
+        "section": "AGENT_SESSION_NOT_FOUND",
+        "lines": 430,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 43,
+      "key": "session-history",
+      "name": "test_GET_agent_sessionはマーケター権限を要求する_ロールなしかadminのみか無効marketerなら403で履歴と復旧を実行しない",
+      "params": [
+        {
+          "id": "no-role",
+          "input": "F3、本人所有会話に331秒経過running：no-role",
+          "expected": "403。履歴/復旧0回、Turnはrunning維持。"
+        },
+        {
+          "id": "admin-only",
+          "input": "F3、本人所有会話に331秒経過running：admin-only",
+          "expected": "403。履歴/復旧0回、Turnはrunning維持。"
+        },
+        {
+          "id": "disabled-marketer",
+          "input": "F3、本人所有会話に331秒経過running：disabled-marketer",
+          "expected": "403。履歴/復旧0回、Turnはrunning維持。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/chat/API.md",
+        "section": "MARKETER_FORBIDDEN",
+        "lines": 429,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 44,
+      "key": "session-execute",
+      "name": "test_POST_agent_session_turnsは参照不可を拒否する_別人所有か不存在かresearchへ初回入力か回答を送ると404になる",
+      "params": [
+        {
+          "id": "same-company-owner22-initial",
+          "input": "same-company-owner22へinitialを送信。",
+          "expected": "404共通JSON。実Serviceが拒否し、Task/復旧/SSE0回、Turn/Item不変。"
+        },
+        {
+          "id": "same-company-owner22-reply",
+          "input": "same-company-owner22へreplyを送信。",
+          "expected": "404共通JSON。実Serviceが拒否し、Task/復旧/SSE0回、Turn/Item不変。"
+        },
+        {
+          "id": "other-company-owner23-initial",
+          "input": "other-company-owner23へinitialを送信。",
+          "expected": "404共通JSON。実Serviceが拒否し、Task/復旧/SSE0回、Turn/Item不変。"
+        },
+        {
+          "id": "other-company-owner23-reply",
+          "input": "other-company-owner23へreplyを送信。",
+          "expected": "404共通JSON。実Serviceが拒否し、Task/復旧/SSE0回、Turn/Item不変。"
+        },
+        {
+          "id": "research-owner21-initial",
+          "input": "research-owner21へinitialを送信。",
+          "expected": "404共通JSON。実Serviceが拒否し、Task/復旧/SSE0回、Turn/Item不変。"
+        },
+        {
+          "id": "research-owner21-reply",
+          "input": "research-owner21へreplyを送信。",
+          "expected": "404共通JSON。実Serviceが拒否し、Task/復旧/SSE0回、Turn/Item不変。"
+        },
+        {
+          "id": "missing-initial",
+          "input": "Session101なし、initialを送信。",
+          "expected": "404 AGENT_SESSION_NOT_FOUND。Task・復旧・SSE0回、保存追加なし。"
+        },
+        {
+          "id": "missing-reply",
+          "input": "Session101なし、replyを送信。",
+          "expected": "404 AGENT_SESSION_NOT_FOUND。Task・復旧・SSE0回、保存追加なし。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/chat/API.md",
+        "section": "AGENT_SESSION_NOT_FOUND",
+        "lines": 630,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 45,
+      "key": "session-execute",
+      "name": "test_POST_agent_session_turnsはマーケター権限を要求する_ロールなしかadminのみか無効marketerなら403でTurn受付とSSE開始を実行しない",
+      "params": [
+        {
+          "id": "no-role",
+          "input": "F3、有効CSRF、本人会話：no-role",
+          "expected": "403共通JSON。Task生成/Turn受付/復旧/SSE0回。"
+        },
+        {
+          "id": "admin-only",
+          "input": "F3、有効CSRF、本人会話：admin-only",
+          "expected": "403共通JSON。Task生成/Turn受付/復旧/SSE0回。"
+        },
+        {
+          "id": "disabled-marketer",
+          "input": "F3、有効CSRF、本人会話：disabled-marketer",
+          "expected": "403共通JSON。Task生成/Turn受付/復旧/SSE0回。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/chat/API.md",
+        "section": "MARKETER_FORBIDDEN",
+        "lines": 629,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 47,
+      "key": "posts-api",
+      "name": "test_GET_postsは公開済み投稿の先頭を返す_会社201の条件に一致する投稿を指定順と上限で返す",
+      "params": [
+        {
+          "id": "default",
+          "input": "P6、sort/order省略、limit2。",
+          "expected": "200、106・105、次cursorあり。"
+        },
+        {
+          "id": "published-asc",
+          "input": "公開日時asc、limit2。",
+          "expected": "101・102。"
+        },
+        {
+          "id": "pv-desc",
+          "input": "PV desc、limit2。",
+          "expected": "106・103。"
+        },
+        {
+          "id": "pv-asc",
+          "input": "PV asc、limit2。",
+          "expected": "101・102。"
+        },
+        {
+          "id": "campaign12",
+          "input": "施策12、limit2。",
+          "expected": "105・104、Archive表示あり、部分値null。"
+        },
+        {
+          "id": "half-open",
+          "input": "10月2日以上3日未満、limit2。",
+          "expected": "103・102、次cursorなし。"
+        },
+        {
+          "id": "limit50",
+          "input": "limit50。",
+          "expected": "全6件、次cursorなし。"
+        },
+        {
+          "id": "empty",
+          "input": "2099年以降。",
+          "expected": "空配列、次cursorなし。"
+        },
+        {
+          "id": "pv-asc-unmeasured-last",
+          "input": "P6、PV昇順、limit50。",
+          "expected": "101・102・103・106・105・104。未完了は末尾で公開日時/ID降順、次cursorなし。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/API.md",
+        "section": "GET posts：関連ユースケース",
+        "lines": 19,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 48,
+      "key": "posts-api",
+      "name": "test_GET_postsは値境界の続きを返す_前回の境界と今回のDB状態から後続投稿または空配列を返す",
+      "params": [
+        {
+          "id": "published-boundary",
+          "input": "P6、施策12、公開日時降順、投稿103/2026-10-02T00:00Z境界をこのケース内で独立発行、limit2。",
+          "expected": "102・101。"
+        },
+        {
+          "id": "deleted-boundary",
+          "input": "P6、施策12、公開日時降順、投稿103/2026-10-02T00:00Z境界をこのケース内で独立発行後、投稿103を削除、limit2。",
+          "expected": "102・101。元行存在不要。"
+        },
+        {
+          "id": "restore-pv-sort",
+          "input": "P6、施策12、PV降順で発行したPV100・投稿103境界、limit2。続き要求ではsort/order省略。",
+          "expected": "102・101、次cursorあり。"
+        },
+        {
+          "id": "unmeasured-boundary",
+          "input": "P6、施策12、PV降順、未完了投稿105・10月3日境界、limit2。",
+          "expected": "104、次cursorなし。"
+        },
+        {
+          "id": "end",
+          "input": "公開desc、10月1日・101境界。",
+          "expected": "空配列、次cursorなし。"
+        },
+        {
+          "id": "shared-and-no-expiry",
+          "input": "P6、施策12、PV降順、投稿103/PV100/2026-10-02T00:00Zでlimit1のcursorをこのケース内で独立発行。同社別人が30分後にlimit2で使用。",
+          "expected": "102・101。"
+        },
+        {
+          "id": "live-values",
+          "input": "P6、施策12、PV降順、投稿103/PV100/2026-10-02T00:00Zのcursorをこのケース内で独立発行後、102のPVを50、施策12名を変更しlimit2で続き取得。",
+          "expected": "最新PV/名前で102・101。"
+        },
+        {
+          "id": "published-asc-after102",
+          "input": "P6、施策12、公開日時昇順、投稿102/2026-10-02T00:00Zで独立発行したcursor、limit2。",
+          "expected": "103・104、後続あり。"
+        },
+        {
+          "id": "pv-asc-unmeasured-after105",
+          "input": "P6、施策12、PV昇順、未完了投稿105/2026-10-03T00:00Zで独立発行したcursor、limit2。",
+          "expected": "104だけ、次cursorなし。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/API.md",
+        "section": "GET posts：関連ユースケース",
+        "lines": 20,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 49,
+      "key": "posts-api",
+      "name": "test_GET_postsは意味検索の類似度順を返す_採用広報の検索ベクトルが投稿103と一致すれば103が先頭でnext_cursorはnullになる",
+      "params": [
+        {
+          "id": "single",
+          "input": "query=採用広報、limit2。DBMLどおりの1536次元で、非ゼロベクトルe1=(1,0,…,0)をFakeEmbeddingと投稿103へ指定。他の対象投稿は直交するe2=(0,1,0,…,0)。",
+          "expected": "200、投稿103が類似度順先頭、similarity数値、next_cursor=null。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/API.md",
+        "section": "GET posts：関連ユースケース",
+        "lines": 21,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 50,
+      "key": "posts-api",
+      "name": "test_GET_postsは認証を要求する_Cookieがなければ401とUNAUTHENTICATEDを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "Cookieなし。",
+          "expected": "401 UNAUTHENTICATED、共通エラー。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/API.md",
+        "section": "エラー一覧",
+        "lines": 203,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 51,
+      "key": "posts-api",
+      "name": "test_GET_postsはマーケター権限を要求する_有効なMarketerInfoがなければ403を返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "本人認証成立、marketer無効。",
+          "expected": "403 MARKETER_FORBIDDEN。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/API.md",
+        "section": "エラー一覧",
+        "lines": 204,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 52,
+      "key": "posts-api",
+      "name": "test_GET_postsは入力不備を返す_不正引数か利用できないcursorなら400とINVALID_ARGUMENTを返す",
+      "params": [
+        {
+          "id": "limit0",
+          "input": "limit=0",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "limit51",
+          "input": "limit=51",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "limit-text",
+          "input": "limit=abc",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "campaign0",
+          "input": "campaign_id=0",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "campaign-text",
+          "input": "campaign_id=abc",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "date-text",
+          "input": "published_from=invalid",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "date-no-tz",
+          "input": "published_from=2026-10-01T00:00:00",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "period-equal",
+          "input": "from=to=10月2日",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "period-reversed",
+          "input": "from=10月3日、to=2日",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "query-space",
+          "input": "query=空白だけ",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "query1001",
+          "input": "query=あ×1001",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "query-cursor",
+          "input": "queryと正規cursor併用",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "query-sort",
+          "input": "queryとsort併用",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "query-order",
+          "input": "queryとorder併用",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "sort",
+          "input": "sort=unknown",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "order",
+          "input": "order=sideways",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "signature",
+          "input": "署名改ざん",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "legacy",
+          "input": "旧Snapshot形式",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "company",
+          "input": "署名会社202と要求201",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "resource",
+          "input": "metrics種別を使用",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "position",
+          "input": "署名済み投稿ID0",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "filter",
+          "input": "施策条件変更",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "cursor-sort",
+          "input": "明示sort不一致",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        },
+        {
+          "id": "cursor-order",
+          "input": "明示order不一致",
+          "expected": "400 INVALID_ARGUMENT。共通エラー。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/API.md",
+        "section": "エラー一覧",
+        "lines": 205,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 53,
+      "key": "posts-api",
+      "name": "test_GET_postsは自社施策を要求する_不存在999999か他社の施策なら404とCAMPAIGN_NOT_FOUNDを返す",
+      "params": [
+        {
+          "id": "missing999999",
+          "input": "campaign_idで参照不可施策を指定：missing999999",
+          "expected": "404 CAMPAIGN_NOT_FOUND。"
+        },
+        {
+          "id": "other-company",
+          "input": "campaign_idで参照不可施策を指定：other-company",
+          "expected": "404 CAMPAIGN_NOT_FOUND。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/API.md",
+        "section": "エラー一覧",
+        "lines": 206,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 54,
+      "key": "posts-api",
+      "name": "test_GET_postsは検索生成失敗を通知する_EmbeddingErrorなら500とEMBEDDING_FAILEDを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "query指定、Embedding生成を失敗させる。",
+          "expected": "500 EMBEDDING_FAILED。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/API.md",
+        "section": "エラー一覧",
+        "lines": 207,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 55,
+      "key": "posts-api",
+      "name": "test_GET_postsはDB障害を内部エラーにする_投稿取得のSQLAlchemyErrorなら500とINTERNAL_ERRORを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "認証後の投稿取得へDB障害。",
+          "expected": "500 INTERNAL_ERROR、内部情報を応答へ出さない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/API.md",
+        "section": "エラー一覧",
+        "lines": 208,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 56,
+      "key": "metrics-api",
+      "name": "test_GET_metricsは全体と先頭施策を返す_会社201の期間全体を集計して施策ページと同じ可視状態で返す",
+      "params": [
+        {
+          "id": "mixed",
+          "input": "P6、limit1。最初の業務データSELECTで読取可視状態を確定した直後、明細取得より前に別接続の計測値・施策名変更をcommitし、続行する。",
+          "expected": "S、先頭施策13、次cursor。要求内の集計/明細/名前は同一可視状態。"
+        },
+        {
+          "id": "empty",
+          "input": "対象投稿なし。",
+          "expected": "6計数0、率null、空施策、次cursorなし。"
+        },
+        {
+          "id": "pending-only",
+          "input": "104だけが対象。",
+          "expected": "投稿1、待ち1、他計数0、率null、施策12あり。"
+        },
+        {
+          "id": "half-open",
+          "input": "10月2日以上3日未満。",
+          "expected": "投稿2、PV200、流入30、率0.15。"
+        },
+        {
+          "id": "same-pv-order",
+          "input": "M4、limit2、cursorなし。",
+          "expected": "全体PV920・流入113、施策13・14、次cursorは施策14/PV210。同PV210ではID14が12より先。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/API.md",
+        "section": "GET metrics：関連ユースケース",
+        "lines": 19,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 57,
+      "key": "metrics-api",
+      "name": "test_GET_metricsは要求ごとに再集計する_値境界の続きが空でも今回の全体summaryを返す",
+      "params": [
+        {
+          "id": "continue",
+          "input": "施策13・PV500境界。",
+          "expected": "S、施策12はPV210。"
+        },
+        {
+          "id": "live",
+          "input": "発行後101のPV10→50、施策12名変更。",
+          "expected": "全体PV750、施策12はPV250と新名。"
+        },
+        {
+          "id": "empty-page",
+          "input": "施策ID1・PV0境界。",
+          "expected": "空施策・次cursorなしでもsummary=S。"
+        },
+        {
+          "id": "shared-and-no-expiry",
+          "input": "施策13境界を同社別人が30分後、limit1→50で使用。",
+          "expected": "施策12、summary=S。"
+        },
+        {
+          "id": "same-pv-boundary",
+          "input": "M4でこのケース内に独立発行した施策14/PV210境界、limit2。",
+          "expected": "施策12・15。PV0も含み、summaryは全体PV920・流入113。次cursorなし。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/API.md",
+        "section": "GET metrics：関連ユースケース",
+        "lines": 20,
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      }
+    },
+    {
+      "id": 58,
+      "key": "metrics-api",
+      "name": "test_GET_metricsは認証を要求する_Cookieがなければ401とUNAUTHENTICATEDを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "Cookieなし。",
+          "expected": "401 UNAUTHENTICATED。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/API.md",
+        "section": "エラー一覧",
+        "lines": 197,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 59,
+      "key": "metrics-api",
+      "name": "test_GET_metricsはマーケター権限を要求する_有効なMarketerInfoがなければ403を返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "本人認証成立、marketer無効。",
+          "expected": "403 MARKETER_FORBIDDEN。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/API.md",
+        "section": "エラー一覧",
+        "lines": 198,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 60,
+      "key": "metrics-api",
+      "name": "test_GET_metricsは入力不備を返す_不正引数か利用できないcursorなら400とINVALID_ARGUMENTを返す",
+      "params": [
+        {
+          "id": "limit0",
+          "input": "limit=0",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "limit51",
+          "input": "limit=51",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "limit-text",
+          "input": "limit=abc",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "date-text",
+          "input": "不正日時",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "date-no-tz",
+          "input": "TZなし日時",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "period-equal",
+          "input": "from=to",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "period-reversed",
+          "input": "期間逆転",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "signature",
+          "input": "署名改ざん",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "legacy",
+          "input": "旧Snapshot形式",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "company",
+          "input": "署名会社202と要求201",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "resource",
+          "input": "posts種別",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "position",
+          "input": "署名済みcampaign_id=0",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "sort-present",
+          "input": "署名済みmetrics cursorの内部にsort=published_atを指定（HTTPの未知queryではない）。",
+          "expected": "400 INVALID_ARGUMENT。"
+        },
+        {
+          "id": "period-hash",
+          "input": "公開期間Hash不一致",
+          "expected": "400 INVALID_ARGUMENT。"
+        }
+      ],
+      "status": "planned",
+      "change": "modify",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/API.md",
+        "section": "エラー一覧",
+        "lines": 199,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 61,
+      "key": "metrics-api",
+      "name": "test_GET_metricsはDB障害を内部エラーにする_全体集計のSQLAlchemyErrorなら500とINTERNAL_ERRORを返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "認証後の全体集計へDB障害。",
+          "expected": "500 INTERNAL_ERROR、内部情報なし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/API.md",
+        "section": "エラー一覧",
+        "lines": 200,
+        "rule": "Backend §14.2：APIのエラーごとに1本"
+      }
+    },
+    {
+      "id": 62,
+      "key": "posts-repo",
+      "name": "test_PostRepositoryのlist_postsは取得行を返す_会社201とlimit2でDB依存が投稿105と104を返せば同順の2行を返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "DB依存Fakeが施策12の投稿105・104に対応するPostRowを返す。会社201・公開desc・境界なし・limit2。",
+          "expected": "取得行105・104を契約どおり返す。FakeでSQLの絞込み・並び・件数制限を検証したとは扱わない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/POST_REPOSITORY.md",
+        "section": "list_posts：正常",
+        "lines": "35-98",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 63,
+      "key": "posts-repo",
+      "name": "test_PostRepositoryのlist_postsはDB障害を伝播する_取得のSQLAlchemyErrorを同じ例外で送出する",
+      "params": [
+        {
+          "id": "single",
+          "input": "DB実行境界で例外E。",
+          "expected": "同一例外E。SQL文字列一致は禁止。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/POST_REPOSITORY.md",
+        "section": "list_posts：SQLAlchemyError",
+        "lines": 104,
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 64,
+      "key": "posts-repo",
+      "name": "test_PostRepositoryのsummarize_totalは取得した集計を返す_PV710と流入81の集計行なら同じ計数と率81割る710を返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "DB依存FakeがP6の集計行（投稿6・完了4・待ち1・失敗1・PV710・流入81）を返す。",
+          "expected": "MetricsSummaryは同じ計数・PV710・流入81・率81/710。SQL集計そのものはAPI結合で確認。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/POST_REPOSITORY.md",
+        "section": "summarize_total：正常",
+        "lines": "106-143",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 65,
+      "key": "posts-repo",
+      "name": "test_PostRepositoryのsummarize_totalはDB障害を伝播する_集計のSQLAlchemyErrorを同じ例外で送出する",
+      "params": [
+        {
+          "id": "single",
+          "input": "DB実行境界で例外E。",
+          "expected": "同一例外E。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/POST_REPOSITORY.md",
+        "section": "summarize_total：SQLAlchemyError",
+        "lines": 149,
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 66,
+      "key": "posts-repo",
+      "name": "test_PostRepositoryのlist_campaign_metricsは取得した施策集計を返す_DB依存が施策13と14の集計を返せば同順で返す",
+      "params": [
+        {
+          "id": "single",
+          "input": "DB依存Fakeが(施策13,PV500)・(施策14,PV210)を返す。会社201、境界なし、limit2。",
+          "expected": "取得順で施策13・14と各MetricsSummaryを返す。SQLの集計・境界・limit判定をFakeで証明したとは扱わない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/POST_REPOSITORY.md",
+        "section": "list_campaign_metrics：正常",
+        "lines": "151-193",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 67,
+      "key": "posts-repo",
+      "name": "test_PostRepositoryのlist_campaign_metricsはDB障害を伝播する_取得のSQLAlchemyErrorを同じ例外で送出する",
+      "params": [
+        {
+          "id": "single",
+          "input": "DB実行境界で例外E。",
+          "expected": "同一例外E。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/POST_REPOSITORY.md",
+        "section": "list_campaign_metrics：SQLAlchemyError",
+        "lines": 199,
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 68,
+      "key": "cursor",
+      "name": "test_issue_list_cursorは継続位置を署名する_会社201の投稿か計測の境界を同じ値として読み戻せる",
+      "params": [
+        {
+          "id": "post-pv100",
+          "input": "会社201、Hash a×64、posts、sort=x_pv_count/order=desc、投稿103/2026-10-02T00:00Z/PV100。",
+          "expected": "非空token。公開readで同値復元。"
+        },
+        {
+          "id": "post-unmeasured",
+          "input": "同じposts条件、投稿105/2026-10-03T00:00Z/PV=None。",
+          "expected": "非空token。公開readで同値復元。"
+        },
+        {
+          "id": "metrics-pv100",
+          "input": "会社201、Hash a×64、metrics、sort/order=None、施策12/PV100。",
+          "expected": "非空token。公開readで同値復元。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/LIST_CURSOR.md",
+        "section": "issue_list_cursor：正常",
+        "lines": "45-70",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 69,
+      "key": "cursor",
+      "name": "test_read_list_cursorは値境界を復元する_正規署名なら投稿日時をUTC化し計測の施策IDとPVを保持する",
+      "params": [
+        {
+          "id": "post-jst-to-utc",
+          "input": "投稿103、2026-10-02T09:00+09:00、PV100。",
+          "expected": "正しいPostPosition、日時00:00Z。"
+        },
+        {
+          "id": "post-unmeasured",
+          "input": "投稿103、10月2日UTC、PV=None。",
+          "expected": "同値の未計測境界。"
+        },
+        {
+          "id": "metrics-pv100",
+          "input": "施策12、PV100、sort/orderなし。",
+          "expected": "同値MetricsPosition。"
+        },
+        {
+          "id": "metrics-pv0",
+          "input": "施策12、PV0。",
+          "expected": "0を正常復元。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/LIST_CURSOR.md",
+        "section": "read_list_cursor：正常",
+        "lines": "72-100",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 70,
+      "key": "cursor",
+      "name": "test_read_list_cursorは利用できない継続位置を拒否する_署名か現在の型制約が不正ならINVALID_ARGUMENTになる",
+      "params": [
+        {
+          "id": "company-zero",
+          "input": "会社ID=0。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "company-bool",
+          "input": "会社ID=true。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "company-float",
+          "input": "会社ID=1.5。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "company-str",
+          "input": "会社ID=\"201\"。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-id-zero",
+          "input": "投稿ID=0。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-id-bool",
+          "input": "投稿ID=true。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-id-float",
+          "input": "投稿ID=1.5。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-id-str",
+          "input": "投稿ID=\"103\"。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "campaign-id-zero",
+          "input": "施策ID=0。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "campaign-id-bool",
+          "input": "施策ID=true。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "campaign-id-float",
+          "input": "施策ID=1.5。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "campaign-id-str",
+          "input": "施策ID=\"12\"。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-pv-negative",
+          "input": "post-pv=-1。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-pv-bool",
+          "input": "post-pv=true。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-pv-float",
+          "input": "post-pv=1.5。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-pv-str",
+          "input": "post-pv=\"100\"。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "metrics-pv-negative",
+          "input": "metrics-pv=-1。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "metrics-pv-bool",
+          "input": "metrics-pv=true。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "metrics-pv-float",
+          "input": "metrics-pv=1.5。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "metrics-pv-str",
+          "input": "metrics-pv=\"100\"。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "metrics-pv-null",
+          "input": "metrics-pv=null。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "hash-short",
+          "input": "Hash=a×63。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "hash-nonhex",
+          "input": "Hash=g×64。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "date-no-tz",
+          "input": "TZなし日時。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "date-invalid",
+          "input": "不正日時。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-sort-invalid",
+          "input": "posts sort=unknown。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-sort-null",
+          "input": "posts sort=null。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-order-invalid",
+          "input": "posts order=sideways。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "post-order-null",
+          "input": "posts order=null。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "metrics-sort",
+          "input": "metrics sortあり。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "metrics-order",
+          "input": "metrics orderあり。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "empty",
+          "input": "空token。当該token自体に指定の署名・形式不備を与える。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "tampered",
+          "input": "署名改ざん。当該token自体に指定の署名・形式不備を与える。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "other-purpose",
+          "input": "別用途の署名。当該token自体に指定の署名・形式不備を与える。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "legacy",
+          "input": "旧形式。当該token自体に指定の署名・形式不備を与える。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "posts-to-metrics",
+          "input": "postsをmetricsへ使用。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "metrics-to-posts",
+          "input": "metricsをpostsへ使用。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        },
+        {
+          "id": "other-company",
+          "input": "署名202に要求201。その他は有効な署名fixture。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/LIST_CURSOR.md",
+        "section": "read_list_cursor：AppError",
+        "lines": "106-112",
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 71,
+      "key": "post-service",
+      "name": "test_PostServiceのlistは表示ページを構成する_会社201とlimit2なら上限内の投稿と後続有無に応じたcursorを返し意味検索ではcursorなしになる",
+      "params": [
+        {
+          "id": "rows0",
+          "input": "Repository結果0件、limit2。",
+          "expected": "空、cursorなし。DB上限3、書込なし。"
+        },
+        {
+          "id": "rows2",
+          "input": "結果103・102、limit2。",
+          "expected": "全2件、cursorなし。"
+        },
+        {
+          "id": "rows3",
+          "input": "結果103・102・101、limit2。",
+          "expected": "103・102、返却末尾102のcursor。"
+        },
+        {
+          "id": "semantic-search",
+          "input": "User101、会社201、query=\" 採用広報 \"、limit2。FakeEmbeddingとDB依存が類似度順の投稿103・102を返す。",
+          "expected": "前後空白を除いた採用広報でDB外のEmbedding生成後に取得し、103・102へ表示値変換、next_cursor=None。読み取り終了、書込なし。"
+        },
+        {
+          "id": "continue",
+          "input": "User101、会社201。正常cursorは施策12・PV降順・投稿103/PV100の境界。sort/order省略、limit2。Fakeの後続行は102・101。",
+          "expected": "cursorの並び順と境界を復元し、正規化条件を照合してDB依存へ渡す。後続102・101、次cursorなし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/modules/POST_SERVICE.md",
+        "section": "list：正常",
+        "lines": "36-123",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 72,
+      "key": "post-service",
+      "name": "test_PostServiceのlistは業務エラーを返す_権限か検索条件かcursorか施策が不正なら契約どおりのAppErrorになる",
+      "params": [
+        {
+          "id": "single",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：auth.marketer=None。",
+          "expected": "AppError MARKETER_FORBIDDEN、この操作を行う権限がありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old73-space",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：query=\"   \"。",
+          "expected": "AppError INVALID_ARGUMENT、query が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old73-1001chars",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：query=あ×1001。",
+          "expected": "AppError INVALID_ARGUMENT、query が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old74-with-cursor",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：query=検索、cursor=正規のposts cursor。",
+          "expected": "AppError INVALID_ARGUMENT、query は cursor・sort・order と同時に指定できません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old74-with-sort",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：query=検索、sort=published_at。",
+          "expected": "AppError INVALID_ARGUMENT、query は cursor・sort・order と同時に指定できません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old74-with-order",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：query=検索、order=desc。",
+          "expected": "AppError INVALID_ARGUMENT、query は cursor・sort・order と同時に指定できません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old75-sort",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：sort=unknown。",
+          "expected": "AppError INVALID_ARGUMENT、sort または order が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old75-order",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：order=sideways。",
+          "expected": "AppError INVALID_ARGUMENT、sort または order が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old76-equal",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：published_from=2026-10-02T00:00Z、published_to=2026-10-02T00:00Z。",
+          "expected": "AppError INVALID_ARGUMENT、published_from・published_to の範囲が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old76-reversed",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：published_from=2026-10-03T00:00Z、published_to=2026-10-02T00:00Z。",
+          "expected": "AppError INVALID_ARGUMENT、published_from・published_to の範囲が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old77-signature",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursorは署名の1文字を改ざん。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old77-legacy",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursorは旧Snapshot形式。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old77-company",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursorは会社202。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old77-resource",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursorはmetrics種別。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old77-position",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursorは投稿ID0。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old77-sort",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursorはsort=unknown。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old77-order",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursorはorder=sideways。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old78-sort-mismatch",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursor内sort=published_at/order=desc、明示sort=x_pv_count。",
+          "expected": "AppError INVALID_ARGUMENT、cursor と異なる sort・order は指定できません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old78-order-mismatch",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursor内sort=published_at/order=desc、明示order=asc。",
+          "expected": "AppError INVALID_ARGUMENT、cursor と異なる sort・order は指定できません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old79-campaign",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursorの施策12を要求で13へ変更。",
+          "expected": "AppError INVALID_ARGUMENT、cursor と一覧条件が一致しません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old79-from",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursorのfrom=2026-10-01T00:00Zを要求で2026-10-02T00:00Zへ変更。",
+          "expected": "AppError INVALID_ARGUMENT、cursor と一覧条件が一致しません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old79-to",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：cursorのto=2026-11-01T00:00Zを要求で2026-10-31T00:00Zへ変更。",
+          "expected": "AppError INVALID_ARGUMENT、cursor と一覧条件が一致しません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old80-first",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：施策12は参照不可。cursorなし通常一覧。",
+          "expected": "AppError CAMPAIGN_NOT_FOUND、施策が見つかりません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old80-continue",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：施策12は参照不可。正規cursorの続き。",
+          "expected": "AppError CAMPAIGN_NOT_FOUND、施策が見つかりません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        },
+        {
+          "id": "old80-search",
+          "input": "有効なUser101/会社201、limit2。他項目は未指定か正規の値。正規cursorは施策12・期間2026-10-01T00:00Z以上11-01T00:00Z未満を基準とし変更項目以外を一致させる。変更点：施策12は参照不可。query=検索。",
+          "expected": "AppError CAMPAIGN_NOT_FOUND、施策が見つかりません。 開始済み参照は終了、入力検証で拒否する場合はDB取得なし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/modules/POST_SERVICE.md",
+        "section": "list：AppError",
+        "lines": "129-147",
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 81,
+      "key": "post-service",
+      "name": "test_PostServiceのlistはEmbedding障害を伝播する_query検索のEmbeddingErrorを同じ例外で送出する",
+      "params": [
+        {
+          "id": "single",
+          "input": "embedが例外E。",
+          "expected": "同一EmbeddingError E、DB開始前。ServiceでAppError化しない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/modules/POST_SERVICE.md",
+        "section": "list：EmbeddingError",
+        "lines": 148,
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 82,
+      "key": "post-service",
+      "name": "test_PostServiceのlistはDB障害時に参照を終了する_開始か取得のSQLAlchemyErrorを同じ例外で送出する",
+      "params": [
+        {
+          "id": "session-start",
+          "input": "指定段階でSQLAlchemyError E：session-start",
+          "expected": "同一例外E、開始済みならrollbackと終了。未生成セッションの終了は要求しない。"
+        },
+        {
+          "id": "campaign-read",
+          "input": "指定段階でSQLAlchemyError E：campaign-read",
+          "expected": "同一例外E、開始済みならrollbackと終了。未生成セッションの終了は要求しない。"
+        },
+        {
+          "id": "list-read",
+          "input": "指定段階でSQLAlchemyError E：list-read",
+          "expected": "同一例外E、開始済みならrollbackと終了。未生成セッションの終了は要求しない。"
+        },
+        {
+          "id": "search-read",
+          "input": "指定段階でSQLAlchemyError E：search-read",
+          "expected": "同一例外E、開始済みならrollbackと終了。未生成セッションの終了は要求しない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/modules/POST_SERVICE.md",
+        "section": "list：SQLAlchemyError",
+        "lines": "149-151",
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 83,
+      "key": "metrics-service",
+      "name": "test_MetricsServiceのreportは全体集計と表示施策を構成する_limit2ならsummaryを保持し最大2施策と返却末尾境界を返す",
+      "params": [
+        {
+          "id": "rows0",
+          "input": "summary=S、施策候補0件。",
+          "expected": "空施策、S保持、cursorなし。依存へ同じREAD ONLY・REPEATABLE READトランザクションを使用する設定を渡す。実DBの同一可視状態そのものはAPI結合で確認。"
+        },
+        {
+          "id": "rows2",
+          "input": "候補(13,500),(12,210)。",
+          "expected": "全2施策、S、cursorなし。"
+        },
+        {
+          "id": "rows3",
+          "input": "候補(13,500),(12,210),(11,0)。",
+          "expected": "最初の2件と施策12/PV210境界。表示IDだけ参照、DB上限3。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/modules/METRICS_SERVICE.md",
+        "section": "report：正常",
+        "lines": "36-115",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 84,
+      "key": "metrics-service",
+      "name": "test_MetricsServiceのreportは業務エラーを返す_権限か期間かcursorが不正なら契約どおりのAppErrorになる",
+      "params": [
+        {
+          "id": "single",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：auth.marketer=None。",
+          "expected": "AppError MARKETER_FORBIDDEN、この操作を行う権限がありません。 DB取得なし。"
+        },
+        {
+          "id": "old85-equal",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：from=2026-10-02T00:00Z、to=同日時。",
+          "expected": "AppError INVALID_ARGUMENT、published_from・published_to の範囲が正しくありません。 DB取得なし。"
+        },
+        {
+          "id": "old85-reversed",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：from=2026-10-03T00:00Z、to=2026-10-02T00:00Z。",
+          "expected": "AppError INVALID_ARGUMENT、published_from・published_to の範囲が正しくありません。 DB取得なし。"
+        },
+        {
+          "id": "old86-signature",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：署名cursor内部の署名改ざん。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 DB取得なし。"
+        },
+        {
+          "id": "old86-legacy",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：署名cursor内部の旧Snapshot形式。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 DB取得なし。"
+        },
+        {
+          "id": "old86-company",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：署名cursor内部の会社202。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 DB取得なし。"
+        },
+        {
+          "id": "old86-resource",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：署名cursor内部のposts種別。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 DB取得なし。"
+        },
+        {
+          "id": "old86-position",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：署名cursor内部の施策ID0。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 DB取得なし。"
+        },
+        {
+          "id": "old86-sort-present",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：署名cursor内部のsort=published_at。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 DB取得なし。"
+        },
+        {
+          "id": "old86-order-present",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：署名cursor内部のorder=desc。",
+          "expected": "AppError INVALID_ARGUMENT、cursor が正しくありません。 DB取得なし。"
+        },
+        {
+          "id": "old87-from",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：要求fromだけ2026-10-02T00:00Zへ変更。",
+          "expected": "AppError INVALID_ARGUMENT、cursor と一覧条件が一致しません。 DB取得なし。"
+        },
+        {
+          "id": "old87-to",
+          "input": "User101/会社201、limit2。正規metrics cursorは施策13/PV500、期間2026-10-01T00:00Z以上11-01T00:00Z未満、sort/order=None。他項目は正規値。変更点：要求toだけ2026-10-31T00:00Zへ変更。",
+          "expected": "AppError INVALID_ARGUMENT、cursor と一覧条件が一致しません。 DB取得なし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/modules/METRICS_SERVICE.md",
+        "section": "report：AppError",
+        "lines": "121-130",
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 88,
+      "key": "metrics-service",
+      "name": "test_MetricsServiceのreportはDB障害時に参照を終了する_開始か集計参照のSQLAlchemyErrorを同じ例外で送出する",
+      "params": [
+        {
+          "id": "transaction-start",
+          "input": "指定段階でSQLAlchemyError E：transaction-start",
+          "expected": "同一例外E、開始済みならrollbackと終了。"
+        },
+        {
+          "id": "total",
+          "input": "指定段階でSQLAlchemyError E：total",
+          "expected": "同一例外E、開始済みならrollbackと終了。"
+        },
+        {
+          "id": "campaign-page",
+          "input": "指定段階でSQLAlchemyError E：campaign-page",
+          "expected": "同一例外E、開始済みならrollbackと終了。"
+        },
+        {
+          "id": "references",
+          "input": "指定段階でSQLAlchemyError E：references",
+          "expected": "同一例外E、開始済みならrollbackと終了。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/modules/METRICS_SERVICE.md",
+        "section": "report：SQLAlchemyError",
+        "lines": "131-134",
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 89,
+      "key": "auth-ui",
+      "name": "導出保留：Frontend認証 — 旧 #89",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_ログイン画面は新しい認証応答を受け付ける_marketer_idのない200なら入口に対応する業務画面へ進む",
+      "pendingReason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "id": 90,
+      "key": "auth-ui",
+      "name": "導出保留：Frontend認証 — 旧 #90",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_認証済みログイン入口は対象ロールで自動遷移する_対象Roleがtrueなら他方Roleによらず業務画面へ進む",
+      "pendingReason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "id": 91,
+      "key": "auth-ui",
+      "name": "導出保留：Frontend認証 — 旧 #91",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_認証済みログイン入口は対象ロールなしでフォームを表示する_対象Roleがfalseなら他方Roleによらず自動遷移しない",
+      "pendingReason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "id": 92,
+      "key": "auth-ui",
+      "name": "導出保留：Frontend認証 — 旧 #92",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_未認証のログイン入口はフォームを表示する_meが401ならログイン状態確認失敗と混同しない",
+      "pendingReason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "id": 93,
+      "key": "auth-ui",
+      "name": "導出保留：Frontend認証 — 旧 #93",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_ログイン画面はRole不適合を認証失敗として表示する_401なら入力を保持して成功遷移しない",
+      "pendingReason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "id": 94,
+      "key": "auth-ui",
+      "name": "導出保留：Frontend認証 — 旧 #94",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_ログイン入口は本人確認失敗を案内する_meの500か通信失敗かタイムアウトなら再読み込みを求める",
+      "pendingReason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "id": 95,
+      "key": "shell-ui",
+      "name": "導出保留：Frontend共通領域 — 旧 #95",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_業務画面の管理導線は本人情報に従う_is_admin_falseならリンクなしでtrueならユーザー管理へ進める",
+      "pendingReason": "Shellの表示項目はあるが提供操作行とAPI有無が未定義。表示条件だけからケースを追加しない。"
+    },
+    {
+      "id": 96,
+      "key": "shell-ui",
+      "name": "導出保留：Frontend共通領域 — 旧 #96",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_管理画面の業務導線は本人情報に従う_is_marketer_falseならリンクなしでtrueならチャットへ進める",
+      "pendingReason": "Shellの表示項目はあるが提供操作行とAPI有無が未定義。表示条件だけからケースを追加しない。"
+    },
+    {
+      "id": 97,
+      "key": "posts-ui",
+      "name": "導出保留：Frontend投稿 — 旧 #97",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_投稿一覧は次ページを表示する_次の20件で条件を保持し投稿102か続きなしへ置き換える",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 59,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 99,
+      "key": "posts-ui",
+      "name": "test_投稿一覧の先頭へ操作は条件を保持する_非空の続きページからcursorだけを除去して投稿103を表示する",
+      "params": [
+        {
+          "id": "single",
+          "input": "P+C-Pの非空続きページで「先頭へ」を押し、Pへの取得が投稿103を返す。",
+          "expected": "cursorだけ除去し、施策・期間・sort/orderを保持。投稿103を表示し先頭へボタンを非表示。 通信境界でcursor未送信と適用条件の保持を確認。公開期間は2026-09-30T15:00Z以上・2026-10-31T15:00Z未満。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "公開済み投稿一覧：先頭へを押す",
+        "lines": 60,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 101,
+      "key": "posts-ui",
+      "name": "導出保留：Frontend投稿 — 旧 #101",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_投稿一覧は旧cursorから自動復帰する_cursor付き400なら同条件の先頭を1回だけ取得する",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 223,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 102,
+      "key": "posts-ui",
+      "name": "test_投稿一覧はcursorなし入力不備を表示する_400なら条件確認と再試行を表示する",
+      "params": [
+        {
+          "id": "single",
+          "input": "Pのcursorなし要求が400。",
+          "expected": "条件確認・再試行、自動復帰なし、空表示なし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "取得失敗：入力不備",
+        "lines": 224,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 103,
+      "key": "posts-ui",
+      "name": "test_投稿一覧は参照不可施策を案内する_施策12が404なら条件変更を求める",
+      "params": [
+        {
+          "id": "single",
+          "input": "Pで投稿取得404 CAMPAIGN_NOT_FOUND。補助の施策表示取得は正常。",
+          "expected": "指定施策の参照不可と条件変更。空表示にしない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "取得失敗：施策参照不可",
+        "lines": 225,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 104,
+      "key": "posts-ui",
+      "name": "test_投稿一覧は意味検索失敗を表示する_採用広報の検索がEMBEDDING_FAILEDなら検索失敗と再試行を出す",
+      "params": [
+        {
+          "id": "single",
+          "input": "query=採用広報、cursor/sort/orderなし。500 EMBEDDING_FAILED。",
+          "expected": "検索失敗と再試行。成功空表示にしない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "取得失敗：意味検索失敗",
+        "lines": 226,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 105,
+      "key": "posts-ui",
+      "name": "test_投稿一覧は内部エラーを表示する_INTERNAL_ERRORなら取得失敗と再試行を出す",
+      "params": [
+        {
+          "id": "single",
+          "input": "P取得500 INTERNAL_ERROR。",
+          "expected": "投稿を読み込めませんでした。再試行、空表示なし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "取得失敗：内部エラー",
+        "lines": 227,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 106,
+      "key": "posts-ui",
+      "name": "test_投稿一覧は通信失敗を表示する_通信が失敗したら取得失敗と再試行を出す",
+      "params": [
+        {
+          "id": "single",
+          "input": "P取得を通信reject。",
+          "expected": "投稿を読み込めませんでした。再試行、空表示なし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "取得失敗：通信失敗",
+        "lines": 228,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 107,
+      "key": "posts-ui",
+      "name": "導出保留：Frontend投稿 — 旧 #107",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_投稿一覧は復帰失敗後に停止する_復帰の400か404か500か通信失敗ならcursor解除条件を保持する",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 229,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 108,
+      "key": "posts-ui",
+      "name": "導出保留：Frontend投稿 — 旧 #108",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_投稿一覧は未認証を優先表示する_通常取得か復帰取得が401ならログインを求める",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 230,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 109,
+      "key": "posts-ui",
+      "name": "導出保留：Frontend投稿 — 旧 #109",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_投稿一覧は権限不足を優先表示する_通常取得か復帰取得が403ならマーケター権限を案内する",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 231,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 110,
+      "key": "posts-ui",
+      "name": "導出保留：Frontend投稿 — 旧 #110",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_投稿一覧は保持条件で再試行する_通常失敗か復帰失敗後の再試行で投稿103を表示する",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 208,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 111,
+      "key": "metrics-ui",
+      "name": "導出保留：Frontend計測 — 旧 #111",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_計測結果は次ページと全体集計を更新する_次の20件で非空か空の施策ページと新summaryを表示する",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 55,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 113,
+      "key": "metrics-ui",
+      "name": "test_計測一覧の先頭へ操作は期間を保持する_非空続きページからcursorを除去して新summaryと施策12を表示する",
+      "params": [
+        {
+          "id": "single",
+          "input": "T+C-Mの非空続きページで先頭へ。応答は更新summaryと施策12。",
+          "expected": "cursorだけ除去、期間保持、新summaryと施策12を表示。 通信境界でcursor未送信と適用条件の保持を確認。公開期間は2026-09-30T15:00Z以上・2026-10-31T15:00Z未満。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "計測結果一覧：先頭へを押す",
+        "lines": 56,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 115,
+      "key": "metrics-ui",
+      "name": "導出保留：Frontend計測 — 旧 #115",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_計測結果は旧cursorから自動復帰する_cursor付き400なら同期間の先頭を1回だけ取得する",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 242,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 116,
+      "key": "metrics-ui",
+      "name": "test_計測結果はcursorなし入力不備を表示する_400なら期間確認と再試行を出す",
+      "params": [
+        {
+          "id": "single",
+          "input": "Tのcursorなし400。",
+          "expected": "期間確認・再試行、自動復帰なし、全体0へ置換しない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "取得失敗：入力不備",
+        "lines": 243,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 117,
+      "key": "metrics-ui",
+      "name": "test_計測結果は内部エラーを表示する_INTERNAL_ERRORなら取得失敗と再試行を出す",
+      "params": [
+        {
+          "id": "single",
+          "input": "T取得500 INTERNAL_ERROR。",
+          "expected": "計測結果を読み込めませんでした。再試行、成功0件にしない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "取得失敗：内部エラー",
+        "lines": 244,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 118,
+      "key": "metrics-ui",
+      "name": "test_計測結果は通信失敗を表示する_通信が失敗したら取得失敗と再試行を出す",
+      "params": [
+        {
+          "id": "single",
+          "input": "T取得を通信reject。",
+          "expected": "計測結果を読み込めませんでした。再試行、成功0件にしない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "取得失敗：通信失敗",
+        "lines": 245,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 119,
+      "key": "metrics-ui",
+      "name": "導出保留：Frontend計測 — 旧 #119",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_計測結果は復帰失敗後に停止する_復帰の400か500か通信失敗ならcursor解除条件を保持する",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 246,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 120,
+      "key": "metrics-ui",
+      "name": "導出保留：Frontend計測 — 旧 #120",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_計測結果は未認証を優先表示する_通常取得か復帰取得が401ならログインを求める",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 247,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 121,
+      "key": "metrics-ui",
+      "name": "導出保留：Frontend計測 — 旧 #121",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_計測結果は権限不足を優先表示する_通常取得か復帰取得が403ならマーケター権限を案内する",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 248,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 122,
+      "key": "metrics-ui",
+      "name": "導出保留：Frontend計測 — 旧 #122",
+      "params": [],
+      "status": "derivation-pending",
+      "change": "add",
+      "kind": "pending",
+      "oldName": "test_計測結果は保持期間で再試行する_通常失敗か復帰失敗後の再試行で新summaryと施策を表示する",
+      "pendingReason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "行別の条件確定待ち",
+        "lines": 227,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 123,
+      "key": "demo-main",
+      "name": "test_mainは実行結果をJSON出力する_seedのUser21かUserIDなしclearなら結果を出力して正常終了する",
+      "params": [
+        {
+          "id": "seed21",
+          "input": "seed --user-id 21、runは確定済み投入結果を返す。",
+          "expected": "操作と21を渡し結果と等価なJSON、終了0。"
+        },
+        {
+          "id": "clear-none",
+          "input": "clear、runは確定済み削除結果を返す。",
+          "expected": "操作とNoneを渡し結果と等価なJSON、終了0。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/DEMO_DATASET.md",
+        "section": "main：正常",
+        "lines": "30-60",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 126,
+      "key": "demo-run",
+      "name": "test_runは操作結果を確定する_User21へのseedかresetまたはUser照合なしclearなら操作別の結果を返す",
+      "params": [
+        {
+          "id": "seed",
+          "input": "DB・seed依存Fake、許可local設定。seed、User21。",
+          "expected": "検証後に12会話投入を委譲し、identity一致後commit。created=true・user_id21・sessions12件・identity_preserved=true。"
+        },
+        {
+          "id": "seed-existing",
+          "input": "同じ依存境界。seedが投入済み結果を返す。",
+          "expected": "追加省略を確定しcreated=false・user_id21・message・identity_preserved=true。"
+        },
+        {
+          "id": "reset",
+          "input": "依存Fake。reset、User21。",
+          "expected": "対象検証後に対象16表の削除・採番初期化・投入を委譲。identity一致後commit。created・user_id・sessions・removed・identity_preserved。"
+        },
+        {
+          "id": "clear-none",
+          "input": "依存Fake。clear、UserID=None。",
+          "expected": "投入先ユーザー照合なしで削除を委譲しcommit。removed・identity_preserved=true、user_idなし。"
+        },
+        {
+          "id": "clear999",
+          "input": "依存Fake。clear、UserID999。",
+          "expected": "999のユーザー照合なし。clear-noneと同じ削除結果。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/DEMO_DATASET.md",
+        "section": "run：正常",
+        "lines": "64-132",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 127,
+      "key": "demo-run",
+      "name": "test_runは入力と状態の不備を拒否する_操作かUserIDか登録状態か環境が不正ならValueErrorになる",
+      "params": [
+        {
+          "id": "unknown-action",
+          "input": "action=unknown、User21",
+          "expected": "ValueError、操作が不正である旨。DB接続・commitなし。"
+        },
+        {
+          "id": "id-none",
+          "input": "reset、UserID=None",
+          "expected": "ValueError、正の整数のUserIDが必要である旨。DB接続・commitなし。"
+        },
+        {
+          "id": "id0",
+          "input": "reset、0",
+          "expected": "ValueError、正の整数のUserIDが必要である旨。DB接続・commitなし。"
+        },
+        {
+          "id": "id-negative",
+          "input": "reset、-1",
+          "expected": "ValueError、正の整数のUserIDが必要である旨。DB接続・commitなし。"
+        },
+        {
+          "id": "id-string",
+          "input": "reset、\"21\"",
+          "expected": "ValueError、正の整数のUserIDが必要である旨。DB接続・commitなし。"
+        },
+        {
+          "id": "id-float",
+          "input": "reset、21.5",
+          "expected": "ValueError、正の整数のUserIDが必要である旨。DB接続・commitなし。"
+        },
+        {
+          "id": "id-bool",
+          "input": "reset、True",
+          "expected": "ValueError、正の整数のUserIDが必要である旨。DB接続・commitなし。"
+        },
+        {
+          "id": "id999",
+          "input": "reset、User999なし",
+          "expected": "ValueError、登録済みの投入先ユーザーが必要である旨。開始済み操作はrollbackと終了を委譲、成功commitなし。"
+        },
+        {
+          "id": "invited",
+          "input": "reset、User21がinvited",
+          "expected": "ValueError、登録済みの投入先ユーザーが必要である旨。開始済み操作はrollbackと終了を委譲、成功commitなし。"
+        },
+        {
+          "id": "suspended",
+          "input": "reset、User21がsuspended",
+          "expected": "ValueError、登録済みの投入先ユーザーが必要である旨。開始済み操作はrollbackと終了を委譲、成功commitなし。"
+        },
+        {
+          "id": "old128-external-host",
+          "input": "action=reset、user_id=21、registeredの対象あり。host=db.example.test。",
+          "expected": "ValueError、ローカル開発DB専用のコマンドです。DB接続・commitなし。"
+        },
+        {
+          "id": "old128-missing-host",
+          "input": "action=reset、user_id=21、registeredの対象あり。host=None。",
+          "expected": "ValueError、ローカル開発DB専用のコマンドです。DB接続・commitなし。"
+        },
+        {
+          "id": "old128-vercel-preview",
+          "input": "action=reset、user_id=21、registeredの対象あり。localhost、VERCEL_ENV=preview。",
+          "expected": "ValueError、ローカル開発DB専用のコマンドです。DB接続・commitなし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/DEMO_DATASET.md",
+        "section": "run：ValueError",
+        "lines": "138-144",
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 129,
+      "key": "demo-run",
+      "name": "test_runはDB障害を伝播する_削除か投入の依存がSQLAlchemyErrorならrollbackして同じ例外を送出する",
+      "params": [
+        {
+          "id": "seed-partial",
+          "input": "DB依存Fake。seed-partialの段階でSQLAlchemyError E。",
+          "expected": "同じ例外Eを伝播。開始済み操作のrollbackと終了を委譲し成功commitなし。実DBでの復元を確認したとは扱わない。"
+        },
+        {
+          "id": "reset-clear-and-partial",
+          "input": "DB依存Fake。reset-clear-and-partialの段階でSQLAlchemyError E。",
+          "expected": "同じ例外Eを伝播。開始済み操作のrollbackと終了を委譲し成功commitなし。実DBでの復元を確認したとは扱わない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/DEMO_DATASET.md",
+        "section": "run：SQLAlchemyError",
+        "lines": 145,
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 130,
+      "key": "demo-run",
+      "name": "test_runはidentity不一致を拒否する_resetで変更前後の指紋が異なればrollbackしてRuntimeErrorになる",
+      "params": [
+        {
+          "id": "single",
+          "input": "DB依存Fake。resetで変更前後のidentity指紋を異なる値として返す。",
+          "expected": "RuntimeError、会社・認証情報が変化したため全変更を取り消す旨。rollbackと終了を委譲し成功commitなし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/DEMO_DATASET.md",
+        "section": "run：RuntimeError",
+        "lines": 146,
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 131,
+      "key": "demo-seed",
+      "name": "test_seed_demoは登録済み本人への投入結果を返す_User21に未投入なら12会話を作り投入済みなら追加を省略する",
+      "params": [
+        {
+          "id": "create",
+          "input": "DB依存Fake。User21はregistered・Roleなし、本人への投入履歴なし。他人User22への投入履歴あり。",
+          "expected": "12会話と関連記録の保存をUser21で委譲しcreated=true・user_id21・sessions12件。自身のcommitなし。"
+        },
+        {
+          "id": "existing",
+          "input": "DB依存Fake。registeredのUser21本人へ投入済み。",
+          "expected": "保存委譲なし、created=false・user_id21・message。自身のcommitなし。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/DEMO_DATASET.md",
+        "section": "seed_demo：正常",
+        "lines": "148-179",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 132,
+      "key": "demo-seed",
+      "name": "test_seed_demoは投入不可のユーザーを拒否する_ID0か不存在999かinvitedかsuspendedならValueErrorで保存を委譲しない",
+      "params": [
+        {
+          "id": "id0",
+          "input": "DB依存Fakeで該当する不正状態：id0。",
+          "expected": "ValueError。保存委譲・commitなし。呼出元の実DB rollback結果はこの単体対象外。"
+        },
+        {
+          "id": "id999",
+          "input": "DB依存Fakeで該当する不正状態：id999。",
+          "expected": "ValueError。保存委譲・commitなし。呼出元の実DB rollback結果はこの単体対象外。"
+        },
+        {
+          "id": "invited",
+          "input": "DB依存Fakeで該当する不正状態：invited。",
+          "expected": "ValueError。保存委譲・commitなし。呼出元の実DB rollback結果はこの単体対象外。"
+        },
+        {
+          "id": "suspended",
+          "input": "DB依存Fakeで該当する不正状態：suspended。",
+          "expected": "ValueError。保存委譲・commitなし。呼出元の実DB rollback結果はこの単体対象外。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/DEMO_DATASET.md",
+        "section": "seed_demo：ValueError",
+        "lines": "185-187",
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": 133,
+      "key": "demo-seed",
+      "name": "test_seed_demoはDB障害を伝播する_対象照合か重複照合か一部保存で失敗したら元例外を送出する",
+      "params": [
+        {
+          "id": "user-read",
+          "input": "DB依存Fakeのuser-readでSQLAlchemyError E。",
+          "expected": "同一例外Eを伝播し、自身のcommitなし。呼出元へrollbackを委ねる。"
+        },
+        {
+          "id": "duplicate-read",
+          "input": "DB依存Fakeのduplicate-readでSQLAlchemyError E。",
+          "expected": "同一例外Eを伝播し、自身のcommitなし。呼出元へrollbackを委ねる。"
+        },
+        {
+          "id": "partial-save",
+          "input": "DB依存Fakeのpartial-saveでSQLAlchemyError E。",
+          "expected": "同一例外Eを伝播し、自身のcommitなし。呼出元へrollbackを委ねる。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/modules/DEMO_DATASET.md",
+        "section": "seed_demo：SQLAlchemyError",
+        "lines": 188,
+        "rule": "Backend §14.2：公開メソッド・公開関数の例外型ごとに1本"
+      }
+    },
+    {
+      "id": "r1",
+      "key": "sql-record",
+      "name": "test_同じ会社でも他人の会話を参照できない_所有者11の会話を所有者12で取得するとreasonがSESSION_NOT_FOUNDになる",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "記録層の所有者認可をService/APIへ移管。",
+      "targets": [
+        30,
+        31,
+        42,
+        44
+      ]
+    },
+    {
+      "id": "r2",
+      "key": "sql-record",
+      "name": "test_所属会社の異なる認証情報では会話を参照できない_所有者11の所属が会社1でmetaが会社2ならreasonがSESSION_NOT_FOUNDになる",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "記録層の会社認可を廃止。不整合meta受理テストへは置換しない。",
+      "targets": [
+        21,
+        30
+      ]
+    },
+    {
+      "id": "r3",
+      "key": "sql-record",
+      "name": "test_実行者の所属会社照合_marketer_idが11の所属company_idが1なのにmetaのcompany_idが2ならRecordErrorでSession追加件数は0になる",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "会社/Roleへの依存を廃止。",
+      "targets": [
+        21
+      ]
+    },
+    {
+      "id": "r4",
+      "key": "sql-record",
+      "name": "test_session_historyは他人の会話を取得できない_session_idが101の所有marketer_idが11で取得者が12ならreasonはSESSION_NOT_FOUNDになる",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "所有者拒否はService/APIへ。",
+      "targets": [
+        30,
+        42
+      ]
+    },
+    {
+      "id": "r5",
+      "key": "sql-record",
+      "name": "test_startは他人の会話へ初回入力を受け付けない_session_idが101の所有marketer_idが11で実行者が12ならreasonはSESSION_NOT_FOUNDでTurnとItemは増えない",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "初回入力の認可はService/APIへ。",
+      "targets": [
+        31,
+        44
+      ]
+    },
+    {
+      "id": "r6",
+      "key": "memory-record",
+      "name": "test_同じ会社でも他人の会話を参照できない_所有者11の会話を所有者12で取得するとreasonがSESSION_NOT_FOUNDになる",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "認可をService/APIへ。",
+      "targets": [
+        30,
+        42
+      ]
+    },
+    {
+      "id": "r7",
+      "key": "memory-record",
+      "name": "test_所属会社の異なる認証情報では会話を参照できない_所有者11の所属が会社1でmetaが会社2ならreasonがSESSION_NOT_FOUNDになる",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "会社不要の正常記録へ置換。",
+      "targets": [
+        24
+      ]
+    },
+    {
+      "id": "r8",
+      "key": "memory-record",
+      "name": "test_初回受付の所有者照合_別所有者のSessionを指定すると記録を変更せず拒否する",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "認可をService/APIへ。",
+      "targets": [
+        31,
+        44
+      ]
+    },
+    {
+      "id": "r9",
+      "key": "task",
+      "name": "test_Taskは別会社の実行者からの回答を拒否する_会社1と実行者1の提示へ会社2と実行者2で回答するとRecordErrorになりTurnと業務実行とClient開始は増えない",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "Task/runtimeの会社・所有者認可を廃止。",
+      "targets": [
+        31,
+        44
+      ]
+    },
+    {
+      "id": "r10",
+      "key": "posts-api",
+      "name": "test_Snapshot_Page間で元データの追加除外順序と表示値が変わっても固定される",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "ページ間固定は保証対象外。最新値取得へ。",
+      "targets": [
+        48
+      ]
+    },
+    {
+      "id": "r11",
+      "key": "posts-api",
+      "name": "test_カーソルの取り違え_別の並び順のcursorのとき400",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "同じエラーコードの検証へ統合。",
+      "targets": [
+        52
+      ]
+    },
+    {
+      "id": "r12",
+      "key": "posts-api",
+      "name": "test_Snapshotカーソル_条件変更改ざん別所有者期限切れを400で拒否する",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "条件/署名検証を維持。本人限定/TTLは廃止。",
+      "targets": [
+        48,
+        52
+      ]
+    },
+    {
+      "id": "r13",
+      "key": "posts-api",
+      "name": "test_Snapshotカーソル_一覧種別と位置が不正な署名済みcursorも400で拒否する",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "種別・値境界へ置換。保存配列の位置を廃止。",
+      "targets": [
+        52,
+        70
+      ]
+    },
+    {
+      "id": "r14",
+      "key": "posts-api",
+      "name": "test_SnapshotCleanup_先頭Pageで期限切れを100件まで削除しItemもCascadeする",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "Snapshot保存・cleanupを廃止。",
+      "targets": []
+    },
+    {
+      "id": "r15",
+      "key": "metrics-api",
+      "name": "test_先頭Pageで期限切れSnapshotを100件まで削除する",
+      "params": [],
+      "status": "retired",
+      "change": "retire",
+      "kind": "retired",
+      "reason": "Snapshot保存・cleanupを廃止。",
+      "targets": []
+    },
+    {
+      "id": 137,
+      "key": "conversation",
+      "name": "test_Conversationのlistは本人の検索条件を渡す_User21とprototypeとlimit20なら同じ条件でページを取得する",
+      "params": [
+        {
+          "id": "single",
+          "input": "RecordStore Fake。meta.user_id21、prototype、limit20、after=None。",
+          "expected": "記録先へ同じ所有者・定義・limit20・after=Noneを渡し、Sessionページと次位置を返す。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/harness/README.md",
+        "section": "Conversation.list：公開契約",
+        "lines": 103,
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 138,
+      "key": "task",
+      "name": "test_Taskのrunは本人IDで初回入力を記録する_User21のSession101なら同じmetaでTurnを受付する",
+      "params": [
+        {
+          "id": "single",
+          "input": "Runner・RecordStore Fake。meta.user_id21、Session101、初回message=開始。",
+          "expected": "初回受付・生成へ同じUser21とSession101を引き継ぎ、TaskResultを返す。会社・Roleによる認可を追加しない。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/harness/README.md",
+        "section": "Task.run：公開契約と実行Meta",
+        "lines": "512-573",
+        "rule": "Backend §14.2：公開メソッド・公開関数の正常系1本"
+      }
+    },
+    {
+      "id": 134,
+      "key": "posts-ui",
+      "name": "test_続きなしの先頭へ操作は条件を保持する_空の続きページからcursorだけを除去して投稿103を表示する",
+      "params": [
+        {
+          "id": "single",
+          "input": "P+C-Pの「続きの投稿はありません」から先頭へ。Pへの取得が投稿103を返す。",
+          "expected": "cursorだけを除去し施策・期間・sort/order保持、投稿103を表示。 通信境界でcursor未送信と適用条件の保持を確認。公開期間は2026-09-30T15:00Z以上・2026-10-31T15:00Z未満。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "続きなし：先頭へを押す",
+        "lines": 146,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 135,
+      "key": "metrics-ui",
+      "name": "test_計測の続きなしから先頭へ戻る_空の続きページからcursorだけを除去して新summaryと施策12を表示する",
+      "params": [
+        {
+          "id": "single",
+          "input": "T+C-M、施策0件かつsummary.post_count>=1から先頭へ。応答は更新summaryと施策12。",
+          "expected": "同期間の先頭と新summary、施策12を表示。 通信境界でcursor未送信と適用条件の保持を確認。公開期間は2026-09-30T15:00Z以上・2026-10-31T15:00Z未満。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "続きなし：先頭へを押す",
+        "lines": 164,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    },
+    {
+      "id": 136,
+      "key": "metrics-ui",
+      "name": "test_計測の全体0件から先頭へ戻る_cursor付き全体0件からcursorだけを除去して施策12を表示する",
+      "params": [
+        {
+          "id": "single",
+          "input": "T+C-M、summary.post_count=0から先頭へ。応答は更新summaryと施策12。",
+          "expected": "期間保持、cursor除去、新summaryと施策12を表示。 通信境界でcursor未送信と適用条件の保持を確認。公開期間は2026-09-30T15:00Z以上・2026-10-31T15:00Z未満。"
+        }
+      ],
+      "status": "planned",
+      "change": "add",
+      "kind": "active",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "対象期間の該当なし：先頭へを押す",
+        "lines": 126,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      }
+    }
+  ],
+  "changes": [
+    {
+      "ids": [
+        15,
+        16
+      ],
+      "decision": "除外",
+      "reason": "旧revisionからの移行・空DBのスキーマ照合は、規約のテスト対象に該当しない。"
+    },
+    {
+      "ids": [
+        17,
+        18,
+        19,
+        20
+      ],
+      "decision": "除外",
+      "reason": "DBMLから独立した保存層・DB制約テストを追加する規定がない。公開API・公開メソッドの対象とも未対応。"
+    },
+    {
+      "ids": [
+        11
+      ],
+      "decision": "除外",
+      "reason": "marketer_writerの例外表は権限不足のみ。依存チェーンのCSRF順序を別メソッドとして増設する根拠がない。"
+    },
+    {
+      "ids": [
+        22,
+        25
+      ],
+      "decision": "除外",
+      "reason": "get_sessionの公開メソッド定義・戻り値契約が現設計に存在しない。"
+    },
+    {
+      "ids": [
+        34
+      ],
+      "decision": "除外",
+      "reason": "DI公開関数の定義とモデル・Runner・Taskの生成回数0の仕様がない。"
+    },
+    {
+      "ids": [
+        46
+      ],
+      "decision": "除外",
+      "reason": "要求中の認可維持は共通仕様。独立したAPI呼び出しケースとして本数を増設する根拠がない。"
+    },
+    {
+      "ids": [
+        98,
+        100,
+        112,
+        114
+      ],
+      "decision": "除外",
+      "reason": "初期空表示・読込表示の独立ケースを、項目定義から追加する規定がない。操作・エラー行に対応する結果として扱う。"
+    },
+    {
+      "ids": [
+        124,
+        125
+      ],
+      "decision": "除外",
+      "reason": "mainには終了コードの仕様があるが例外表がなく、終了コードごとの独立単体テストを導く規定がない。"
+    },
+    {
+      "ids": [
+        26
+      ],
+      "decision": "導出保留",
+      "reason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "ids": [
+        27
+      ],
+      "decision": "導出保留",
+      "reason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "ids": [
+        28
+      ],
+      "decision": "導出保留",
+      "reason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "ids": [
+        29
+      ],
+      "decision": "導出保留",
+      "reason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "ids": [
+        30
+      ],
+      "decision": "導出保留",
+      "reason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "ids": [
+        31
+      ],
+      "decision": "導出保留",
+      "reason": "APIに役割の記載はあるが、対象Serviceの公開メソッド定義・例外表との対応が未確定。APIの記述から単体テストを増設せず、正本の確認を待つ。"
+    },
+    {
+      "ids": [
+        89
+      ],
+      "decision": "導出保留",
+      "reason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "ids": [
+        90
+      ],
+      "decision": "導出保留",
+      "reason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "ids": [
+        91
+      ],
+      "decision": "導出保留",
+      "reason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "ids": [
+        92
+      ],
+      "decision": "導出保留",
+      "reason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "ids": [
+        93
+      ],
+      "decision": "導出保留",
+      "reason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "ids": [
+        94
+      ],
+      "decision": "導出保留",
+      "reason": "認証画面の提供操作一覧・エラー表示が未定義。USECASE・APIだけではFrontend §21.2の行別ケースを確定できない。"
+    },
+    {
+      "ids": [
+        95
+      ],
+      "decision": "導出保留",
+      "reason": "Shellの表示項目はあるが提供操作行とAPI有無が未定義。表示条件だけからケースを追加しない。"
+    },
+    {
+      "ids": [
+        96
+      ],
+      "decision": "導出保留",
+      "reason": "Shellの表示項目はあるが提供操作行とAPI有無が未定義。表示条件だけからケースを追加しない。"
+    },
+    {
+      "ids": [
+        97
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        101
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        107
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        108
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        109
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        110
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        111
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        115
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        119
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        120
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        121
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        122
+      ],
+      "decision": "導出保留",
+      "reason": "対応する画面設計行はあるが、旧案の状態差・server/client・正常/復帰の複数条件から1ケースを選ぶ根拠が未確定。直積と代表条件の独断選択を撤回し、行別の条件確定を待つ。"
+    },
+    {
+      "ids": [
+        3,
+        4
+      ],
+      "decision": "根拠修正",
+      "reason": "ロール状態による2分割を撤回し、認証APIの関連ユースケース2行へ対応。"
+    },
+    {
+      "ids": [
+        12,
+        13,
+        14,
+        21,
+        23,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        126,
+        127,
+        129,
+        130,
+        131,
+        132,
+        133
+      ],
+      "decision": "検証境界修正",
+      "reason": "公開契約から導く単体テストへ修正。DBはFake/Mock、実DBでの独立スキーマ・SQL結果・原子性テストの追加を撤回。SQLの抽出・順序・集計結果はAPI結合の既定ケースで確認。"
+    },
+    {
+      "ids": [
+        137,
+        138
+      ],
+      "decision": "追加対応",
+      "reason": "既存案で漏れていたConversation.listとTask.runの公開正常系各1本を対応づけ。"
+    },
+    {
+      "ids": [
+        40
+      ],
+      "decision": "除外",
+      "reason": "会話一覧の「表示対象の分離」1行は旧 #039 に統合。同社・他社という入力差でメソッドを分割しない。"
+    },
+    {
+      "ids": [
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80
+      ],
+      "decision": "統合",
+      "reason": "同一公開メソッドの同じ例外型を旧 #72 の1メソッドへ統合。条件・コード・メッセージはケース側に保持。"
+    },
+    {
+      "ids": [
+        84,
+        85,
+        86,
+        87
+      ],
+      "decision": "統合",
+      "reason": "同一公開メソッドの同じ例外型を旧 #84 の1メソッドへ統合。条件・コード・メッセージはケース側に保持。"
+    },
+    {
+      "ids": [
+        99,
+        113,
+        134,
+        135,
+        136
+      ],
+      "decision": "行別対応",
+      "reason": "異なる画面の明示的な先頭操作行をそれぞれ1ケースへ対応。状態直積は作成しない。"
+    },
+    {
+      "ids": [
+        127,
+        128
+      ],
+      "decision": "統合",
+      "reason": "同一公開メソッドの同じ例外型を旧 #127 の1メソッドへ統合。条件・コード・メッセージはケース側に保持。"
+    },
+    {
+      "ids": [
+        12,
+        13,
+        39,
+        44,
+        47,
+        48,
+        49,
+        56,
+        57,
+        71,
+        72,
+        84,
+        127,
+        131,
+        132
+      ],
+      "decision": "再確認修正",
+      "reason": "共通fixtureの実DB記述、DTO保存値の混同、名前と準備のずれ、例外入力の曖昧さを修正。SQLの順序・同値境界は既定API正常メソッド内へ対応。"
+    }
+  ],
+  "requirements": [
+    {
+      "title": "検索語を入力する",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "検索語を入力する",
+        "lines": 50,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "施策の候補を探す",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "施策の候補を探す",
+        "lines": 51,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "施策を選ぶ",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "施策を選ぶ",
+        "lines": 52,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "詳細条件を開閉する",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "詳細条件を開閉する",
+        "lines": 53,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "公開日の開始を入力する",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "公開日の開始を入力する",
+        "lines": 54,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "公開日の終了を入力する",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "公開日の終了を入力する",
+        "lines": 55,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "検索を押す",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "検索を押す",
+        "lines": 56,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "並び順を変更する",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "並び順を変更する",
+        "lines": 57,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "条件をクリアする",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "条件をクリアする",
+        "lines": 58,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "施策未選択",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "施策未選択",
+        "lines": 91,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "期間不備",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "期間不備",
+        "lines": 92,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "候補取得失敗",
+      "basis": {
+        "file": "docs/specs/features/posts/SCREEN_DESIGN.md",
+        "section": "候補取得失敗",
+        "lines": 93,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "開始日を入力する",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "開始日を入力する",
+        "lines": 51,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "終了日を入力する",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "終了日を入力する",
+        "lines": 52,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "適用を押す",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "適用を押す",
+        "lines": 53,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "全期間を押す",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "全期間を押す",
+        "lines": 54,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "期間不備",
+      "basis": {
+        "file": "docs/specs/features/metrics/SCREEN_DESIGN.md",
+        "section": "期間不備",
+        "lines": 101,
+        "rule": "Frontend §21.2：提供操作・エラー表示の1行につき1ケース"
+      },
+      "reason": "旧案に対応漏れ。設計行との対応と具体的条件を確定してから1ケースを定義する。現在の提案本数・ケース数から除外。"
+    },
+    {
+      "title": "会話APIの既存ケースとの対応",
+      "basis": {
+        "file": "docs/specs/features/chat/API.md",
+        "section": "正常ケース・エラー一覧",
+        "lines": "91-636",
+        "rule": "Backend §14.2：APIの正常呼び出しケース行ごとに1本"
+      },
+      "reason": "旧案が扱わなかった正常ケース・既存エラーは、既存テストとの照合が未完了。対応未確認を新規追加件数とせず、未確認として管理。"
+    }
+  ]
+}

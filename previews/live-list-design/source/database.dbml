@@ -1,0 +1,557 @@
+Project hiromeru {
+  database_type: 'PostgreSQL'
+  Note: 'PostgreSQL拡張: vector。'
+}
+
+Enum post_metric_status {
+  pending
+  completed
+  failed
+}
+
+Enum agent_item_type {
+  user_message
+  assistant_message
+  tool_call
+  tool_result
+  terminal_result
+  terminal_reply_result
+}
+
+Enum agent_item_context_status {
+  active
+  quarantined
+}
+
+Enum agent_content_source {
+  user_input
+  user_document
+  agent_output
+  web_content
+  web_search
+  database
+  long_term_memory
+  external_api
+  mcp_tool
+  system
+}
+
+Enum agent_turn_status {
+  running
+  completed
+  failed
+  cancelled
+}
+
+Enum tool_execution_status {
+  running
+  completed
+  failed
+  cancelled
+  blocked
+}
+
+Enum api_operation {
+  upsert_campaign
+  publish_x_post
+}
+
+Enum api_idempotency_status {
+  processing
+  succeeded
+  failed
+  outcome_unknown
+}
+
+Enum security_event_type {
+  prompt_injection
+  sensitive_data
+  unauthorized_tool_call
+  unsafe_external_action
+}
+
+Enum security_detector {
+  application
+  orcarouter_firewall
+}
+
+Enum security_enforcement {
+  observed
+  sanitized
+  blocked
+}
+
+Enum user_status {
+  invited
+  registered
+  suspended
+}
+
+Enum email_status {
+  pending
+  accepted
+  failed
+  outcome_unknown
+}
+
+Table users {
+  id bigint [pk, increment, note: '【ユーザーID】']
+  name varchar(255) [not null, note: '【表示名】']
+  email varchar(255) [not null, note: '【メールアドレス】']
+  password varchar(255) [note: '【パスワードハッシュ】']
+  status user_status [not null, default: 'invited', note: '【利用状態】']
+  auth_generation bigint [not null, default: 0, note: '【認証世代】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+
+  indexes {
+    email [unique]
+  }
+
+  checks {
+    `(status = 'registered' AND password IS NOT NULL) OR (status = 'invited' AND password IS NULL) OR status = 'suspended'` [name: 'users_status_password_check']
+    `auth_generation >= 0` [name: 'users_auth_generation_check']
+  }
+}
+
+Table companies {
+  id bigint [pk, increment, note: '【会社ID】']
+  name varchar(255) [not null, note: '【会社名】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+}
+
+Table company_information {
+  company_id bigint [pk, note: '【会社ID】企業情報の所属先。未登録の場合は行が存在しない。']
+  body text [not null, note: '【本文】会社共通の説明を記述したMarkdown原文。空欄・空白のみの本文は保存対象外。']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+}
+
+Ref: companies.id - company_information.company_id [delete: restrict]
+
+Table marketers {
+  id bigint [pk, increment, note: '【マーケターID】']
+  user_id bigint [not null, unique, note: '【ユーザーID】']
+  company_id bigint [not null, note: '【会社ID】']
+  is_enabled boolean [not null, default: true, note: '【ロール有効フラグ】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+
+  indexes {
+    company_id
+  }
+}
+
+Ref: marketers.user_id > users.id [delete: restrict]
+Ref: marketers.company_id > companies.id [delete: restrict]
+
+Table admins {
+  id bigint [pk, increment, note: '【管理ユーザーID】']
+  user_id bigint [not null, unique, note: '【ユーザーID】']
+  company_id bigint [not null, note: '【所属会社ID】']
+  is_enabled boolean [not null, default: true, note: '【ロール有効フラグ】']
+  is_responsible boolean [not null, default: false, note: '【責任者フラグ】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+
+  indexes {
+    company_id
+  }
+
+  checks {
+    `NOT is_responsible OR is_enabled` [name: 'admins_responsible_enabled_check']
+  }
+
+  Note: 'company_idにis_responsible=trueを条件とする部分ユニーク索引を設ける。'
+}
+
+Ref: admins.user_id > users.id [delete: restrict]
+Ref: admins.company_id > companies.id [delete: restrict]
+
+Table emails {
+  id bigint [pk, increment, note: '【メール送信操作ID】']
+  user_id bigint [not null, note: '【宛先ユーザーID】']
+  status email_status [not null, default: 'pending', note: '【送信状態】']
+  attempt_count integer [not null, default: 0, note: '【送信試行回数】']
+  ses_message_id varchar(255) [note: '【SESメッセージID】']
+  last_error_code varchar(100) [note: '【直近エラーコード】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+
+  indexes {
+    (id, user_id) [unique]
+    (user_id, created_at)
+  }
+
+  checks {
+    `attempt_count BETWEEN 0 AND 3` [name: 'emails_attempt_count_check']
+    `(status = 'pending' AND ses_message_id IS NULL AND last_error_code IS NULL) OR (status = 'accepted' AND ses_message_id IS NOT NULL AND last_error_code IS NULL) OR (status IN ('failed', 'outcome_unknown') AND ses_message_id IS NULL AND last_error_code IS NOT NULL)` [name: 'emails_status_result_check']
+  }
+
+  Note: 'acceptedはSESの送信受付成功を表し、配達完了とは区別する。'
+}
+
+Ref: emails.user_id > users.id [delete: restrict]
+
+Table invitations {
+  id bigint [pk, increment, note: '【招待ID】']
+  user_id bigint [not null, note: '【招待対象ユーザーID】']
+  email_id bigint [not null, unique, note: '【メール送信操作ID】']
+  token_hash varchar(255) [not null, unique, note: '【招待トークンハッシュ】']
+  expires_at timestamptz [not null, note: '【有効期限】']
+  used_at timestamptz [note: '【使用日時】']
+  invalidated_at timestamptz [note: '【無効化日時】']
+  created_at timestamptz [not null, note: '【トークン発行日時】']
+
+  indexes {
+    (user_id, created_at)
+  }
+
+  checks {
+    `used_at IS NULL OR invalidated_at IS NULL` [name: 'invitations_used_or_invalidated_check']
+    `expires_at = created_at + interval '1 hour'` [name: 'invitations_expiry_check']
+  }
+
+  Note: 'user_idにused_at IS NULL AND invalidated_at IS NULLを条件とする部分ユニーク索引を設ける。'
+}
+
+Ref: invitations.user_id > users.id [delete: restrict]
+Ref: invitations.(email_id, user_id) > emails.(id, user_id) [delete: restrict]
+
+Table campaigns {
+  id bigint [pk, increment, note: '【施策ID】']
+  company_id bigint [not null, note: '【会社ID】']
+  created_by_user_id bigint [not null, note: '【作成者ユーザーID】']
+  title varchar(255) [not null, note: '【施策タイトル】']
+  target_profile text [not null, note: '【ターゲット像】']
+  background text [not null, note: '【実施背景】']
+  objective text [not null, note: '【施策目的】']
+  plan text [not null, note: '【施策内容】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+  archived_at timestamptz [note: '【アーカイブ日時】']
+
+  indexes {
+    (company_id, created_at)
+  }
+}
+
+Ref: campaigns.company_id > companies.id [delete: restrict]
+Ref: campaigns.created_by_user_id > users.id [delete: restrict]
+
+Table campaign_embeddings {
+  campaign_id bigint [pk, note: '【施策ID】']
+  embedding vector(1536) [not null, note: '【施策埋め込みベクトル】']
+  content_hash varchar(64) [not null, note: '【埋め込み元ハッシュ】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+
+  indexes {
+    content_hash
+  }
+
+  Note: 'embeddingにHNSW索引（vector_cosine_ops）を設ける。'
+}
+
+Ref: campaign_embeddings.campaign_id > campaigns.id [delete: cascade]
+
+Table posts {
+  id bigint [pk, increment, note: '【投稿ID】']
+  company_id bigint [not null, note: '【会社ID】']
+  created_by_user_id bigint [not null, note: '【作成者ユーザーID】']
+  campaign_id bigint [not null, note: '【施策ID】']
+  api_idempotency_request_id bigint [not null, unique, note: '【API冪等性Request ID】']
+  body text [not null, note: '【投稿本文】']
+  x_post_id varchar(255) [not null, unique, note: '【X投稿ID】']
+  published_at timestamptz [not null, note: '【X公開日時】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+
+  indexes {
+    (company_id, published_at)
+  }
+}
+
+Ref: posts.company_id > companies.id [delete: restrict]
+Ref: posts.created_by_user_id > users.id [delete: restrict]
+Ref: posts.campaign_id > campaigns.id [delete: restrict]
+Ref: posts.api_idempotency_request_id > api_idempotency_requests.id [delete: restrict]
+
+Table post_embeddings {
+  post_id bigint [pk, note: '【投稿ID】']
+  embedding vector(1536) [not null, note: '【投稿埋め込みベクトル】']
+  content_hash varchar(64) [not null, note: '【埋め込み元ハッシュ】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+
+  indexes {
+    content_hash
+  }
+
+  Note: 'embeddingにHNSW索引（vector_cosine_ops）を設ける。'
+}
+
+Ref: post_embeddings.post_id > posts.id [delete: cascade]
+
+Table post_tracking_links {
+  id bigint [pk, increment, note: '【トラッキングリンクID】']
+  post_id bigint [not null, unique, note: '【投稿ID】']
+  landing_url text [not null, note: '【遷移先URL】']
+  utm_source varchar(255) [not null, default: 'x', note: '【UTM流入元】']
+  utm_medium varchar(255) [not null, default: 'social', note: '【UTMメディア】']
+  utm_campaign varchar(255) [not null, note: '【UTMキャンペーン】']
+  utm_content varchar(255) [not null, note: '【UTMコンテンツ】投稿操作の識別子。']
+  tracked_url text [not null, note: '【トラッキングURL】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+
+  indexes {
+    (utm_source, utm_medium, utm_campaign, utm_content) [unique]
+  }
+}
+
+Ref: post_tracking_links.post_id > posts.id [delete: cascade]
+
+Table post_metrics {
+  post_id bigint [pk, note: '【投稿ID】']
+  scheduled_at timestamptz [not null, note: '【計測予定日時】']
+  status post_metric_status [not null, default: 'pending', note: '【計測ステータス】']
+  x_pv_count bigint [note: '【X投稿PV数】']
+  landing_user_count bigint [note: '【遷移ユーザー数】']
+  measured_at timestamptz [note: '【計測日時】']
+  execution_token uuid [note: '【Cron実行Token】']
+  lease_expires_at timestamptz [note: '【Cron実行権期限】']
+  attempt_count integer [not null, default: 0, note: '【指標取得試行回数】']
+  next_attempt_at timestamptz [note: '【指標取得再試行日時】']
+  last_error_code varchar(255) [note: '【指標取得内部Error Code】']
+  memory_generated_at timestamptz [note: '【評価記憶生成日時】']
+  memory_failed_at timestamptz [note: '【評価記憶生成失敗確定日時】']
+  memory_attempt_count integer [not null, default: 0, note: '【評価記憶生成試行回数】']
+  memory_next_attempt_at timestamptz [note: '【評価記憶再試行日時】']
+  memory_last_error_code varchar(255) [note: '【評価記憶内部Error Code】']
+
+  indexes {
+    (status, next_attempt_at, scheduled_at)
+    (memory_generated_at, memory_failed_at, memory_next_attempt_at)
+  }
+
+  Note: '''
+    x_pv_countとlanding_user_countはNULLまたは0以上。
+    status=completedの場合は両計測値とmeasured_atを必須とする。
+  '''
+}
+
+Ref: post_metrics.post_id > posts.id [delete: restrict]
+
+Table agent_memories {
+  id bigint [pk, increment, note: '【エージェント記憶ID】']
+  company_id bigint [not null, note: '【会社ID】']
+  content text [not null, note: '【記憶内容】']
+  embedding vector(1536) [not null, note: '【埋め込みベクトル】']
+
+  indexes {
+    company_id
+  }
+
+  Note: 'embeddingにHNSW索引（vector_cosine_ops）を設ける。'
+}
+
+Ref: agent_memories.company_id > companies.id [delete: restrict]
+
+Table memory_campaigns {
+  memory_id bigint [not null, note: '【エージェント記憶ID】']
+  campaign_id bigint [not null, note: '【施策ID】']
+
+  indexes {
+    (memory_id, campaign_id) [pk]
+    campaign_id
+  }
+}
+
+Ref: memory_campaigns.memory_id > agent_memories.id [delete: cascade]
+Ref: memory_campaigns.campaign_id > campaigns.id [delete: cascade]
+
+Table memory_posts {
+  memory_id bigint [not null, note: '【エージェント記憶ID】']
+  post_id bigint [not null, note: '【投稿ID】']
+
+  indexes {
+    (memory_id, post_id) [pk]
+    post_id
+  }
+}
+
+Ref: memory_posts.memory_id > agent_memories.id [delete: cascade]
+Ref: memory_posts.post_id > posts.id [delete: cascade]
+
+Table agent_sessions {
+  id bigint [pk, increment, note: '【エージェントセッションID】']
+  user_id bigint [not null, note: '【所有者ユーザーID】']
+  agent text [not null, note: '【定義識別名】']
+  title varchar(255) [note: '【セッションタイトル】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+
+  indexes {
+    (id, user_id) [unique]
+    (user_id, updated_at)
+  }
+}
+
+Ref: agent_sessions.user_id > users.id [delete: restrict]
+
+Table agent_turns {
+  id bigint [pk, increment, note: '【エージェントターンID】']
+  session_id bigint [not null, note: '【エージェントセッションID】']
+  turn_number int [not null, note: '【ターン番号】']
+  status agent_turn_status [not null, default: 'running', note: '【ターンステータス】']
+  next_item_number int [not null, default: 1, note: '【次回アイテム番号】']
+  error_code varchar(100) [note: '【エラーコード】']
+  error_message text [note: '【エラーメッセージ】']
+  started_at timestamptz [not null, default: `now()`, note: '【開始日時】']
+  completed_at timestamptz [note: '【完了日時】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+
+  indexes {
+    (session_id, turn_number) [unique]
+    (id, session_id) [unique]
+    (session_id, created_at)
+    (status, created_at)
+  }
+
+  Note: 'turn_numberとnext_item_numberは1以上。'
+}
+
+Ref: agent_turns.session_id > agent_sessions.id [delete: restrict]
+
+Table api_idempotency_requests {
+  id bigint [pk, increment, note: '【API冪等性Request ID】']
+  user_id bigint [not null, note: '【要求者ユーザーID】']
+  session_id bigint [not null, note: '【エージェントセッションID】']
+  agent_turn_id bigint [unique, note: '【API実行ターンID】']
+  operation api_operation [not null, note: '【API操作種別】']
+  idempotency_key uuid [not null, note: '【冪等性キー】']
+  request_hash varchar(64) [not null, note: '【Requestハッシュ】']
+  status api_idempotency_status [not null, default: 'processing', note: '【処理状態】']
+  execution_token uuid [not null, note: '【実行Token】']
+  lease_expires_at timestamptz [not null, note: '【実行権期限】']
+  external_effect_started_at timestamptz [note: '【外部作用開始日時】']
+  external_result jsonb [note: '【外部作用結果】']
+  http_status smallint [note: '【HTTPステータス】']
+  response_body jsonb [note: '【レスポンス本文】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  updated_at timestamptz [not null, default: `now()`, note: '【更新日時】']
+  completed_at timestamptz [note: '【完了日時】']
+
+  indexes {
+    (user_id, operation, idempotency_key) [unique]
+    (user_id, operation, request_hash)
+    (session_id, created_at)
+    (status, lease_expires_at)
+  }
+
+  Note: '''
+    CHECK: succeeded・failed・outcome_unknownではhttp_status・response_body・completed_atが必須、processingではNULL。
+    CHECK: external_resultがNULL以外の場合はoperation=publish_x_postかつexternal_effect_started_atがNULL以外。
+  '''
+}
+
+Ref: api_idempotency_requests.user_id > users.id [delete: restrict]
+Ref: api_idempotency_requests.(session_id, user_id) > agent_sessions.(id, user_id) [delete: restrict]
+Ref: api_idempotency_requests.(agent_turn_id, session_id) > agent_turns.(id, session_id) [delete: restrict]
+
+Table tool_executions {
+  id bigint [pk, increment, note: '【ツール実行ID】']
+  tool_call_item_id bigint [not null, unique, note: '【Tool CallアイテムID】']
+  status tool_execution_status [not null, default: 'running', note: '【ツール実行ステータス】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+  completed_at timestamptz [note: '【完了日時】']
+}
+
+Ref: tool_executions.tool_call_item_id > agent_items.id [delete: restrict]
+
+Table llm_calls {
+  id bigint [pk, increment, note: '【LLM呼び出しID】']
+  agent_turn_id bigint [not null, note: '【エージェントターンID】']
+  record_key uuid [not null, unique, note: '【記録保存用識別子】']
+  orcarouter_request_id varchar(255) [unique, note: '【OrcaRouterリクエストID】']
+  input_tokens int [note: '【入力トークン数】']
+  output_tokens int [note: '【出力トークン数】']
+  cost_usd decimal(18,8) [note: '【利用コスト（USD）】NULLは未取得。']
+  response_time_ms int [note: '【応答時間（ミリ秒）】']
+  succeeded boolean [note: '【LLM呼び出しの成功可否】NULLは結果未確定。']
+  error_code varchar(100) [note: '【エラーコード】']
+  error_message text [note: '【エラーメッセージ】']
+  called_at timestamptz [not null, default: `now()`, note: '【呼び出し日時】']
+
+  indexes {
+    (agent_turn_id, called_at)
+    (id, agent_turn_id) [unique]
+  }
+
+  Note: 'input_tokens・output_tokens・cost_usd・response_time_msはNULLまたは0以上。'
+}
+
+Ref: llm_calls.agent_turn_id > agent_turns.id [delete: restrict]
+
+Table agent_items {
+  id bigint [pk, increment, note: '【エージェントアイテムID】']
+  agent_turn_id bigint [not null, note: '【エージェントターンID】']
+  related_tool_call_item_id bigint [note: '【関連Tool CallアイテムID】']
+  llm_call_id bigint [note: '【指示元LLM呼び出しID】']
+  item_number int [not null, note: '【アイテム番号】']
+  idempotency_key varchar(255) [not null, note: '【冪等性キー】']
+  item_type agent_item_type [not null, note: '【アイテム種別】']
+  context_status agent_item_context_status [not null, default: 'active', note: '【コンテキスト状態】']
+  quarantine_reason varchar(100) [note: '【隔離理由】']
+  context_override jsonb [note: '【コンテキスト代替内容】']
+  quarantined_at timestamptz [note: '【隔離日時】']
+  content jsonb [not null, note: '【アイテム内容】']
+  created_at timestamptz [not null, default: `now()`, note: '【作成日時】']
+
+  indexes {
+    (id, agent_turn_id) [unique]
+    (agent_turn_id, item_number) [unique]
+    (agent_turn_id, idempotency_key) [unique]
+    (related_tool_call_item_id, item_type) [unique]
+    llm_call_id
+  }
+
+  Note: '''
+    item_numberは1以上。
+    tool_resultではrelated_tool_call_item_idが必須、他の種別ではNULL。
+    CHECK: context_status=quarantinedの場合だけquarantine_reason・context_override・quarantined_atを必須とする。
+  '''
+}
+
+Ref: agent_items.agent_turn_id > agent_turns.id [delete: restrict]
+Ref: agent_items.(related_tool_call_item_id, agent_turn_id) > agent_items.(id, agent_turn_id) [delete: restrict]
+Ref: agent_items.(llm_call_id, agent_turn_id) > llm_calls.(id, agent_turn_id) [delete: restrict]
+
+Table security_events {
+  id bigint [pk, increment, note: '【セキュリティイベントID】']
+  agent_turn_id bigint [not null, note: '【エージェントターンID】']
+  agent_item_id bigint [note: '【エージェントアイテムID】']
+  llm_call_id bigint [note: '【指示元LLM呼び出しID】']
+  event_type security_event_type [not null, note: '【セキュリティイベント種別】']
+  detector security_detector [not null, note: '【検出主体】']
+  source agent_content_source [not null, note: '【検出対象取得元】']
+  enforcement security_enforcement [not null, note: '【制御内容】']
+  external_event_id varchar(255) [note: '【外部イベントID】']
+  summary text [not null, note: '【イベント概要】']
+  metadata jsonb [not null, default: '{}', note: '【診断メタデータ】']
+  detected_at timestamptz [not null, default: `now()`, note: '【検出日時】']
+
+  indexes {
+    (event_type, detected_at)
+    (detector, external_event_id) [unique]
+    agent_turn_id
+    agent_item_id
+    llm_call_id
+  }
+}
+
+Ref: security_events.agent_turn_id > agent_turns.id [delete: restrict]
+Ref: security_events.(agent_item_id, agent_turn_id) > agent_items.(id, agent_turn_id) [delete: restrict]
+Ref: security_events.(llm_call_id, agent_turn_id) > llm_calls.(id, agent_turn_id) [delete: restrict]
