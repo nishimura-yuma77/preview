@@ -1,7 +1,12 @@
 export class TaskStore {
   #upsert
+  #pending
 
   constructor(db) {
+    this.#pending = db.prepare(`
+      SELECT display_name, reference_url FROM reply
+      WHERE status = 'pending' ORDER BY occurred_us_at DESC, id ASC
+    `)
     this.#upsert = db.prepare(`
       INSERT INTO reply (source_id, status, occurred_us_at, display_name, reference_url)
       VALUES (:source_id, :status, :occurred_us_at, :display_name, :reference_url)
@@ -18,5 +23,9 @@ export class TaskStore {
 
   save(reply) {
     this.#upsert.run(reply)
+  }
+
+  listPending() {
+    return this.#pending.all()
   }
 }

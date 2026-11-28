@@ -14,4 +14,8 @@ export class TaskService {
   markDone({ source_id, occurred_us_at }) {
     this.#store.save({ source_id, status: 'done', occurred_us_at, display_name: null, reference_url: null })
   }
+
+  listPending() {
+    return this.#store.listPending()
+  }
 }
