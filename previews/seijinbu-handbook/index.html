@@ -3,30 +3,48 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Seijinbu — 生徒手帳の3案</title>
+    <title>成人学園 — メニューデザイン3案</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body class="comparison">
     <main class="comparisonShell">
       <header class="comparisonHeader">
         <a href="../">← 一覧</a>
-        <h1>Seijinbu <span>生徒手帳の3案</span></h1>
+        <h1>成人学園 <span>メニューデザイン3案</span></h1>
       </header>
       <fieldset class="conceptPicker">
         <legend>デザイン</legend>
         <label
-          ><input type="radio" name="concept" value="crest" checked /><span
-            ><b>01</b> 薔薇の校章</span
+          ><input type="radio" name="concept" value="emblem" /><span
+            ><b>01</b> 校章主役</span
           ></label
         >
         <label
-          ><input type="radio" name="concept" value="collage" /><span
-            ><b>02</b> 放課後コラージュ</span
+          ><input type="radio" name="concept" value="vertical" checked /><span
+            ><b>02</b> 静かな縦組み</span
           ></label
         >
         <label
-          ><input type="radio" name="concept" value="dossier" /><span
-            ><b>03</b> 第零生徒会</span
+          ><input type="radio" name="concept" value="space" /><span
+            ><b>03</b> 余白の手帳</span
+          ></label
+        >
+      </fieldset>
+      <fieldset class="accentPicker">
+        <legend>エンブレム</legend>
+        <label
+          ><input type="radio" name="accent" value="champagne" checked /><span
+            ><i class="swatch champagne" aria-hidden="true"></i>シャンパン</span
+          ></label
+        >
+        <label
+          ><input type="radio" name="accent" value="mint" /><span
+            ><i class="swatch mint" aria-hidden="true"></i>アイスミント</span
+          ></label
+        >
+        <label
+          ><input type="radio" name="accent" value="lilac" /><span
+            ><i class="swatch lilac" aria-hidden="true"></i>ライラック</span
           ></label
         >
       </fieldset>
@@ -52,8 +70,8 @@
         <div class="previewSizer" id="sizer">
           <iframe
             id="screen"
-            title="生徒手帳の操作プレビュー"
-            src="./screen.html?concept=crest"
+            title="成人学園のメニュープレビュー"
+            src="./screen.html?concept=vertical&accent=champagne"
           ></iframe>
         </div>
       </div>
@@ -62,10 +80,10 @@
         <div class="referenceLinks">
           <a
             id="physicalRef"
-            href="https://www.travelers-company.com/products/trnote/about"
+            href="https://www.hightide.co.jp/feature/penco/"
             target="_blank"
             rel="noreferrer"
-            >TRAVELER’S notebook ↗</a
+            >penco ↗</a
           >
           <a
             id="graphicRef"
@@ -79,40 +97,30 @@
     </main>
     <script>
       const params = new URLSearchParams(location.search);
-      const concepts = ["crest", "collage", "dossier"];
-      let concept = concepts.includes(params.get("concept"))
-        ? params.get("concept")
-        : "crest";
+      const concepts = ["emblem", "vertical", "space"];
+      const accents = ["champagne", "mint", "lilac"];
+      const legacyConcepts = {
+        crest: "emblem",
+        collage: "space",
+        dossier: "vertical",
+      };
+      const requestedConcept =
+        legacyConcepts[params.get("concept")] || params.get("concept");
+      let concept = concepts.includes(requestedConcept)
+        ? requestedConcept
+        : "vertical";
+      let accent = accents.includes(params.get("accent"))
+        ? params.get("accent")
+        : "champagne";
       const frame = document.getElementById("screen");
       const width = document.getElementById("width");
       const fit = document.getElementById("fit");
       const area = document.getElementById("area");
-      const refs = {
-        crest: [
-          "TRAVELER’S notebook ↗",
-          "https://www.travelers-company.com/products/trnote/about",
-          "ダンガンロンパ 1・2 Reload ↗",
-          "https://www.danganronpa.com/reload/about/",
-        ],
-        collage: [
-          "Campus ノート ↗",
-          "https://www.kokuyo.com/stationery/series/campus/campus-notebook/",
-          "PERSONA 5 ROYAL ↗",
-          "https://persona.atlus.com/p5r/",
-        ],
-        dossier: [
-          "penco ↗",
-          "https://www.hightide.co.jp/feature/penco/",
-          "ダンガンロンパ 1・2 Reload ↗",
-          "https://www.danganronpa.com/reload/about/",
-        ],
-      };
-      function setReferences() {
-        const [a, urlA, b, urlB] = refs[concept];
-        document.getElementById("physicalRef").textContent = a;
-        document.getElementById("physicalRef").href = urlA;
-        document.getElementById("graphicRef").textContent = b;
-        document.getElementById("graphicRef").href = urlB;
+      function updateUrl() {
+        const url = new URL(location.href);
+        url.searchParams.set("concept", concept);
+        url.searchParams.set("accent", accent);
+        history.replaceState(null, "", url);
       }
       function resize() {
         const w = Number(width.value);
@@ -125,19 +133,27 @@
       }
       document.querySelector(`input[name=concept][value=${concept}]`).checked =
         true;
-      frame.src = `./screen.html?concept=${concept}`;
-      setReferences();
+      document.querySelector(`input[name=accent][value=${accent}]`).checked =
+        true;
+      frame.src = `./screen.html?concept=${concept}&accent=${accent}`;
       document.querySelectorAll("input[name=concept]").forEach((input) =>
         input.addEventListener("change", () => {
           concept = input.value;
-          const url = new URL(location.href);
-          url.searchParams.set("concept", concept);
-          history.replaceState(null, "", url);
+          updateUrl();
           frame.contentWindow.postMessage(
             { type: "concept", value: concept },
             location.origin,
           );
-          setReferences();
+        }),
+      );
+      document.querySelectorAll("input[name=accent]").forEach((input) =>
+        input.addEventListener("change", () => {
+          accent = input.value;
+          updateUrl();
+          frame.contentWindow.postMessage(
+            { type: "accent", value: accent },
+            location.origin,
+          );
         }),
       );
       document

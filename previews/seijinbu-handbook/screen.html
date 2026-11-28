@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ja" data-concept="crest">
+<html lang="ja" data-concept="vertical" data-accent="champagne">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Seijinbu — 生徒手帳</title>
+    <title>成人学園 — メニュー</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body class="app">
@@ -21,66 +21,38 @@
     </header>
     <main class="hero">
       <div>
-        <span class="heroMark" aria-hidden="true">SEIJINBU</span>
         <h1>まだ知らない、<br />物語の奥へ。</h1>
         <p>
           ここだけの作品と、出会う場所。<br />無料会員登録で、作品の続きを。
         </p>
       </div>
-      <img
-        class="heroEmblem"
-        src="./emblem.svg"
-        width="220"
-        height="248"
-        alt=""
-      />
+      <span class="heroEmblem emblem" aria-hidden="true"></span>
     </main>
     <dialog id="handbook" class="handbook" aria-labelledby="bookTitle">
-      <div class="bookSpine" aria-hidden="true">
-        <span>SEIJINBU</span><i></i>
-      </div>
+      <div class="bookSpine" aria-hidden="true"></div>
       <div class="bookContent">
         <header class="bookHeader">
-          <span class="bookBrand">Seijinbu<span>.</span></span
-          ><button
+          <button
             class="close"
             data-close
-            aria-label="生徒手帳を閉じる"
+            aria-label="メニューを閉じる"
             autofocus
           >
             ×
           </button>
         </header>
         <section class="cover" aria-labelledby="bookTitle">
-          <span class="coverIndex" aria-hidden="true">S / 01</span>
-          <img
-            class="crest"
-            src="./emblem.svg"
-            width="108"
-            height="122"
-            alt=""
-          />
-          <div class="coverType">
-            <span class="coverEnglish" aria-hidden="true"
-              >STUDENT HANDBOOK</span
-            >
-            <h2 id="bookTitle" aria-label="生徒手帳">生徒<span>手帳</span></h2>
-          </div>
-          <span class="coverSeal" aria-hidden="true">S</span>
+          <span class="crest emblem" aria-hidden="true"></span>
+          <h2 id="bookTitle">成人学園</h2>
         </section>
         <div class="paper">
           <div class="identity">
-            <span class="identityLabel">所持者</span>
             <div>
-              <span class="identityValue" id="owner">未登録</span
+              <span class="identityValue" id="owner" hidden></span
               ><span class="accountStatus" id="accountStatus">未ログイン</span>
             </div>
           </div>
-          <section class="accountActions" aria-labelledby="actionsTitle">
-            <div class="sectionHeading">
-              <h3 id="actionsTitle">アカウント</h3>
-              <span aria-hidden="true">01</span>
-            </div>
+          <section class="accountActions" aria-label="アカウント操作">
             <div id="guestActions">
               <button class="action primary" data-view="register">
                 <span>新規登録</span><span aria-hidden="true">↗</span></button
@@ -94,16 +66,12 @@
               </button>
             </div>
           </section>
-          <footer class="bookFooter" aria-hidden="true">
-            <span>SEIJINBU</span><span>— 01 —</span><span>HANDBOOK</span>
-          </footer>
         </div>
       </div>
     </dialog>
     <dialog id="auth" class="auth" aria-labelledby="authTitle">
       <header class="authHeader">
         <div>
-          <span class="formIndex" aria-hidden="true">SEIJINBU / ACCOUNT</span>
           <h2 id="authTitle">無料会員登録</h2>
         </div>
         <button class="close" data-close aria-label="閉じる">×</button>
@@ -149,11 +117,21 @@
     <script>
       const root = document.documentElement;
       const params = new URLSearchParams(location.search);
-      root.dataset.concept = ["crest", "collage", "dossier"].includes(
-        params.get("concept"),
-      )
-        ? params.get("concept")
-        : "crest";
+      const concepts = ["emblem", "vertical", "space"];
+      const accents = ["champagne", "mint", "lilac"];
+      const legacyConcepts = {
+        crest: "emblem",
+        collage: "space",
+        dossier: "vertical",
+      };
+      const requestedConcept =
+        legacyConcepts[params.get("concept")] || params.get("concept");
+      root.dataset.concept = concepts.includes(requestedConcept)
+        ? requestedConcept
+        : "vertical";
+      root.dataset.accent = accents.includes(params.get("accent"))
+        ? params.get("accent")
+        : "champagne";
       const handbook = document.getElementById("handbook");
       const auth = document.getElementById("auth");
       const menu = document.getElementById("menu");
@@ -164,6 +142,44 @@
       let member = false;
       let emailValue = "";
       let transitionRequest = 0;
+      function setConcept(value) {
+        const elements = [
+          handbook.querySelector(".crest"),
+          document.getElementById("bookTitle"),
+          handbook.querySelector(".paper"),
+        ];
+        const previous = elements.map((element) =>
+          element.getBoundingClientRect(),
+        );
+        elements.forEach((element) =>
+          element.getAnimations().forEach((animation) => animation.cancel()),
+        );
+        if (
+          !handbook.open ||
+          matchMedia("(prefers-reduced-motion: reduce)").matches
+        ) {
+          root.dataset.concept = value;
+          return;
+        }
+        root.dataset.concept = value;
+        elements.forEach((element, index) => {
+          const next = element.getBoundingClientRect();
+          const before = previous[index];
+          const scale = element.classList.contains("crest")
+            ? before.width / next.width
+            : 1;
+          element.animate(
+            [
+              {
+                transform: `translate(${before.x - next.x}px, ${before.y - next.y}px) scale(${scale})`,
+                transformOrigin: "top left",
+              },
+              { transform: "none", transformOrigin: "top left" },
+            ],
+            { duration: 300, easing: "cubic-bezier(.22,.75,.3,1)" },
+          );
+        });
+      }
       const titles = {
         register: "無料会員登録",
         login: "ログイン",
@@ -175,7 +191,8 @@
         member = value === "member";
         document.getElementById("owner").textContent = member
           ? emailValue || "reader@example.com"
-          : "未登録";
+          : "";
+        document.getElementById("owner").hidden = !member;
         document.getElementById("accountStatus").textContent = member
           ? "ログイン中"
           : "未ログイン";
@@ -329,9 +346,11 @@
         if (event.origin !== location.origin || event.source !== parent) return;
         if (
           event.data.type === "concept" &&
-          ["crest", "collage", "dossier"].includes(event.data.value)
+          concepts.includes(event.data.value)
         )
-          root.dataset.concept = event.data.value;
+          setConcept(event.data.value);
+        if (event.data.type === "accent" && accents.includes(event.data.value))
+          root.dataset.accent = event.data.value;
         if (event.data.type === "account") {
           updateAccount(event.data.value);
           openBook();

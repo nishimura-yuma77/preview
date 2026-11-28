@@ -4,13 +4,22 @@
   --surface: #281327;
   --ink: #fff0f4;
   --rose: #e7a8bd;
-  --muted: #c8acbe;
+  --muted: #bca5b6;
+  --title: #c8b6c2;
   --line: #96768e;
-  --quiet: #51364b;
+  --quiet: #493043;
+  --spine: #341e30;
+  --accent: #d8c49a;
   --serif: "Yu Mincho", "Hiragino Mincho ProN", "Noto Serif CJK JP", serif;
   --sans:
     "Yu Gothic", "Hiragino Kaku Gothic ProN", "Noto Sans CJK JP", sans-serif;
   --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+[data-accent="mint"] {
+  --accent: #a5d8cd;
+}
+[data-accent="lilac"] {
+  --accent: #c4b5e8;
 }
 * {
   box-sizing: border-box;
@@ -34,7 +43,11 @@ summary {
   -webkit-tap-highlight-color: transparent;
 }
 button {
+  color: inherit;
   cursor: pointer;
+}
+a {
+  color: var(--rose);
 }
 button:focus-visible,
 a:focus-visible,
@@ -44,15 +57,11 @@ summary:focus-visible {
   outline: 2px solid var(--rose);
   outline-offset: 4px;
 }
-button {
-  color: inherit;
-}
-a {
-  color: var(--rose);
-}
 [hidden] {
   display: none !important;
 }
+
+/* The comparison controls sit outside the application viewport. */
 .comparison {
   background: #141114;
 }
@@ -87,7 +96,7 @@ a {
 }
 .conceptPicker {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   border: 0;
   margin: 0;
@@ -100,11 +109,13 @@ a {
   overflow: hidden;
   clip-path: inset(50%);
 }
-.conceptPicker label {
+.conceptPicker label,
+.accentPicker label {
   position: relative;
   cursor: pointer;
 }
-.conceptPicker input {
+.conceptPicker input,
+.accentPicker input {
   position: absolute;
   opacity: 0;
 }
@@ -114,22 +125,70 @@ a {
   border: 1px solid #66515f;
   color: var(--muted);
   font-size: 15px;
-  transition: background 200ms ease;
 }
 .conceptPicker b {
   font: 12px var(--mono);
   margin-right: 12px;
 }
 .conceptPicker input:checked + span {
-  background: var(--rose);
+  background: #30212b;
   border-color: var(--rose);
-  color: var(--page);
+  color: var(--ink);
   font-weight: 700;
-  box-shadow: inset 0 -3px var(--page);
+  box-shadow: inset 0 -2px var(--rose);
 }
-.conceptPicker input:focus-visible + span {
+.conceptPicker input:focus-visible + span,
+.accentPicker input:focus-visible + span {
   outline: 2px solid var(--rose);
   outline-offset: 3px;
+}
+.accentPicker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  border: 0;
+  margin: 18px 0 0;
+  padding: 0;
+}
+.accentPicker legend {
+  float: left;
+  margin: 0 16px 0 0;
+  padding: 10px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.accentPicker label > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 7px 11px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  color: var(--muted);
+}
+.accentPicker input:checked + span {
+  border-color: var(--rose);
+  color: var(--ink);
+  background: #211a20;
+  border-radius: 3px;
+}
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: none;
+}
+.champagne {
+  background: #d8c49a;
+}
+.mint {
+  background: #a5d8cd;
+}
+.lilac {
+  background: #c4b5e8;
 }
 .previewTools {
   display: flex;
@@ -190,6 +249,7 @@ a {
 .referenceLinks a {
   overflow-wrap: anywhere;
 }
+
 .app {
   background: var(--page);
   min-height: 100vh;
@@ -209,8 +269,7 @@ a {
   font-weight: 700;
   font-size: 23px;
 }
-.wordmark span,
-.bookBrand span {
+.wordmark span {
   color: var(--rose);
 }
 .menuTrigger {
@@ -219,7 +278,7 @@ a {
   align-items: center;
   border: 1px solid var(--line);
   background: transparent;
-  border-radius: 5px;
+  border-radius: 4px;
   padding: 8px 14px;
   font-size: 13px;
 }
@@ -231,11 +290,6 @@ a {
   justify-content: space-between;
   gap: 60px;
   padding: 0 40px;
-}
-.heroMark {
-  font: 11px var(--mono);
-  letter-spacing: 0.35em;
-  color: var(--rose);
 }
 .hero h1 {
   font-family: var(--serif);
@@ -250,16 +304,19 @@ a {
   line-height: 2.2;
   color: var(--muted);
 }
+.emblem {
+  display: block;
+  flex: none;
+  background: var(--accent);
+  mask: url("./seijin-emblem.svg") center / contain no-repeat;
+}
 .heroEmblem {
-  border: 1px solid var(--quiet);
-  border-radius: 50%;
-  padding: 30px;
   width: 250px;
-  height: 300px;
+  height: 250px;
 }
 dialog {
   color: var(--ink);
-  border: 1px solid var(--line);
+  border: 1px solid var(--quiet);
   padding: 0;
   background: var(--surface);
   box-shadow: 0 20px 90px #0008;
@@ -279,30 +336,19 @@ body:has(dialog[open]) {
   height: 100dvh;
   max-height: none;
   border: 0;
-  border-left: 1px solid var(--line);
   overflow: auto;
   transform: translateX(100%);
   transition:
     transform 400ms cubic-bezier(0.22, 0.75, 0.3, 1),
     display 400ms allow-discrete,
     overlay 400ms allow-discrete;
-  padding-left: 18px;
+  padding-left: 10px;
 }
 .bookSpine {
   position: absolute;
   inset: 0 auto 0 0;
-  width: 18px;
-  background: #1b0e1c;
-  border-right: 1px solid var(--quiet);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.bookSpine span {
-  writing-mode: vertical-rl;
-  font: 10px var(--mono);
-  letter-spacing: 0.34em;
-  color: var(--rose);
+  width: 10px;
+  background: var(--spine);
 }
 .bookContent {
   min-height: 100%;
@@ -311,13 +357,8 @@ body:has(dialog[open]) {
 }
 .bookHeader {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 22px 24px 0;
-  gap: 12px;
-}
-.bookBrand {
-  font: italic 19px var(--serif);
+  justify-content: flex-end;
+  padding: 20px 22px 0;
 }
 .close {
   display: grid;
@@ -326,9 +367,9 @@ body:has(dialog[open]) {
   width: 36px;
   height: 36px;
   padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--surface);
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
   font-family: var(--sans);
   font-size: 22px;
   line-height: 1;
@@ -337,106 +378,50 @@ body:has(dialog[open]) {
   background: #42283d;
 }
 .cover {
-  position: relative;
   display: flex;
-  flex-direction: column;
+  flex: none;
   align-items: center;
   justify-content: center;
-  min-height: 270px;
-  margin: 16px 24px 28px;
-  border: 1px solid var(--quiet);
-  outline: 1px solid var(--quiet);
-  outline-offset: -7px;
-  padding: 23px 16px 25px;
-}
-.coverIndex {
-  position: absolute;
-  left: 15px;
-  top: 12px;
-  font: 10px var(--mono);
-  letter-spacing: 0.1em;
-  color: var(--muted);
+  gap: 25px;
+  min-height: 312px;
+  margin: 8px 30px 28px;
 }
 .crest {
-  width: 85px;
-  height: 96px;
-}
-.coverType {
-  text-align: center;
-}
-.coverEnglish {
-  display: block;
-  font: 9px var(--mono);
-  letter-spacing: 0.24em;
-  color: var(--rose);
-  margin: 12px 0;
+  width: 190px;
+  height: 190px;
 }
 .cover h2 {
   margin: 0;
+  color: var(--title);
   font-family: var(--serif);
-  font-size: 30px;
+  font-size: 23px;
+  line-height: 1.7;
+  letter-spacing: 0.2em;
   font-weight: 500;
-  letter-spacing: 0.32em;
-  text-indent: 0.32em;
-}
-.coverSeal {
-  display: none;
 }
 .paper {
-  padding: 0 24px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  padding: 0 30px 40px;
 }
 .identity {
+  margin: 0 0 28px;
+  min-height: 42px;
   display: flex;
-  gap: 18px;
   align-items: center;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  padding: 17px 0;
-  min-height: 84px;
-}
-.identityLabel {
-  font-size: 11px;
-  white-space: nowrap;
-  color: var(--muted);
-}
-.identity > div {
-  min-width: 0;
-  flex: 1;
 }
 .identityValue {
   display: block;
-  font-size: 14px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
   overflow-wrap: anywhere;
 }
 .accountStatus {
   display: block;
-  font: 10px var(--sans);
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  margin-top: 3px;
-}
-.identitySymbol {
-  font-size: 22px;
-  color: var(--rose);
-}
-.sectionHeading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 28px 0 14px;
-}
-.sectionHeading h3 {
   font-size: 12px;
-  letter-spacing: 0.12em;
-  font-weight: 500;
-  margin: 0;
-}
-.sectionHeading > span {
-  font: 10px var(--mono);
   color: var(--muted);
+}
+.identityValue:not([hidden]) + .accountStatus {
+  margin-top: 3px;
 }
 .action {
   display: flex;
@@ -444,46 +429,79 @@ body:has(dialog[open]) {
   justify-content: space-between;
   gap: 16px;
   width: 100%;
-  min-height: 48px;
-  padding: 12px 20px;
-  font-size: 14px;
-  border: 1px solid var(--line);
+  min-height: 54px;
+  padding: 13px 0;
+  font-size: 15px;
+  border: 0;
+  border-bottom: 1px solid var(--quiet);
   background: transparent;
-  margin-bottom: 12px;
+  text-align: left;
+  margin: 0;
 }
 .action.primary {
-  background: var(--rose);
-  color: var(--page);
-  border-color: var(--rose);
-  border-radius: 28px;
+  color: var(--rose);
   font-weight: 700;
 }
-.action.primary:hover {
-  background: #f1bfd0;
+.action:hover {
+  background: #342031;
 }
-.action.secondary {
-  border-radius: 5px;
+.action span:last-child {
+  font-size: 19px;
+  font-weight: 400;
 }
-.action.secondary:hover {
-  background: #42283d;
+
+/* 01: the existing emblem carries the cover; the title is a quiet signature. */
+[data-concept="emblem"] .cover {
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 10px;
 }
-.bookFooter {
+[data-concept="emblem"] .crest {
+  width: 202px;
+  height: 202px;
+}
+[data-concept="emblem"] .cover h2 {
+  font-size: 17px;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+}
+/* 02: keep the dossier's vertical balance without its labels, stamps, or bright spine. */
+[data-concept="vertical"] .cover {
+  flex-direction: row-reverse;
+  gap: 22px;
+}
+[data-concept="vertical"] .cover h2 {
+  writing-mode: vertical-rl;
+  font-size: 25px;
+  letter-spacing: 0.2em;
+}
+/* 03: a compact heading leaves a quiet interval before the account actions. */
+[data-concept="space"] .cover {
+  min-height: 136px;
+  justify-content: flex-start;
+  gap: 18px;
+  margin-top: 18px;
+}
+[data-concept="space"] .crest {
+  width: 95px;
+  height: 95px;
+}
+[data-concept="space"] .cover h2 {
+  font-size: 19px;
+  letter-spacing: 0.16em;
+}
+[data-concept="space"] .paper {
   margin-top: auto;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 38px 0 22px;
-  font: 8px var(--mono);
-  letter-spacing: 0.13em;
-  color: var(--muted);
+  padding-bottom: 58px;
 }
+
 .auth {
   height: min(550px, calc(100dvh - 32px));
   width: min(448px, calc(100% - 32px));
   max-width: none;
   max-height: calc(100dvh - 32px);
   margin: auto;
-  border-radius: 12px;
+  border-radius: 5px;
   padding: 28px;
   opacity: 0;
   transition:
@@ -499,13 +517,8 @@ body:has(dialog[open]) {
   margin-bottom: 30px;
 }
 .authHeader h2 {
-  font: 500 23px var(--serif);
-  margin: 7px 0 0;
-}
-.formIndex {
-  font: 9px var(--mono);
-  letter-spacing: 0.16em;
-  color: var(--rose);
+  font: 500 22px var(--serif);
+  margin: 3px 0 0;
 }
 .field {
   display: flex;
@@ -518,7 +531,7 @@ body:has(dialog[open]) {
   width: 100%;
   min-height: 44px;
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: 3px;
   padding: 10px 12px;
   background: #221023;
   color: var(--ink);
@@ -563,307 +576,6 @@ body:has(dialog[open]) {
   overflow-wrap: anywhere;
   margin: 18px 0 30px;
 }
-/* 02 — Cut-paper blocks, ruled leaves, and a personal sticker. */
-[data-concept="collage"] .bookSpine {
-  width: 12px;
-  border-right: 3px solid var(--rose);
-  background: var(--page);
-}
-[data-concept="collage"] .bookSpine span {
-  display: none;
-}
-[data-concept="collage"] .handbook {
-  padding-left: 12px;
-  background: #261225;
-}
-[data-concept="collage"] .bookHeader {
-  padding-top: 20px;
-}
-[data-concept="collage"] .bookBrand {
-  font-family: var(--sans);
-  font-weight: 900;
-  font-style: normal;
-  letter-spacing: -0.05em;
-}
-[data-concept="collage"] .cover {
-  min-height: 270px;
-  align-items: flex-start;
-  justify-content: center;
-  border: 0;
-  outline: 0;
-  margin-bottom: 24px;
-  padding: 24px 0;
-}
-[data-concept="collage"] .cover::before {
-  content: "";
-  position: absolute;
-  inset: 19px -4px 12px 5px;
-  border: 1px solid var(--rose);
-  transform: rotate(-3deg);
-  pointer-events: none;
-}
-[data-concept="collage"] .coverType {
-  position: relative;
-  text-align: left;
-  z-index: 1;
-}
-[data-concept="collage"] .coverEnglish {
-  background: var(--ink);
-  color: var(--page);
-  width: fit-content;
-  padding: 4px 9px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  transform: rotate(-4deg);
-  margin: 0 0 18px 2px;
-}
-[data-concept="collage"] .cover h2 {
-  font-family: var(--sans);
-  font-weight: 900;
-  font-size: 53px;
-  letter-spacing: -0.06em;
-  line-height: 1.13;
-  text-indent: 0;
-  transform: rotate(-4deg);
-  color: var(--rose);
-}
-[data-concept="collage"] .cover h2 span {
-  display: block;
-  margin-left: 23px;
-  color: var(--ink);
-}
-[data-concept="collage"] .crest {
-  position: absolute;
-  width: 110px;
-  height: 124px;
-  right: 0;
-  bottom: 29px;
-  transform: rotate(13deg);
-  opacity: 0.8;
-}
-[data-concept="collage"] .coverIndex {
-  left: auto;
-  right: 2px;
-  top: 0;
-  background: var(--rose);
-  color: var(--page);
-  padding: 4px 7px;
-  font-weight: 700;
-}
-[data-concept="collage"] .coverSeal {
-  display: grid;
-  place-items: center;
-  position: absolute;
-  right: 0;
-  bottom: -12px;
-  border: 2px solid var(--rose);
-  border-radius: 50%;
-  background: var(--page);
-  width: 39px;
-  height: 39px;
-  font: italic 26px var(--serif);
-  color: var(--rose);
-  transform: rotate(-15deg);
-}
-[data-concept="collage"] .identity {
-  border: 1px solid var(--line);
-  padding: 15px 13px;
-  position: relative;
-  transform: rotate(-1deg);
-  margin-bottom: 5px;
-}
-[data-concept="collage"] .identity::before {
-  content: "";
-  position: absolute;
-  left: 18px;
-  top: -6px;
-  width: 50px;
-  height: 10px;
-  background: var(--rose);
-  transform: rotate(-5deg);
-}
-[data-concept="collage"] .sectionHeading h3 {
-  font-weight: 800;
-}
-[data-concept="collage"] .action {
-  border-radius: 0;
-  font-weight: 700;
-  border-width: 0 0 1px;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-[data-concept="collage"] .action.primary {
-  border: 0;
-  padding-left: 17px;
-  padding-right: 17px;
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% calc(100% - 10px),
-    calc(100% - 10px) 100%,
-    0 100%
-  );
-}
-[data-concept="collage"] .action:focus-visible {
-  outline-offset: 4px;
-  clip-path: none;
-}
-[data-concept="collage"] .auth {
-  border-radius: 0;
-  border-top: 6px solid var(--rose);
-}
-[data-concept="collage"] .authHeader h2 {
-  font-family: var(--sans);
-  font-weight: 800;
-}
-[data-concept="collage"] .close {
-  border-radius: 0;
-}
-/* 03 — Archival spine, vertical title, and a numbered account index. */
-[data-concept="dossier"] .handbook {
-  padding-left: 31px;
-  background: #241223;
-}
-[data-concept="dossier"] .bookSpine {
-  width: 31px;
-  background: var(--rose);
-  border: 0;
-  align-items: flex-start;
-  padding-top: 100px;
-}
-[data-concept="dossier"] .bookSpine span {
-  color: var(--page);
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.45em;
-}
-[data-concept="dossier"] .bookHeader {
-  padding-left: 20px;
-  padding-right: 20px;
-}
-[data-concept="dossier"] .bookBrand {
-  font: 12px var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-[data-concept="dossier"] .cover {
-  min-height: 270px;
-  border: 0;
-  outline: 0;
-  border-top: 1px solid var(--rose);
-  border-bottom: 1px solid var(--rose);
-  margin: 22px 20px 24px;
-  align-items: flex-start;
-  padding: 24px 8px;
-}
-[data-concept="dossier"] .coverType {
-  text-align: left;
-  height: 210px;
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-}
-[data-concept="dossier"] .coverEnglish {
-  writing-mode: vertical-rl;
-  order: 2;
-  font-size: 9px;
-  letter-spacing: 0.24em;
-  margin: 4px 0;
-}
-[data-concept="dossier"] .cover h2 {
-  writing-mode: vertical-rl;
-  font-size: 39px;
-  letter-spacing: 0.18em;
-  line-height: 1.3;
-  text-indent: 0;
-  margin-top: 0;
-  font-weight: 700;
-}
-[data-concept="dossier"] .cover h2 span {
-  display: inline;
-}
-[data-concept="dossier"] .crest {
-  position: absolute;
-  right: 4px;
-  bottom: 34px;
-  width: 122px;
-  height: 137px;
-}
-[data-concept="dossier"] .coverIndex {
-  left: auto;
-  right: 0;
-  top: 15px;
-  font: 28px var(--mono);
-  letter-spacing: -0.05em;
-  color: var(--rose);
-}
-[data-concept="dossier"] .coverSeal {
-  display: block;
-  position: absolute;
-  right: 5px;
-  bottom: 12px;
-  border: 1px solid var(--rose);
-  color: var(--rose);
-  padding: 0 12px;
-  font: 13px var(--serif);
-}
-[data-concept="dossier"] .paper {
-  padding: 0 20px;
-}
-[data-concept="dossier"] .identity {
-  align-items: flex-start;
-  gap: 12px;
-  border: 0;
-  border-left: 2px solid var(--rose);
-  padding: 0 0 0 12px;
-  min-height: 66px;
-}
-[data-concept="dossier"] .identityLabel {
-  writing-mode: vertical-rl;
-  letter-spacing: 0.15em;
-  margin-top: 3px;
-}
-[data-concept="dossier"] .identitySymbol {
-  display: none;
-}
-[data-concept="dossier"] .sectionHeading {
-  margin-top: 23px;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 10px;
-}
-[data-concept="dossier"] .sectionHeading h3 {
-  font-weight: 700;
-}
-[data-concept="dossier"] .action {
-  border-radius: 0;
-  border-width: 0 0 1px;
-  padding-inline: 0;
-  min-height: 50px;
-}
-[data-concept="dossier"] .action.primary {
-  background: transparent;
-  color: var(--rose);
-  border-bottom: 1px solid var(--rose);
-  font-size: 17px;
-}
-[data-concept="dossier"] .action.primary:hover {
-  background: #42283d;
-}
-[data-concept="dossier"] .action span:last-child {
-  display: grid;
-  place-items: center;
-  width: 29px;
-  height: 29px;
-  border: 1px solid var(--rose);
-  font-size: 16px;
-}
-[data-concept="dossier"] .auth {
-  border-radius: 0;
-  border-left: 9px solid var(--rose);
-}
-[data-concept="dossier"] .close {
-  border-radius: 0;
-}
 .handbook[open] {
   transform: translateX(0);
 }
@@ -906,6 +618,27 @@ body:has(dialog[open]) {
     display: block;
     margin: 0 0 4px;
   }
+  .accentPicker {
+    gap: 4px;
+    margin-top: 14px;
+  }
+  .accentPicker legend {
+    float: none;
+    padding: 0 0 6px;
+    font-size: 11px;
+  }
+  .accentPicker label {
+    flex: 1;
+  }
+  .accentPicker label > span {
+    padding: 8px 5px;
+    gap: 6px;
+    font-size: 11px;
+  }
+  .swatch {
+    width: 10px;
+    height: 10px;
+  }
   .previewTools {
     gap: 10px 18px;
     font-size: 11px;
@@ -927,11 +660,8 @@ body:has(dialog[open]) {
   }
   .heroEmblem {
     width: 150px;
-    height: 180px;
+    height: 150px;
     margin-top: 35px;
-  }
-  .heroMark {
-    font-size: 9px;
   }
   .hero p {
     font-size: 14px;
@@ -942,14 +672,35 @@ body:has(dialog[open]) {
   }
 }
 @media (max-width: 360px) {
-  .bookHeader {
-    padding-inline: 18px;
-  }
   .cover {
-    margin-inline: 18px;
+    margin-inline: 24px;
   }
   .paper {
-    padding-inline: 18px;
+    padding-inline: 24px;
+  }
+  .crest {
+    width: 166px;
+    height: 166px;
+  }
+  [data-concept="emblem"] .crest {
+    width: 184px;
+    height: 184px;
+  }
+  [data-concept="vertical"] .cover {
+    gap: 15px;
+  }
+  [data-concept="vertical"] .cover h2 {
+    font-size: 23px;
+  }
+  [data-concept="space"] .crest {
+    width: 82px;
+    height: 82px;
+  }
+  [data-concept="space"] .cover {
+    gap: 14px;
+  }
+  [data-concept="space"] .cover h2 {
+    font-size: 17px;
   }
   .auth {
     padding: 22px;
@@ -957,39 +708,18 @@ body:has(dialog[open]) {
   .authHeader h2 {
     font-size: 20px;
   }
-  .identity {
-    gap: 12px;
+}
+@media (max-height: 580px) {
+  .bookHeader {
+    padding-top: 12px;
   }
-  .identityValue {
-    font-size: 12px;
+  .cover {
+    min-height: 250px;
+    margin-bottom: 24px;
   }
-  .cover h2 {
-    font-size: 27px;
-  }
-  [data-concept="collage"] .cover h2 {
-    font-size: 47px;
-  }
-  [data-concept="collage"] .crest {
-    width: 89px;
-    height: 100px;
-    right: -4px;
-  }
-  [data-concept="dossier"] .crest {
-    width: 99px;
-    height: 112px;
-    right: -5px;
-  }
-  [data-concept="dossier"] .cover h2 {
-    font-size: 36px;
-  }
-  [data-concept="dossier"] .coverType {
-    gap: 8px;
-  }
-  [data-concept="dossier"] .identity {
-    gap: 8px;
-  }
-  [data-concept="dossier"] .paper {
-    padding-inline: 17px;
+  .paper,
+  [data-concept="space"] .paper {
+    padding-bottom: 28px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
