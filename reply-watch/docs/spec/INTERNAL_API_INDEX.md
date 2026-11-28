@@ -8,4 +8,5 @@ reply-watch が同一ホストのブリッジ用 Bearer トークンを検証す
 
 | メソッド | パス | 処理概要 | 認証の有無 | 操作可能権限 | 詳細 |
 | --- | --- | --- | --- | --- | --- |
-| POST | `/internal/slack-events` | Slack 投稿の通知 | 〇 | Slack ブリッジ | [詳細](features/reply-tracking/API.md#post-internalslack-events) |
+| PUT | `/internal/reply/{key}/pending` | 用件を返信待ちにする | 〇 | ブリッジ | [詳細](features/reply-tracking/API.md#返信待ちの登録) |
+| PUT | `/internal/reply/{key}/done` | 用件を完了にする | 〇 | ブリッジ | [詳細](features/reply-tracking/API.md#完了の登録) |

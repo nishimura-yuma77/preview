@@ -2,21 +2,18 @@ Project reply_watch {
   database_type: 'SQLite'
 }
 
-Table thread_state {
-  channel_id text [not null, note: 'チャンネルID']
-  thread_ts text [not null, note: '親投稿時刻（Slack識別子）']
-  final_us integer [note: '最新の最終回答時刻（Unixマイクロ秒）']
-  human_us integer [note: '最新の人の返信時刻（Unixマイクロ秒）']
-  channel_name text [note: '最終回答通知時のチャンネル名']
-  reply_url text [note: '最新の最終回答のパーマリンク']
-  status text [note: '追跡状態。SQLite生成列：最終回答がNULLならNULL、人の返信がより新しければdone、それ以外はpending']
+Table reply {
+  key text [pk, not null, note: '用件キー']
+  status text [not null, note: '用件の状態']
+  occurred_us_at integer [not null, note: '採用した操作の発生時刻（Unixマイクロ秒）']
+  display_name text [note: '表示名']
+  reference_url text [note: '参照URL']
 
   indexes {
-    (channel_id, thread_ts) [pk]
-    (status, final_us)
+    (status, occurred_us_at)
   }
   checks {
-    `final_us IS NOT NULL OR human_us IS NOT NULL`
-    `(final_us IS NULL AND channel_name IS NULL AND reply_url IS NULL) OR (final_us IS NOT NULL AND channel_name IS NOT NULL AND reply_url IS NOT NULL)`
+    `occurred_us_at >= 0`
+    `(status = 'pending' AND display_name IS NOT NULL AND reference_url IS NOT NULL) OR (status = 'done' AND display_name IS NULL AND reference_url IS NULL)`
   }
 }
