@@ -55,12 +55,28 @@ test('test_TaskServiceのmarkPendingは完了した用件を再開する_Aのdon
   assert.deepEqual(f.rows(), [expected(id, 'A', 30, 'B')])
 })
 
-test('test_TaskServiceのmarkPendingは返信待ち中の参照先を更新する_Aのpending時刻10に新しいURLと時刻20を指定すると同じIDに新しいURLと時刻が残る', async t => {
+test('test_TaskServiceのmarkPendingは返信待ち中の表示情報を更新する_Aのpending時刻10に窓口BとURLと時刻20を指定すると同じIDに新しい表示名とURLが残る', async t => {
   const f = await fixture(t)
   await f.pending(10)
   const [{ id }] = f.rows()
-  await f.pending(20, 'A', 'A', url('B'))
-  assert.deepEqual(f.rows(), [{ ...expected(id, 'A', 20, 'A'), reference_url: url('B') }])
+  await f.pending(20, 'B')
+  assert.deepEqual(f.rows(), [expected(id, 'A', 20, 'B')])
+})
+
+test('test_TaskServiceのmarkDoneは完了時刻を更新する_Aのdone時刻20に完了時刻30を指定すると同じIDで時刻30が残る', async t => {
+  const f = await fixture(t)
+  await f.done(20)
+  const [{ id }] = f.rows()
+  await f.done(30)
+  assert.deepEqual(f.rows(), [expected(id, 'A', 30)])
+})
+
+test('test_TaskServiceのmarkPendingは同時刻の表示情報を上書きしない_時刻10で窓口Aの後に窓口Bを指定しても同じIDに窓口AとそのURLが残る', async t => {
+  const f = await fixture(t)
+  await f.pending(10)
+  const [{ id }] = f.rows()
+  await f.pending(10, 'B')
+  assert.deepEqual(f.rows(), [expected(id, 'A', 10, 'A')])
 })
 
 test('test_TaskServiceのmarkDoneは指定したsource_idだけを完了にする_AとBのうちAに時刻20を指定するとAはdoneになり別IDのBはpendingのまま残る', async t => {
@@ -84,7 +100,7 @@ test('test_TaskServiceのmarkDoneは未登録でも完了を記録する_Aの完
 })
 
 for (const [caseId, first, second] of [
-  ['older-done', 'pending', 'done'], ['older-pending', 'pending', 'pending'], ['older-done-after-done', 'done', 'done'],
+  ['older-done-after-pending', 'pending', 'done'], ['older-pending-after-pending', 'pending', 'pending'], ['older-done-after-done', 'done', 'done'],
 ]) {
   test(`test_TaskServiceのmarkPendingとmarkDoneは古い操作を反映しない_保存時刻20に操作時刻10を指定しても保存行が変わらない [${caseId}]`, async t => {
     const f = await fixture(t)
