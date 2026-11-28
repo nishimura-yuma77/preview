@@ -14,6 +14,16 @@ Slack 連携では、ブリッジが `@Bot` 宛ての依頼を識別する。た
 Slack ↔ ブリッジ → 内部 API ──┴→ reply-watch アプリ層 → SQLite
 ```
 
+## 開発環境
+
+`reply-watch/` で実行する。
+
+```sh
+nvm install
+nvm use
+node --version  # v24.22.2
+```
+
 ## 設計書
 
 | 読みたい内容 | 参照先 |
