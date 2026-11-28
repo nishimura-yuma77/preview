@@ -34,21 +34,30 @@
       aria-label="成人学園のメニュー"
       data-phase="closed"
     >
-      <div class="bookSpine" aria-hidden="true"></div>
+      <header class="bookHeader">
+        <button
+          class="close"
+          data-close
+          aria-label="メニューを閉じる"
+          autofocus
+        >
+          ×
+        </button>
+      </header>
       <div class="bookContent">
-        <header class="bookHeader">
-          <button
-            class="close"
-            data-close
-            aria-label="メニューを閉じる"
-            autofocus
-          >
-            ×
-          </button>
-        </header>
+        <div class="bookBase" aria-hidden="true"></div>
+        <div class="pageEdge pageEdgeRight" aria-hidden="true"></div>
+        <div class="pageEdge pageEdgeBottom" aria-hidden="true"></div>
+        <div class="bookSpine" aria-hidden="true"></div>
         <section class="cover" aria-hidden="true">
-          <span class="crest emblem" aria-hidden="true"></span>
-          <h2 id="bookTitle">成人学園</h2>
+          <div class="coverFace coverFront">
+            <span class="crest emblem" aria-hidden="true"></span>
+            <h2 id="bookTitle">成人学園</h2>
+          </div>
+          <div class="coverFace coverBack"></div>
+          <div class="coverEdge coverForeEdge"></div>
+          <div class="coverEdge coverTopEdge"></div>
+          <div class="coverEdge coverBottomEdge"></div>
         </section>
         <div class="paper" inert aria-hidden="true">
           <div class="identity">

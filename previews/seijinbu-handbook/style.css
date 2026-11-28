@@ -10,6 +10,11 @@
   --quiet: #493043;
   --spine: #341e30;
   --accent: #d8c49a;
+  --paper: #e5d2a8;
+  --paper-ink: #342733;
+  --paper-accent: #7c3652;
+  --paper-line: #826a4d;
+  --paper-rule: #c4af86;
   --serif: "Yu Mincho", "Hiragino Mincho ProN", "Noto Serif CJK JP", serif;
   --sans:
     "Yu Gothic", "Hiragino Kaku Gothic ProN", "Noto Sans CJK JP", sans-serif;
@@ -317,28 +322,71 @@ body:has(dialog[open]) {
   border: 0;
   overflow: hidden;
   transform: translateX(calc((1 - var(--slide, 0)) * 100%));
-  padding-left: 10px;
+  background: var(--page);
+  box-shadow:
+    inset 1px 0 var(--quiet),
+    -12px 0 40px #0005;
 }
 .bookSpine {
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 10px;
+  inset: 0 -3px 0 auto;
+  width: 5px;
   background: var(--spine);
-  z-index: 3;
+  border-radius: 0 2px 2px 0;
+  z-index: 4;
+  box-shadow: -2px 0 4px #29121c42;
 }
 .bookContent {
-  position: relative;
-  min-height: 100%;
+  position: absolute;
+  inset: 66px 44px auto 20px;
+  width: calc(100% - 64px);
+  aspect-ratio: 2 / 3;
+  max-height: calc(100dvh - 92px);
+  container-type: size;
   perspective: 1100px;
   isolation: isolate;
+}
+.bookBase {
+  position: absolute;
+  inset: -3px -9px -10px -3px;
+  border-radius: 4px;
+  background: #2d1828;
+  border: 1px solid #4a2d3f;
+  box-shadow:
+    0 12px 16px #0007,
+    -2px 4px 5px #0005;
+}
+.pageEdge {
+  position: absolute;
+  z-index: 1;
+}
+.pageEdgeRight {
+  inset: 0 -6px -7px auto;
+  width: 6px;
+  background: repeating-linear-gradient(
+    to right,
+    #aa916b 0 1px,
+    #dac59c 1px 2px
+  );
+  border-radius: 0 2px 2px 0;
+}
+.pageEdgeBottom {
+  inset: auto -5px -7px 0;
+  height: 7px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #c6ae82 0 1px,
+    #e2cda3 1px 2px
+  );
+  border-radius: 0 0 2px 2px;
 }
 .bookHeader {
   position: absolute;
   inset: 0 0 auto;
-  z-index: 4;
+  z-index: 5;
   display: flex;
   justify-content: flex-end;
-  padding: 20px 22px 0;
+  padding: 14px 14px 0;
 }
 .close {
   display: grid;
@@ -360,58 +408,106 @@ body:has(dialog[open]) {
 .cover {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 3;
+  transform-origin: right center;
+  transform: translateZ(8px) rotateY(calc(110deg * var(--leaf, 0)));
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+.coverFace {
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  backface-visibility: hidden;
+}
+.coverFront {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
-  padding: 88px 30px 40px;
+  gap: min(24px, 5cqh);
+  padding: min(62px, 12cqh) 28px min(36px, 8cqh);
   background: var(--surface);
+  border: 1px solid #4b2f43;
+  transform: translateZ(2px);
+  box-shadow: inset 0 1px #67435770;
+}
+.coverBack {
+  background: #593b4b;
+  border: 1px solid #745260;
+  transform: rotateY(180deg) translateZ(2px);
+  box-shadow: inset 10px 0 16px -14px #130a13;
+}
+.coverEdge {
+  position: absolute;
+  background: #876171;
+}
+.coverForeEdge {
+  inset: 0 auto 0 0;
+  width: 4px;
   transform-origin: left center;
-  transform: rotateY(calc(-110deg * var(--leaf, 0)));
-  backface-visibility: hidden;
-  box-shadow: 14px 0 25px rgb(0 0 0 / calc(0.24 * var(--leaf, 0)));
-  pointer-events: none;
+  transform: translateZ(2px) rotateY(90deg);
+}
+.coverTopEdge {
+  inset: 0 0 auto;
+  height: 4px;
+  transform-origin: center top;
+  transform: translateZ(2px) rotateX(-90deg);
+}
+.coverBottomEdge {
+  inset: auto 0 0;
+  height: 4px;
+  transform-origin: center bottom;
+  transform: translateZ(2px) rotateX(90deg);
+  background: #684251;
 }
 .crest {
-  width: 202px;
-  height: 202px;
+  width: min(190px, 48cqh, 72cqw);
+  height: min(190px, 48cqh, 72cqw);
 }
 .cover h2 {
   margin: 0;
   color: var(--title);
   font-family: var(--serif);
-  font-size: 17px;
+  font-size: min(17px, 9cqh);
   line-height: 1.7;
   letter-spacing: 0.3em;
   text-indent: 0.3em;
   font-weight: 500;
 }
 .paper {
-  height: 100dvh;
-  padding: 128px 30px 40px;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 64px 24px 36px;
   overflow: auto;
+  border-radius: 2px;
+  color: var(--paper-ink);
+  background: var(--paper);
+  box-shadow:
+    inset -12px 0 12px -14px #49371f,
+    inset 0 1px #f7e7c3;
+  scrollbar-color: #a48a65 var(--paper);
 }
 .identity {
   margin: 0 0 48px;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 18px;
 }
 .portrait {
   display: grid;
   place-items: center;
-  flex: 0 0 76px;
-  width: 76px;
-  height: 96px;
-  border: 1px solid var(--quiet);
-  background: #211020;
+  flex: 0 0 64px;
+  width: 64px;
+  height: 82px;
+  border: 1px solid var(--paper-rule);
+  background: #dac59c;
 }
 .portrait svg {
   width: 52px;
   height: 65px;
   fill: none;
-  stroke: #80677b;
+  stroke: var(--paper-line);
   stroke-width: 1.2;
 }
 .namePlaceholder {
@@ -419,7 +515,7 @@ body:has(dialog[open]) {
   width: 150px;
   max-width: 100%;
   height: 26px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--paper-line);
   flex: 1 1 0;
 }
 .action {
@@ -447,6 +543,18 @@ body:has(dialog[open]) {
 .action span:last-child {
   font-size: 19px;
   font-weight: 400;
+}
+.paper .action {
+  border-bottom-color: var(--paper-rule);
+}
+.paper .action.primary {
+  color: var(--paper-accent);
+}
+.paper .action:hover {
+  background: #d8c298;
+}
+.paper button:focus-visible {
+  outline-color: var(--paper-accent);
 }
 
 .auth {
@@ -608,15 +716,11 @@ body:has(dialog[open]) {
   }
 }
 @media (max-width: 360px) {
-  .cover {
-    padding-inline: 24px;
+  .coverFront {
+    padding-inline: 20px;
   }
   .paper {
-    padding-inline: 24px;
-  }
-  .crest {
-    width: 184px;
-    height: 184px;
+    padding-inline: 20px;
   }
   .auth {
     padding: 22px;
@@ -629,11 +733,12 @@ body:has(dialog[open]) {
   .bookHeader {
     padding-top: 12px;
   }
-  .cover {
-    padding-top: 65px;
+  .bookContent {
+    top: 58px;
+    max-height: calc(100dvh - 78px);
   }
   .paper {
-    padding-top: 88px;
+    padding-top: 32px;
     padding-bottom: 28px;
   }
 }
