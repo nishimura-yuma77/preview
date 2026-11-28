@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Seijinbu — 生徒手帳の3案</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body class="comparison">
+    <main class="comparisonShell">
+      <header class="comparisonHeader">
+        <a href="../">← 一覧</a>
+        <h1>Seijinbu <span>生徒手帳の3案</span></h1>
+      </header>
+      <fieldset class="conceptPicker">
+        <legend>デザイン</legend>
+        <label
+          ><input type="radio" name="concept" value="crest" checked /><span
+            ><b>01</b> 薔薇の校章</span
+          ></label
+        >
+        <label
+          ><input type="radio" name="concept" value="collage" /><span
+            ><b>02</b> 放課後コラージュ</span
+          ></label
+        >
+        <label
+          ><input type="radio" name="concept" value="dossier" /><span
+            ><b>03</b> 第零生徒会</span
+          ></label
+        >
+      </fieldset>
+      <div class="previewTools">
+        <label
+          >描画幅
+          <select id="width">
+            <option value="390">スマホ · 390px</option>
+            <option value="768">タブレット · 768px</option>
+            <option value="1440">PC · 1440px</option>
+          </select></label
+        >
+        <label><input type="checkbox" id="fit" checked /> 縮小表示</label>
+        <label
+          >状態
+          <select id="account">
+            <option value="guest">未ログイン</option>
+            <option value="member">ログイン済み</option>
+          </select></label
+        >
+      </div>
+      <div class="previewArea" id="area">
+        <div class="previewSizer" id="sizer">
+          <iframe
+            id="screen"
+            title="生徒手帳の操作プレビュー"
+            src="./screen.html?concept=crest"
+          ></iframe>
+        </div>
+      </div>
+      <details class="references">
+        <summary>参考デザイン</summary>
+        <div class="referenceLinks">
+          <a
+            id="physicalRef"
+            href="https://www.travelers-company.com/products/trnote/about"
+            target="_blank"
+            rel="noreferrer"
+            >TRAVELER’S notebook ↗</a
+          >
+          <a
+            id="graphicRef"
+            href="https://www.danganronpa.com/reload/about/"
+            target="_blank"
+            rel="noreferrer"
+            >ダンガンロンパ 1・2 Reload ↗</a
+          >
+        </div>
+      </details>
+    </main>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const concepts = ["crest", "collage", "dossier"];
+      let concept = concepts.includes(params.get("concept"))
+        ? params.get("concept")
+        : "crest";
+      const frame = document.getElementById("screen");
+      const width = document.getElementById("width");
+      const fit = document.getElementById("fit");
+      const area = document.getElementById("area");
+      const refs = {
+        crest: [
+          "TRAVELER’S notebook ↗",
+          "https://www.travelers-company.com/products/trnote/about",
+          "ダンガンロンパ 1・2 Reload ↗",
+          "https://www.danganronpa.com/reload/about/",
+        ],
+        collage: [
+          "Campus ノート ↗",
+          "https://www.kokuyo.com/stationery/series/campus/campus-notebook/",
+          "PERSONA 5 ROYAL ↗",
+          "https://persona.atlus.com/p5r/",
+        ],
+        dossier: [
+          "penco ↗",
+          "https://www.hightide.co.jp/feature/penco/",
+          "ダンガンロンパ 1・2 Reload ↗",
+          "https://www.danganronpa.com/reload/about/",
+        ],
+      };
+      function setReferences() {
+        const [a, urlA, b, urlB] = refs[concept];
+        document.getElementById("physicalRef").textContent = a;
+        document.getElementById("physicalRef").href = urlA;
+        document.getElementById("graphicRef").textContent = b;
+        document.getElementById("graphicRef").href = urlB;
+      }
+      function resize() {
+        const w = Number(width.value);
+        const scale = fit.checked ? Math.min(1, area.clientWidth / w) : 1;
+        frame.style.width = `${w}px`;
+        frame.style.height = "760px";
+        frame.style.transform = `scale(${scale})`;
+        document.getElementById("sizer").style.width = `${w * scale}px`;
+        document.getElementById("sizer").style.height = `${760 * scale}px`;
+      }
+      document.querySelector(`input[name=concept][value=${concept}]`).checked =
+        true;
+      frame.src = `./screen.html?concept=${concept}`;
+      setReferences();
+      document.querySelectorAll("input[name=concept]").forEach((input) =>
+        input.addEventListener("change", () => {
+          concept = input.value;
+          const url = new URL(location.href);
+          url.searchParams.set("concept", concept);
+          history.replaceState(null, "", url);
+          frame.contentWindow.postMessage(
+            { type: "concept", value: concept },
+            location.origin,
+          );
+          setReferences();
+        }),
+      );
+      document
+        .getElementById("account")
+        .addEventListener("change", (event) =>
+          frame.contentWindow.postMessage(
+            { type: "account", value: event.target.value },
+            location.origin,
+          ),
+        );
+      window.addEventListener("message", (event) => {
+        if (
+          event.origin === location.origin &&
+          event.source === frame.contentWindow &&
+          event.data.type === "account"
+        )
+          document.getElementById("account").value = event.data.value;
+      });
+      width.addEventListener("change", resize);
+      fit.addEventListener("change", resize);
+      new ResizeObserver(resize).observe(area);
+      resize();
+    </script>
+  </body>
+</html>

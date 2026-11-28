@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ja" data-concept="crest">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Seijinbu — 生徒手帳</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body class="app">
+    <header class="siteHeader">
+      <span class="wordmark">Seijinbu<span>.</span></span
+      ><button
+        id="menu"
+        class="menuTrigger"
+        aria-haspopup="dialog"
+        aria-controls="handbook"
+        aria-expanded="false"
+      >
+        <span aria-hidden="true">☰</span> メニュー
+      </button>
+    </header>
+    <main class="hero">
+      <div>
+        <span class="heroMark" aria-hidden="true">SEIJINBU</span>
+        <h1>まだ知らない、<br />物語の奥へ。</h1>
+        <p>
+          ここだけの作品と、出会う場所。<br />無料会員登録で、作品の続きを。
+        </p>
+      </div>
+      <img
+        class="heroEmblem"
+        src="./emblem.svg"
+        width="220"
+        height="248"
+        alt=""
+      />
+    </main>
+    <dialog id="handbook" class="handbook" aria-labelledby="bookTitle">
+      <div class="bookSpine" aria-hidden="true">
+        <span>SEIJINBU</span><i></i>
+      </div>
+      <div class="bookContent">
+        <header class="bookHeader">
+          <span class="bookBrand">Seijinbu<span>.</span></span
+          ><button
+            class="close"
+            data-close
+            aria-label="生徒手帳を閉じる"
+            autofocus
+          >
+            ×
+          </button>
+        </header>
+        <section class="cover" aria-labelledby="bookTitle">
+          <span class="coverIndex" aria-hidden="true">S / 01</span>
+          <img
+            class="crest"
+            src="./emblem.svg"
+            width="108"
+            height="122"
+            alt=""
+          />
+          <div class="coverType">
+            <span class="coverEnglish" aria-hidden="true"
+              >STUDENT HANDBOOK</span
+            >
+            <h2 id="bookTitle" aria-label="生徒手帳">生徒<span>手帳</span></h2>
+          </div>
+          <span class="coverSeal" aria-hidden="true">S</span>
+        </section>
+        <div class="paper">
+          <div class="identity">
+            <span class="identityLabel">所持者</span>
+            <div>
+              <span class="identityValue" id="owner">未登録</span
+              ><span class="accountStatus" id="accountStatus">未ログイン</span>
+            </div>
+          </div>
+          <section class="accountActions" aria-labelledby="actionsTitle">
+            <div class="sectionHeading">
+              <h3 id="actionsTitle">アカウント</h3>
+              <span aria-hidden="true">01</span>
+            </div>
+            <div id="guestActions">
+              <button class="action primary" data-view="register">
+                <span>新規登録</span><span aria-hidden="true">↗</span></button
+              ><button class="action secondary" data-view="login">
+                <span>ログイン</span><span aria-hidden="true">→</span>
+              </button>
+            </div>
+            <div id="memberActions" hidden>
+              <button class="action secondary" id="logout">
+                <span>ログアウト</span><span aria-hidden="true">→</span>
+              </button>
+            </div>
+          </section>
+          <footer class="bookFooter" aria-hidden="true">
+            <span>SEIJINBU</span><span>— 01 —</span><span>HANDBOOK</span>
+          </footer>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="auth" class="auth" aria-labelledby="authTitle">
+      <header class="authHeader">
+        <div>
+          <span class="formIndex" aria-hidden="true">SEIJINBU / ACCOUNT</span>
+          <h2 id="authTitle">無料会員登録</h2>
+        </div>
+        <button class="close" data-close aria-label="閉じる">×</button>
+      </header>
+      <form id="form" novalidate>
+        <div class="field" id="emailField">
+          <label for="email">メールアドレス</label
+          ><input
+            id="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            aria-describedby="emailError"
+          /><span id="emailError" class="fieldError" role="alert"></span>
+        </div>
+        <div class="field" id="passwordField">
+          <label for="password">パスワード</label
+          ><input
+            id="password"
+            type="password"
+            autocomplete="new-password"
+            placeholder="8文字以上"
+            aria-describedby="passwordError"
+          /><span id="passwordError" class="fieldError" role="alert"></span>
+        </div>
+        <button class="action primary" id="submit">
+          <span>登録する</span><span aria-hidden="true">↗</span>
+        </button>
+      </form>
+      <div class="result" id="result" hidden>
+        <div class="resultSymbol" aria-hidden="true">✓</div>
+        <p id="resultText" role="status"></p>
+        <button class="action secondary" data-view="login">ログインへ</button>
+      </div>
+      <div class="authLinks" id="authLinks">
+        <button class="textButton" id="switchAuth" data-view="login">
+          ログインへ</button
+        ><button class="textButton" id="resetLink" data-view="reset">
+          パスワードを忘れた方
+        </button>
+      </div>
+    </dialog>
+    <script>
+      const root = document.documentElement;
+      const params = new URLSearchParams(location.search);
+      root.dataset.concept = ["crest", "collage", "dossier"].includes(
+        params.get("concept"),
+      )
+        ? params.get("concept")
+        : "crest";
+      const handbook = document.getElementById("handbook");
+      const auth = document.getElementById("auth");
+      const menu = document.getElementById("menu");
+      const form = document.getElementById("form");
+      const email = document.getElementById("email");
+      const password = document.getElementById("password");
+      let view = "register";
+      let member = false;
+      let emailValue = "";
+      let transitionRequest = 0;
+      const titles = {
+        register: "無料会員登録",
+        login: "ログイン",
+        reset: "パスワード再設定",
+        pending: "メールで本人確認",
+        sent: "再設定メールを送信しました",
+      };
+      function updateAccount(value) {
+        member = value === "member";
+        document.getElementById("owner").textContent = member
+          ? emailValue || "reader@example.com"
+          : "未登録";
+        document.getElementById("accountStatus").textContent = member
+          ? "ログイン中"
+          : "未ログイン";
+        document.getElementById("guestActions").hidden = member;
+        document.getElementById("memberActions").hidden = !member;
+        if (parent !== window)
+          parent.postMessage(
+            { type: "account", value: member ? "member" : "guest" },
+            location.origin,
+          );
+      }
+      function closeAll() {
+        transitionRequest += 1;
+        handbook.close();
+        auth.close();
+        menu.setAttribute("aria-expanded", "false");
+      }
+      function openBook() {
+        closeAll();
+        handbook.showModal();
+        menu.setAttribute("aria-expanded", "true");
+      }
+      async function openAuth(next) {
+        const request = ++transitionRequest;
+        if (handbook.open) {
+          handbook.close();
+          menu.setAttribute("aria-expanded", "false");
+          await Promise.all(
+            handbook
+              .getAnimations()
+              .map((animation) => animation.finished.catch(() => {})),
+          );
+        }
+        if (request !== transitionRequest) return;
+        view = next;
+        const isResult = next === "pending" || next === "sent";
+        document.getElementById("authTitle").textContent = titles[next];
+        form.hidden = isResult;
+        document.getElementById("result").hidden = !isResult;
+        document.getElementById("authLinks").hidden = isResult;
+        document.getElementById("passwordField").hidden = next === "reset";
+        document.getElementById("resetLink").hidden = next === "reset";
+        clearError(email);
+        clearError(password);
+        password.autocomplete =
+          next === "login" ? "current-password" : "new-password";
+        const submitLabel =
+          next === "login"
+            ? "ログイン"
+            : next === "reset"
+              ? "再設定メールを送信"
+              : "登録する";
+        document.querySelector("#submit span").textContent = submitLabel;
+        const switchButton = document.getElementById("switchAuth");
+        switchButton.dataset.view = next === "login" ? "register" : "login";
+        switchButton.textContent =
+          next === "login" ? "無料会員登録へ" : "ログインへ";
+        document.getElementById("resultText").textContent =
+          next === "pending"
+            ? `${emailValue} に本人確認メールを送りました。`
+            : `${emailValue} に再設定メールを送りました。`;
+        if (!auth.open) auth.showModal();
+        if (!isResult) email.focus();
+        else auth.querySelector(".result button").focus();
+      }
+      menu.addEventListener("click", openBook);
+      document.querySelectorAll("[data-close]").forEach((button) =>
+        button.addEventListener("click", () => {
+          closeAll();
+          menu.focus();
+        }),
+      );
+      document
+        .querySelectorAll("[data-view]")
+        .forEach((button) =>
+          button.addEventListener("click", () => openAuth(button.dataset.view)),
+        );
+      document.getElementById("logout").addEventListener("click", () => {
+        updateAccount("guest");
+        closeAll();
+        menu.focus();
+      });
+      for (const dialog of [handbook, auth]) {
+        dialog.addEventListener("keydown", (event) => {
+          if (event.key !== "Tab") return;
+          const items = [...dialog.querySelectorAll("button, input")].filter(
+            (item) => !item.disabled && item.getClientRects().length > 0,
+          );
+          const first = items[0];
+          const last = items.at(-1);
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        });
+        dialog.addEventListener("cancel", (event) => {
+          event.preventDefault();
+          closeAll();
+          menu.focus();
+        });
+        dialog.addEventListener("click", (event) => {
+          const rect = dialog.getBoundingClientRect();
+          if (
+            event.target === dialog &&
+            (event.clientX < rect.left ||
+              event.clientX > rect.right ||
+              event.clientY < rect.top ||
+              event.clientY > rect.bottom)
+          ) {
+            closeAll();
+            menu.focus();
+          }
+        });
+      }
+      function clearError(input) {
+        input.removeAttribute("aria-invalid");
+        document.getElementById(`${input.id}Error`).textContent = "";
+      }
+      function showError(input, text) {
+        input.setAttribute("aria-invalid", "true");
+        document.getElementById(`${input.id}Error`).textContent = text;
+        input.focus();
+      }
+      for (const input of [email, password]) {
+        input.addEventListener("input", () => clearError(input));
+      }
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        emailValue = email.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+          showError(email, "メールアドレスを確認してください。");
+          return;
+        }
+        if (
+          view !== "reset" &&
+          (password.value.length < 8 || password.value.length > 128)
+        ) {
+          showError(password, "パスワードは8〜128文字で入力してください。");
+          return;
+        }
+        if (view === "login") {
+          updateAccount("member");
+          closeAll();
+          menu.focus();
+        } else openAuth(view === "reset" ? "sent" : "pending");
+      });
+      window.addEventListener("message", (event) => {
+        if (event.origin !== location.origin || event.source !== parent) return;
+        if (
+          event.data.type === "concept" &&
+          ["crest", "collage", "dossier"].includes(event.data.value)
+        )
+          root.dataset.concept = event.data.value;
+        if (event.data.type === "account") {
+          updateAccount(event.data.value);
+          openBook();
+        }
+      });
+      openBook();
+    </script>
+  </body>
+</html>

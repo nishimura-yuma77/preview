@@ -1,0 +1,1003 @@
+:root {
+  color-scheme: dark;
+  --page: #120a13;
+  --surface: #281327;
+  --ink: #fff0f4;
+  --rose: #e7a8bd;
+  --muted: #c8acbe;
+  --line: #96768e;
+  --quiet: #51364b;
+  --serif: "Yu Mincho", "Hiragino Mincho ProN", "Noto Serif CJK JP", serif;
+  --sans:
+    "Yu Gothic", "Hiragino Kaku Gothic ProN", "Noto Sans CJK JP", sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.6;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: 4px;
+}
+button {
+  color: inherit;
+}
+a {
+  color: var(--rose);
+}
+[hidden] {
+  display: none !important;
+}
+.comparison {
+  background: #141114;
+}
+.comparisonShell {
+  max-width: 1600px;
+  margin: auto;
+  padding: 26px 36px;
+}
+.comparisonHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+.comparisonHeader a {
+  font-size: 13px;
+  text-decoration: none;
+  color: var(--muted);
+}
+.comparisonHeader h1 {
+  font-family: var(--serif);
+  font-size: 24px;
+  margin: 0;
+  font-weight: 500;
+}
+.comparisonHeader h1 span {
+  font-family: var(--sans);
+  font-size: 13px;
+  margin-left: 18px;
+  color: var(--muted);
+}
+.conceptPicker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.conceptPicker legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.conceptPicker label {
+  position: relative;
+  cursor: pointer;
+}
+.conceptPicker input {
+  position: absolute;
+  opacity: 0;
+}
+.conceptPicker label span {
+  display: block;
+  padding: 15px 18px;
+  border: 1px solid #66515f;
+  color: var(--muted);
+  font-size: 15px;
+  transition: background 200ms ease;
+}
+.conceptPicker b {
+  font: 12px var(--mono);
+  margin-right: 12px;
+}
+.conceptPicker input:checked + span {
+  background: var(--rose);
+  border-color: var(--rose);
+  color: var(--page);
+  font-weight: 700;
+  box-shadow: inset 0 -3px var(--page);
+}
+.conceptPicker input:focus-visible + span {
+  outline: 2px solid var(--rose);
+  outline-offset: 3px;
+}
+.previewTools {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 16px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.previewTools label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.previewTools select {
+  padding: 6px;
+  border: 1px solid #66515f;
+  background: #211a20;
+  color: var(--ink);
+  max-width: 100%;
+}
+.previewTools input {
+  accent-color: var(--rose);
+}
+.previewArea {
+  width: 100%;
+  overflow: auto;
+  background: #0d0a0d;
+  border: 1px solid #44363f;
+}
+.previewSizer {
+  position: relative;
+  margin: auto;
+}
+.previewSizer iframe {
+  display: block;
+  border: 0;
+  transform-origin: top left;
+  background: var(--page);
+}
+.references {
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.references summary {
+  cursor: pointer;
+  width: fit-content;
+  padding: 6px 0;
+}
+.referenceLinks {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 14px 0;
+}
+.referenceLinks a {
+  overflow-wrap: anywhere;
+}
+.app {
+  background: var(--page);
+  min-height: 100vh;
+}
+.siteHeader {
+  height: 86px;
+  max-width: 1232px;
+  margin: auto;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.wordmark {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 23px;
+}
+.wordmark span,
+.bookBrand span {
+  color: var(--rose);
+}
+.menuTrigger {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: 5px;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+.hero {
+  max-width: 1100px;
+  margin: 108px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+  padding: 0 40px;
+}
+.heroMark {
+  font: 11px var(--mono);
+  letter-spacing: 0.35em;
+  color: var(--rose);
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-size: 48px;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  margin: 24px 0;
+}
+.hero p {
+  font-size: 15px;
+  line-height: 2.2;
+  color: var(--muted);
+}
+.heroEmblem {
+  border: 1px solid var(--quiet);
+  border-radius: 50%;
+  padding: 30px;
+  width: 250px;
+  height: 300px;
+}
+dialog {
+  color: var(--ink);
+  border: 1px solid var(--line);
+  padding: 0;
+  background: var(--surface);
+  box-shadow: 0 20px 90px #0008;
+}
+dialog::backdrop {
+  background: #080509ad;
+}
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+.handbook {
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0;
+  width: min(388px, calc(100% - 16px));
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  border: 0;
+  border-left: 1px solid var(--line);
+  overflow: auto;
+  transform: translateX(100%);
+  transition:
+    transform 400ms cubic-bezier(0.22, 0.75, 0.3, 1),
+    display 400ms allow-discrete,
+    overlay 400ms allow-discrete;
+  padding-left: 18px;
+}
+.bookSpine {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 18px;
+  background: #1b0e1c;
+  border-right: 1px solid var(--quiet);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bookSpine span {
+  writing-mode: vertical-rl;
+  font: 10px var(--mono);
+  letter-spacing: 0.34em;
+  color: var(--rose);
+}
+.bookContent {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.bookHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 24px 0;
+  gap: 12px;
+}
+.bookBrand {
+  font: italic 19px var(--serif);
+}
+.close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  font-family: var(--sans);
+  font-size: 22px;
+  line-height: 1;
+}
+.close:hover {
+  background: #42283d;
+}
+.cover {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 270px;
+  margin: 16px 24px 28px;
+  border: 1px solid var(--quiet);
+  outline: 1px solid var(--quiet);
+  outline-offset: -7px;
+  padding: 23px 16px 25px;
+}
+.coverIndex {
+  position: absolute;
+  left: 15px;
+  top: 12px;
+  font: 10px var(--mono);
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.crest {
+  width: 85px;
+  height: 96px;
+}
+.coverType {
+  text-align: center;
+}
+.coverEnglish {
+  display: block;
+  font: 9px var(--mono);
+  letter-spacing: 0.24em;
+  color: var(--rose);
+  margin: 12px 0;
+}
+.cover h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+}
+.coverSeal {
+  display: none;
+}
+.paper {
+  padding: 0 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.identity {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 17px 0;
+  min-height: 84px;
+}
+.identityLabel {
+  font-size: 11px;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.identity > div {
+  min-width: 0;
+  flex: 1;
+}
+.identityValue {
+  display: block;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.accountStatus {
+  display: block;
+  font: 10px var(--sans);
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.identitySymbol {
+  font-size: 22px;
+  color: var(--rose);
+}
+.sectionHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 28px 0 14px;
+}
+.sectionHeading h3 {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  font-weight: 500;
+  margin: 0;
+}
+.sectionHeading > span {
+  font: 10px var(--mono);
+  color: var(--muted);
+}
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 20px;
+  font-size: 14px;
+  border: 1px solid var(--line);
+  background: transparent;
+  margin-bottom: 12px;
+}
+.action.primary {
+  background: var(--rose);
+  color: var(--page);
+  border-color: var(--rose);
+  border-radius: 28px;
+  font-weight: 700;
+}
+.action.primary:hover {
+  background: #f1bfd0;
+}
+.action.secondary {
+  border-radius: 5px;
+}
+.action.secondary:hover {
+  background: #42283d;
+}
+.bookFooter {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 38px 0 22px;
+  font: 8px var(--mono);
+  letter-spacing: 0.13em;
+  color: var(--muted);
+}
+.auth {
+  height: min(550px, calc(100dvh - 32px));
+  width: min(448px, calc(100% - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  border-radius: 12px;
+  padding: 28px;
+  opacity: 0;
+  transition:
+    opacity 300ms ease,
+    display 300ms allow-discrete,
+    overlay 300ms allow-discrete;
+}
+.authHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+.authHeader h2 {
+  font: 500 23px var(--serif);
+  margin: 7px 0 0;
+}
+.formIndex {
+  font: 9px var(--mono);
+  letter-spacing: 0.16em;
+  color: var(--rose);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+.field input {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 10px 12px;
+  background: #221023;
+  color: var(--ink);
+  font-size: 16px;
+}
+.field input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+.fieldError {
+  color: #ffb6c3;
+  font-size: 13px;
+  min-height: 21px;
+  line-height: 1.6;
+}
+.authLinks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 25px;
+}
+.textButton {
+  border: 0;
+  padding: 3px;
+  background: transparent;
+  color: var(--rose);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.result {
+  padding: 10px 0 5px;
+}
+.resultSymbol {
+  font: 32px var(--serif);
+  color: var(--rose);
+}
+.result p {
+  font-size: 14px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+  margin: 18px 0 30px;
+}
+/* 02 — Cut-paper blocks, ruled leaves, and a personal sticker. */
+[data-concept="collage"] .bookSpine {
+  width: 12px;
+  border-right: 3px solid var(--rose);
+  background: var(--page);
+}
+[data-concept="collage"] .bookSpine span {
+  display: none;
+}
+[data-concept="collage"] .handbook {
+  padding-left: 12px;
+  background: #261225;
+}
+[data-concept="collage"] .bookHeader {
+  padding-top: 20px;
+}
+[data-concept="collage"] .bookBrand {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-style: normal;
+  letter-spacing: -0.05em;
+}
+[data-concept="collage"] .cover {
+  min-height: 270px;
+  align-items: flex-start;
+  justify-content: center;
+  border: 0;
+  outline: 0;
+  margin-bottom: 24px;
+  padding: 24px 0;
+}
+[data-concept="collage"] .cover::before {
+  content: "";
+  position: absolute;
+  inset: 19px -4px 12px 5px;
+  border: 1px solid var(--rose);
+  transform: rotate(-3deg);
+  pointer-events: none;
+}
+[data-concept="collage"] .coverType {
+  position: relative;
+  text-align: left;
+  z-index: 1;
+}
+[data-concept="collage"] .coverEnglish {
+  background: var(--ink);
+  color: var(--page);
+  width: fit-content;
+  padding: 4px 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  transform: rotate(-4deg);
+  margin: 0 0 18px 2px;
+}
+[data-concept="collage"] .cover h2 {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: 53px;
+  letter-spacing: -0.06em;
+  line-height: 1.13;
+  text-indent: 0;
+  transform: rotate(-4deg);
+  color: var(--rose);
+}
+[data-concept="collage"] .cover h2 span {
+  display: block;
+  margin-left: 23px;
+  color: var(--ink);
+}
+[data-concept="collage"] .crest {
+  position: absolute;
+  width: 110px;
+  height: 124px;
+  right: 0;
+  bottom: 29px;
+  transform: rotate(13deg);
+  opacity: 0.8;
+}
+[data-concept="collage"] .coverIndex {
+  left: auto;
+  right: 2px;
+  top: 0;
+  background: var(--rose);
+  color: var(--page);
+  padding: 4px 7px;
+  font-weight: 700;
+}
+[data-concept="collage"] .coverSeal {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  right: 0;
+  bottom: -12px;
+  border: 2px solid var(--rose);
+  border-radius: 50%;
+  background: var(--page);
+  width: 39px;
+  height: 39px;
+  font: italic 26px var(--serif);
+  color: var(--rose);
+  transform: rotate(-15deg);
+}
+[data-concept="collage"] .identity {
+  border: 1px solid var(--line);
+  padding: 15px 13px;
+  position: relative;
+  transform: rotate(-1deg);
+  margin-bottom: 5px;
+}
+[data-concept="collage"] .identity::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: -6px;
+  width: 50px;
+  height: 10px;
+  background: var(--rose);
+  transform: rotate(-5deg);
+}
+[data-concept="collage"] .sectionHeading h3 {
+  font-weight: 800;
+}
+[data-concept="collage"] .action {
+  border-radius: 0;
+  font-weight: 700;
+  border-width: 0 0 1px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+[data-concept="collage"] .action.primary {
+  border: 0;
+  padding-left: 17px;
+  padding-right: 17px;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    0 100%
+  );
+}
+[data-concept="collage"] .action:focus-visible {
+  outline-offset: 4px;
+  clip-path: none;
+}
+[data-concept="collage"] .auth {
+  border-radius: 0;
+  border-top: 6px solid var(--rose);
+}
+[data-concept="collage"] .authHeader h2 {
+  font-family: var(--sans);
+  font-weight: 800;
+}
+[data-concept="collage"] .close {
+  border-radius: 0;
+}
+/* 03 — Archival spine, vertical title, and a numbered account index. */
+[data-concept="dossier"] .handbook {
+  padding-left: 31px;
+  background: #241223;
+}
+[data-concept="dossier"] .bookSpine {
+  width: 31px;
+  background: var(--rose);
+  border: 0;
+  align-items: flex-start;
+  padding-top: 100px;
+}
+[data-concept="dossier"] .bookSpine span {
+  color: var(--page);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.45em;
+}
+[data-concept="dossier"] .bookHeader {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+[data-concept="dossier"] .bookBrand {
+  font: 12px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+[data-concept="dossier"] .cover {
+  min-height: 270px;
+  border: 0;
+  outline: 0;
+  border-top: 1px solid var(--rose);
+  border-bottom: 1px solid var(--rose);
+  margin: 22px 20px 24px;
+  align-items: flex-start;
+  padding: 24px 8px;
+}
+[data-concept="dossier"] .coverType {
+  text-align: left;
+  height: 210px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+[data-concept="dossier"] .coverEnglish {
+  writing-mode: vertical-rl;
+  order: 2;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  margin: 4px 0;
+}
+[data-concept="dossier"] .cover h2 {
+  writing-mode: vertical-rl;
+  font-size: 39px;
+  letter-spacing: 0.18em;
+  line-height: 1.3;
+  text-indent: 0;
+  margin-top: 0;
+  font-weight: 700;
+}
+[data-concept="dossier"] .cover h2 span {
+  display: inline;
+}
+[data-concept="dossier"] .crest {
+  position: absolute;
+  right: 4px;
+  bottom: 34px;
+  width: 122px;
+  height: 137px;
+}
+[data-concept="dossier"] .coverIndex {
+  left: auto;
+  right: 0;
+  top: 15px;
+  font: 28px var(--mono);
+  letter-spacing: -0.05em;
+  color: var(--rose);
+}
+[data-concept="dossier"] .coverSeal {
+  display: block;
+  position: absolute;
+  right: 5px;
+  bottom: 12px;
+  border: 1px solid var(--rose);
+  color: var(--rose);
+  padding: 0 12px;
+  font: 13px var(--serif);
+}
+[data-concept="dossier"] .paper {
+  padding: 0 20px;
+}
+[data-concept="dossier"] .identity {
+  align-items: flex-start;
+  gap: 12px;
+  border: 0;
+  border-left: 2px solid var(--rose);
+  padding: 0 0 0 12px;
+  min-height: 66px;
+}
+[data-concept="dossier"] .identityLabel {
+  writing-mode: vertical-rl;
+  letter-spacing: 0.15em;
+  margin-top: 3px;
+}
+[data-concept="dossier"] .identitySymbol {
+  display: none;
+}
+[data-concept="dossier"] .sectionHeading {
+  margin-top: 23px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+[data-concept="dossier"] .sectionHeading h3 {
+  font-weight: 700;
+}
+[data-concept="dossier"] .action {
+  border-radius: 0;
+  border-width: 0 0 1px;
+  padding-inline: 0;
+  min-height: 50px;
+}
+[data-concept="dossier"] .action.primary {
+  background: transparent;
+  color: var(--rose);
+  border-bottom: 1px solid var(--rose);
+  font-size: 17px;
+}
+[data-concept="dossier"] .action.primary:hover {
+  background: #42283d;
+}
+[data-concept="dossier"] .action span:last-child {
+  display: grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  border: 1px solid var(--rose);
+  font-size: 16px;
+}
+[data-concept="dossier"] .auth {
+  border-radius: 0;
+  border-left: 9px solid var(--rose);
+}
+[data-concept="dossier"] .close {
+  border-radius: 0;
+}
+.handbook[open] {
+  transform: translateX(0);
+}
+.auth[open] {
+  opacity: 1;
+}
+@starting-style {
+  .handbook[open] {
+    transform: translateX(100%);
+  }
+  .auth[open] {
+    opacity: 0;
+  }
+}
+@media (max-width: 700px) {
+  .comparisonShell {
+    padding: 18px 14px;
+  }
+  .comparisonHeader {
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .comparisonHeader h1 {
+    font-size: 20px;
+  }
+  .comparisonHeader h1 span {
+    display: block;
+    margin: 2px 0 0;
+    font-size: 12px;
+  }
+  .conceptPicker {
+    gap: 6px;
+  }
+  .conceptPicker label span {
+    padding: 10px 7px;
+    font-size: 11px;
+    min-height: 60px;
+  }
+  .conceptPicker b {
+    display: block;
+    margin: 0 0 4px;
+  }
+  .previewTools {
+    gap: 10px 18px;
+    font-size: 11px;
+  }
+  .previewTools label:last-child {
+    margin-left: auto;
+  }
+  .siteHeader {
+    height: 76px;
+    padding: 0 24px;
+  }
+  .hero {
+    margin: 70px 0;
+    display: block;
+    padding: 0 24px;
+  }
+  .hero h1 {
+    font-size: 32px;
+  }
+  .heroEmblem {
+    width: 150px;
+    height: 180px;
+    margin-top: 35px;
+  }
+  .heroMark {
+    font-size: 9px;
+  }
+  .hero p {
+    font-size: 14px;
+  }
+  .referenceLinks {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+@media (max-width: 360px) {
+  .bookHeader {
+    padding-inline: 18px;
+  }
+  .cover {
+    margin-inline: 18px;
+  }
+  .paper {
+    padding-inline: 18px;
+  }
+  .auth {
+    padding: 22px;
+  }
+  .authHeader h2 {
+    font-size: 20px;
+  }
+  .identity {
+    gap: 12px;
+  }
+  .identityValue {
+    font-size: 12px;
+  }
+  .cover h2 {
+    font-size: 27px;
+  }
+  [data-concept="collage"] .cover h2 {
+    font-size: 47px;
+  }
+  [data-concept="collage"] .crest {
+    width: 89px;
+    height: 100px;
+    right: -4px;
+  }
+  [data-concept="dossier"] .crest {
+    width: 99px;
+    height: 112px;
+    right: -5px;
+  }
+  [data-concept="dossier"] .cover h2 {
+    font-size: 36px;
+  }
+  [data-concept="dossier"] .coverType {
+    gap: 8px;
+  }
+  [data-concept="dossier"] .identity {
+    gap: 8px;
+  }
+  [data-concept="dossier"] .paper {
+    padding-inline: 17px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
