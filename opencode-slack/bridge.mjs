@@ -675,6 +675,7 @@ async function registerProject(app, botId, project, password, drain, supervisors
     if (drain.draining) return send(drainingMessage).catch(() => {})
     const key = newKey()
     const pending = state.pending[key] = {
+      watchPeriod: watch?.period(menu.thread),
       agent: menu.agent, prompt: `!s-${name} ${request}`.trim(), thread: menu.thread, requestID: randomUUID(),
     }
     log('INFO', 'request.accepted', { thread: menu.thread, requestID: pending.requestID, agent: menu.agent })
@@ -711,7 +712,7 @@ async function registerProject(app, botId, project, password, drain, supervisors
       send = (...args) => { request.checkpoint(); return rawSend(...args) }
       if (pending?.answer) {
         return await postCompletedAnswer(client, thread, pending.answer, channelId, request.checkpoint,
-          { delivery: pending.delivery, save, signal: request.signal, onFinal: watch?.final })
+          { delivery: pending.delivery, save, signal: request.signal, onFinal: (t, ts) => watch?.final(t, ts, pending.watchPeriod ?? true) })
       }
       await supervisor.waitReady(request.signal)
       const skill = pending?.messageID ? null : parseSkill(prompt)
@@ -752,6 +753,8 @@ async function registerProject(app, botId, project, password, drain, supervisors
   }
 
   const onMessage = ({ event, body, client }) => {
+    const ended = watch?.end(event)
+    if (ended) return ended
     watch?.human(event)?.catch(error => log('ERROR', 'reply-watch.state.failed', { error }))
     if (event.channel !== channelId || event.user !== memberId || !event.ts || !body.event_id) return
     const thread = event.thread_ts ?? event.ts
@@ -780,10 +783,11 @@ async function registerProject(app, botId, project, password, drain, supervisors
       })
     }
     if (drain.draining) return send(drainingMessage).catch(() => {})
-    if (event.text?.includes(`<@${botId}>`)) watch?.track(thread)
+    if (event.text?.includes(`<@${botId}>`)) watch?.track(thread, event.ts)
     state.received = [...state.received.slice(-499), messageKey]
     const { agent, prompt } = parseAgent(text)
     const pending = state.pending[messageKey] = { agent, prompt, thread, requestID: randomUUID() }
+    pending.watchPeriod = watch?.period(thread)
     log('INFO', 'request.accepted', { thread, requestID: pending.requestID, sessionID: state.sessions[thread], agent })
     const persisted = save().then(() => null, error => error)
     return enqueueRequest(thread, async request => {
@@ -858,7 +862,7 @@ async function registerProject(app, botId, project, password, drain, supervisors
     pending.delivery = { ids: splitMarkdown(formatted).map(() => randomUUID()), sent: 0 }
     await save()
     await postCompletedAnswer(client, thread, formatted, channelId, request.checkpoint,
-      { delivery: pending.delivery, save, signal: request.signal, onFinal: watch?.final })
+      { delivery: pending.delivery, save, signal: request.signal, onFinal: (t, ts) => watch?.final(t, ts, pending.watchPeriod ?? true) })
   }
   app.event('app_mention', onMessage)
   app.event('message', onMessage)

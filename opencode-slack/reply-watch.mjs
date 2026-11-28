@@ -4,6 +4,9 @@ export function createReplyWatch({ state, save, client, team, channel, channelNa
   if (!token) return null
   if (!team || !Number.isInteger(Number(port)) || port < 1 || port > 65535) throw Error('Invalid reply-watch configuration')
   const { threads, outbox } = state.replyWatch ??= { threads: {}, outbox: {} }
+  const ended = state.replyWatch.ended ??= {}
+  const isHumanReply = event => event.channel === channel && event.user && event.user !== bot && !event.bot_id && !event.app_id &&
+    (!event.subtype || ['file_share', 'thread_broadcast'].includes(event.subtype)) && event.thread_ts && event.ts !== event.thread_ts
   let busy = false
   async function flush() {
     if (busy) return
@@ -38,7 +41,7 @@ export function createReplyWatch({ state, save, client, team, channel, channelNa
   timer.unref()
   void flush()
   async function record(thread, ts, status) {
-    if (!threads[thread] || !/^\d+\.\d{6}$/.test(ts)) return
+    if (!/^\d+\.\d{6}$/.test(ts)) return
     const prev = outbox[thread]
     if (prev && (prev.ts > ts || (prev.ts === ts && prev.status === 'done'))) return
     outbox[thread] = { ts, status }
@@ -46,11 +49,23 @@ export function createReplyWatch({ state, save, client, team, channel, channelNa
     void flush()
   }
   return {
-    track(thread) { threads[thread] = true },
-    final: (thread, ts) => record(thread, ts, 'pending'),
+    track(thread, ts = thread) {
+      if (!ended[thread] || ts > ended[thread]) threads[thread] ??= ts
+    },
+    period: thread => threads[thread] ?? null,
+    final(thread, ts, period) {
+      if (threads[thread] && threads[thread] === period) return record(thread, ts, 'pending')
+    },
+    end(event) {
+      if (!isHumanReply(event) || !['!end', '!e'].includes(event.text?.trim())) return
+      const thread = event.thread_ts
+      if (!threads[thread] || (threads[thread] !== true && event.ts <= threads[thread])) return Promise.resolve()
+      delete threads[thread]
+      ended[thread] = event.ts
+      return record(thread, event.ts, 'done').then(save)
+    },
     human(event) {
-      if (event.channel !== channel || !event.user || event.user === bot || event.bot_id || event.app_id ||
-        (event.subtype && !['file_share', 'thread_broadcast'].includes(event.subtype)) || !event.thread_ts || event.ts === event.thread_ts) return
+      if (!isHumanReply(event) || !threads[event.thread_ts]) return
       return record(event.thread_ts, event.ts, 'done')
     },
   }

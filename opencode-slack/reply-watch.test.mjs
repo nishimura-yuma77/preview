@@ -34,7 +34,8 @@ test('tracked final answer, third-party reply, and recovered final answer update
     return row.id
   }
   const first = '1800000001.000001'
-  await watch.final(thread, first)
+  const firstPeriod = watch.period(thread)
+  await watch.final(thread, first, firstPeriod)
   const id = await check(first, 'pending')
   await watch.human({ ...event, bot_id: 'B1' }); await watch.human({ ...event, subtype: 'message_changed' })
   await check(first, 'pending')
@@ -44,4 +45,16 @@ test('tracked final answer, third-party reply, and recovered final answer update
   state.replyWatch.outbox[thread] = { ts: next, status: 'pending' }
   createReplyWatch(options)
   assert.equal(await check(next, 'pending'), id)
+  const end = { ...event, ts: '1800000004.000001', text: ' !e ' }
+  await watch.end(end)
+  assert.equal(await check(end.ts, 'done'), id)
+  const recovered = createReplyWatch(options)
+  recovered.track(thread, '1800000005.000001')
+  await recovered.end(end)
+  await recovered.final(thread, '1800000006.000001', firstPeriod)
+  await check(end.ts, 'done')
+  await recovered.final(thread, '1800000007.000001', recovered.period(thread))
+  await check('1800000007.000001', 'pending')
+  await recovered.end({ ...end, text: '!end', ts: '1800000008.000001' })
+  await check('1800000008.000001', 'done')
 })
